@@ -4,10 +4,9 @@ import { ReactComponent as MessageSvg } from '../../static/svg/message.svg';
 import JoinImModal from './components/joinImModal';
 
 const Home = () => {
-    const [visible, setVisible] = useState(false);
-
+    const [visible, setVisible] = useState(true);
     return (
-        <div className="start-btn">
+        <div className="start-btn im-wrapper">
             <Button
                 onClick={() => {
                     setVisible(true);

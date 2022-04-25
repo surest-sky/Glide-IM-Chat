@@ -1,3 +1,6 @@
+$mw: 36px;
+$mw-space: 10px;
+
 .start-btn {
     position: fixed;
     bottom: 20px;
@@ -13,26 +16,48 @@
     min-height: 500px;
 }
 
+.room-content {
+    height: calc(500px - 40px);
+    overflow-y: auto;
+    padding-bottom: 20px;
+}
+
 .room-content-wrapper-item-avatar {
-    width: 30px;
-    height: 30px;
+    width: $mw;
+    height: $mw;
     .avatar > div {
-        width: 30px;
-        height: 30px;
+        width: $mw;
+        height: $mw;
     }
     .avatar img {
-        width: 30px;
-        height: 30px;
+        width: $mw;
+        height: $mw;
     }
+}
+
+.room-content-wrapper-item.to {
+    margin-left: $mw + $mw-space;
+}
+
+.room-content-wrapper-item.form {
+    margin-right: $mw + $mw-space;
 }
 
 .room-content-wrapper-item {
     margin-top: 20px;
+}
 
-    .room-content-wrapper-item-message {
-        border-radius: 0.25rem;
-        background-color: #ececec;
-        padding: 5px;
-        font-size: 12px;
-    }
+.room-message-editor {
+    width: calc(100% - $mw);
+    height: 50px;
+    border: 1px solid #ccc;
+    margin-top: 20px;
+}
+
+.im-wrapper .modal-box {
+    max-width: 90% !important;
+    background-position: center center;
+    background-size: cover;
+    background-image: url(https://cdn.surest.cn/images/im-background.jpg);
+    background-repeat: no-repeat;
 }

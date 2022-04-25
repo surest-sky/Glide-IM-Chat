@@ -3,7 +3,7 @@ import { Modal, Button } from 'react-daisyui';
 import { ReactComponent as JoinSvg } from '../../../static/svg/join.svg';
 import Room from './room';
 const JoinIm = ({ visible, setVisible }) => {
-    const [message, setMessage] = useState(false);
+    const [message, setMessage] = useState(true);
     /**
      * 加入房间
      */
