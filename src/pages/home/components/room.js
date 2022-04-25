@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Avatar } from 'react-daisyui';
+import Message from './message';
 const Room = () => {
     const [user, setUser] = useState({
         id: 1,
@@ -25,14 +25,7 @@ const Room = () => {
                 <div className="font-bold text-center room-content-title">...IM通道</div>
                 <div className="room-content-wrapper">
                     {messages.map((message, key) => {
-                        return (
-                            <div key={key} className="flex room-content-wrapper-item flex-infobasic-informationbasic-informationCommunication Tools">
-                                <div className="mr-1 room-content-wrapper-item-avatar">
-                                    <Avatar shared={'circle'} size={'xs'} src={message.avatar} />
-                                </div>
-                                <div className="room-content-wrapper-item-message">{message.message}</div>
-                            </div>
-                        );
+                        return <Message key={key} message={message} isReply={message.id === 1} />;
                     })}
                 </div>
             </div>
