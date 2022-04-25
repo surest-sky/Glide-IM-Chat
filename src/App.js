@@ -1,12 +1,11 @@
-import Routers from "./routers/index";
-import "./static/index.css";
-import "./static/main.scss";
+import Routers from './routers/index';
+import './static/main.scss';
 function App() {
-  return (
-    <div className="app">
-      <Routers />
-    </div>
-  );
+    return (
+        <div className="app">
+            <Routers />
+        </div>
+    );
 }
 
 export default App;

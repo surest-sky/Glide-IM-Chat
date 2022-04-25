@@ -20,14 +20,14 @@ const Room = () => {
         },
     ]);
     return (
-        <div className="tilt-in-fwd-br room">
+        <div className="room">
             <div className="room-content">
-                <div className="room-content-title text-center font-bold">...客服通道</div>
+                <div className="font-bold text-center room-content-title">...IM通道</div>
                 <div className="room-content-wrapper">
                     {messages.map((message, key) => {
                         return (
-                            <div key={key} className="room-content-wrapper-item flex-infobasic-informationbasic-informationCommunication Tools">
-                                <div className="mr-2 room-content-wrapper-item-avatar">
+                            <div key={key} className="flex room-content-wrapper-item flex-infobasic-informationbasic-informationCommunication Tools">
+                                <div className="mr-1 room-content-wrapper-item-avatar">
                                     <Avatar shared={'circle'} size={'xs'} src={message.avatar} />
                                 </div>
                                 <div className="room-content-wrapper-item-message">{message.message}</div>

@@ -13,7 +13,7 @@ const Home = () => {
                     setVisible(true);
                 }}
             >
-                <MessageSvg /> <span className="ml-2">联系客服</span>
+                <MessageSvg /> <span className="ml-2">IM</span>
             </Button>
             <JoinImModal visible={visible} setVisible={setVisible} />
         </div>
