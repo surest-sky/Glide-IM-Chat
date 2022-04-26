@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
-import Message from './message';
-import { mockMessage, getInitMessages, getMessage } from '../faker';
-import { id, avatar } from '../faker/enum';
+import { getInitMessages, getMessage } from '../faker';
+import { avatar, id } from '../faker/enum';
 import Editor from './editor';
+import Message from './message';
 const Room = () => {
     const _messages = [
         {
@@ -14,10 +14,6 @@ const Room = () => {
     const [messages, setMessages] = useState([..._messages, ...getInitMessages()]);
 
     useEffect(() => {
-        setTimeout(() => {
-            mockMessage();
-        }, 1000);
-
         setMessages(messages => {
             return messages;
         });
