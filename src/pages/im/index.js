@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Button } from 'react-daisyui';
 import { ReactComponent as MessageSvg } from '../../static/svg/message.svg';
-import JoinImModal from './components/joinImModal';
+import ImModal from './components/im_modal';
 
 const Home = () => {
     const [visible, setVisible] = useState(true);
@@ -14,7 +14,7 @@ const Home = () => {
             >
                 <MessageSvg /> <span className="ml-2">IM</span>
             </Button>
-            <JoinImModal visible={visible} setVisible={setVisible} />
+            <ImModal visible={visible} setVisible={setVisible} />
         </div>
     );
 };

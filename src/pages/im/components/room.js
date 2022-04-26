@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import Message from './message';
 import { mockMessage, getInitMessages, getMessage } from '../faker';
 import { id, avatar } from '../faker/enum';
+import Editor from './editor';
 const Room = () => {
     const _messages = [
         {
@@ -18,7 +19,6 @@ const Room = () => {
         }, 1000);
 
         setMessages(messages => {
-            console.log(messages);
             return messages;
         });
     }, []);
@@ -33,7 +33,7 @@ const Room = () => {
                     })}
                 </div>
             </div>
-            <div className="room-message-editor"></div>
+            <Editor />
         </div>
     );
 };
