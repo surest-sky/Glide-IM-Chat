@@ -3,6 +3,7 @@ import { delay } from 'rxjs';
 import { LiveChat } from 'src/core/live_chat';
 import { Session } from 'src/core/session';
 import Message from './message';
+import Editor from './editor'
 
 const Room = () => {
 
@@ -36,7 +37,7 @@ const Room = () => {
         return () => { }
     }, []);
 
-    const msgList = messages.map((message, key) => {
+    const MsgList = messages.map((message, key) => {
         return <Message key={key} message={message} isReply={false} />;
     })
 
@@ -45,13 +46,10 @@ const Room = () => {
             <div className="font-bold text-center room-content-title">...IM通道</div>
             <div className="room-content">
                 <div className="room-content-wrapper">
-                    {msgList}
+                    {MsgList}
                 </div>
             </div>
-            <div className="room-message-editor">
-                <input type="text" placeholder="Type here" className="input w-full max-w-xs" />
-                <button className="btn">Send</button>
-            </div>
+            <Editor />
         </div>
     );
 };

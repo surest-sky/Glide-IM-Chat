@@ -28,7 +28,7 @@ const Editor = () => {
 
     const changeMessage = ({ target: { value } }) => {
         setMessage(value);
-        if (getMessageLen(value) > 100) {
+        if (getMessageLen(value) > 100 || value.indexOf('\n') > -1) {
             setMultiline(true);
         } else {
             setMultiline(false);
