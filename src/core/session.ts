@@ -30,7 +30,7 @@ export class Session {
         this.Avatar = userinfo.Avatar;
         this.Title = userinfo.Nickname;
         // TODO 
-        this.To = 543629; // userinfo.Uid;
+        this.To = 543630; // userinfo.Uid;
     }
 
     public static create(): Observable<Session> {
