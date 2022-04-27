@@ -3,8 +3,8 @@ import { Response } from "./response";
 
 export const axiosInstance: AxiosInstance = axios.create({
     timeout: 3000,
-    // baseURL: "http://api.t.glide-im.pro/api/",
-    baseURL: "http://localhost:8081/api/",
+    baseURL: process.env.REACT_APP_BASE_URL,
+    // baseURL: "http://localhost:8081/api/",
 });
 
 const setAuthHeader = (key: string, value: string) => {

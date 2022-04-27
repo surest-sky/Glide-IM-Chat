@@ -39,26 +39,9 @@ const Room = () => {
     };
 
     useEffect(() => {
-        initChat(started());
+        initChat(started);
     }, []);
 
-    /**
-     * 消息发送
-     * @param message
-     */
-    const sendMessage = (message: string) => {
-        session?.sendTextMessage(message).subscribe({
-            next: m => {
-                console.log('send message: message status changed=>', m);
-            },
-            error: error => {
-                console.log(error);
-            },
-            complete: () => {
-                // send sucess
-            },
-        });
-    };
 
     const MsgList = messages.map((message, key) => {
         return <Message key={key} message={message} />;
@@ -74,7 +57,7 @@ const Room = () => {
                 <div className="room-content">
                     <div className="room-content-wrapper">{MsgList}</div>
                 </div>
-                <Editor sendMessage={sendMessage} />
+                <Editor session={session}  />
             </>
         );
     }

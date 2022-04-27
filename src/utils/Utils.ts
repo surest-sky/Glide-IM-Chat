@@ -17,7 +17,6 @@ export const getMessageLen = str => {
                 count++;
             }
         }
-        console.log(count);
         return count;
     } else {
         console.log(0);

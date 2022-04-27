@@ -1,17 +1,34 @@
 import { useState, useEffect } from 'react';
 import { Button, Textarea } from 'react-daisyui';
-import {getMessageLen} from '../../../utils/Utils'
+import { getMessageLen } from '../../../utils/Utils';
 import '../styles/editor.scss';
 
-const Editor = ({ sendMessage }) => {
+const Editor = ({ session }) => {
     const [message, setMessage] = useState<string>('');
     const [multiline, setMultiline] = useState<boolean>(false);
     const [sendLoading, setSendLoading] = useState<boolean>(false);
 
+    /**
+     * 消息发送
+     * @param message
+     */
+    const sendMessage = (message: string) => {
+        // setSendLoading(true);
+        session?.sendTextMessage(message).subscribe({
+            next: m => {
+                console.log('send message: message status changed=>', m);
+            },
+            error: error => {
+                console.log(false);
+            },
+            complete: () => {
+                // setSendLoading(false);
+            },
+        });
+    };
+
     const _sendMessage = () => {
-        setSendLoading(true);
         sendMessage(message);
-        setSendLoading(false);
         setMessage('');
     };
 

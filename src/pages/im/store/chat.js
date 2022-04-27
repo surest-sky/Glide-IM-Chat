@@ -5,7 +5,7 @@ export const initChat = callback => {
         .initChat()
         .subscribe({
             error: err => {
-                alert(err);
+                console.error(err);
             },
             complete: () => {
                 callback && callback();
