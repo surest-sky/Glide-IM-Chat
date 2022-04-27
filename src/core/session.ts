@@ -30,7 +30,7 @@ export class Session {
         this.Avatar = userinfo.Avatar;
         this.Title = userinfo.Nickname;
         // TODO 
-        this.To = 543630; // userinfo.Uid;
+        this.To = 543629; // userinfo.Uid;
     }
 
     public static create(): Observable<Session> {
@@ -42,7 +42,6 @@ export class Session {
 
     public onMessage(message: Message) {
         console.log("onMessage", message);
-
         const c = ChatMessage.create(message)
         this.UnreadCount++;
         this.addMessageByOrder(c);

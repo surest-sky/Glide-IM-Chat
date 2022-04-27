@@ -87,6 +87,7 @@ class WebSocketClient {
         this.stateChangeListener.forEach((value => value(State.CONNECTING, "")));
 
         this.websocket = new WebSocket(ws);
+        this.messageListener = [];
         setTimeout(() => {
             if (!this.websocket?.OPEN) {
                 if (cb != null) {

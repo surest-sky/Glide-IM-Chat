@@ -1,5 +1,5 @@
 import { catchError, concat, map, mergeMap, Observable, of, timeout } from "rxjs";
-import { onComplete } from "src/rx/next";
+import { onComplete, onNext } from "src/rx/next";
 import { Api } from "../api/api";
 import { setApiToken } from "../api/axios";
 import { AuthBean } from "../api/model";
@@ -18,32 +18,66 @@ export enum MessageLevel {
 }
 
 export type MessageListener = (level: MessageLevel, msg: string) => void
-
 export class LiveChat {
 
     private uid: string;
     private servers: string[] = [];
     private session: Session | null = null
-    private token: string;
 
     public static getInstance(): LiveChat {
         return instance;
     }
 
+    // 初始化认证信息, 连接聊天服务器
+    public initChat(): Observable<string> {
+        const token = this.getToken()
+
+        let authrication: Observable<AuthBean>;
+        if (token == null || token === "") {
+            authrication = Api.guestLogin()
+        } else {
+            authrication = Api.auth(token)
+                .pipe(
+                    catchError(err => {
+                        this.clearAuth();
+                        throw new Error("auth failed: " + err);
+                    })
+                )
+        }
+
+        return authrication.pipe(
+            mergeMap(res => this.initAccount(res)),
+            mergeMap(() => this.connectIMServer()),
+            map(() => "chat init success")
+        )
+    }
+
+    // depracted
     public register(): Observable<string> {
         return Api.guestLogin()
             .pipe(
                 mergeMap(res => this.initAccount(res)),
+                mergeMap(() => this.connectIMServer()),
             )
     }
 
-    public getSession(): Observable<Session> {
+    // 获取会话, 如果没有创建则返回 null
+    public getSession(): Session | null {
+        return this.session;
+    }
+
+    // 获取或创建会话
+    public getOrInitSession(): Observable<Session> {
         if (this.session != null) {
             return of(this.session)
         }
         return Session.create()
+            .pipe(
+                onNext(s => this.session = s)
+            )
     }
 
+    // deprecated
     public auth(): Observable<string> {
 
         return Api.auth(this.getToken())
@@ -69,11 +103,11 @@ export class LiveChat {
     private clearAuth() {
         console.log("clearAuth");
         this.uid = "";
-        this.token = "";
         Ws.close();
         Glide.storeToken("");
     }
 
+    // @deprecated
     public isAuthenticated(): boolean {
         const tk = this.getToken()
         return tk && tk !== "";
@@ -92,10 +126,8 @@ export class LiveChat {
         setApiToken(auth.Token);
         this.uid = auth.Uid.toString();
         this.servers = auth.Servers;
-        this.token = auth.Token;
         Glide.storeToken(auth.Token);
-
-        return this.connectIMServer()
+        return of("account init success");
     }
 
     private connectIMServer(): Observable<string> {
@@ -103,15 +135,10 @@ export class LiveChat {
         const data = { Token: this.getToken() };
         const server = this.servers[0];
 
-
-        const authWs = Ws.request<AuthBean>(Actions.ApiUserAuth, data)
-            .pipe(
-                map(() => "IM server auth success"),
-            )
-
         return Ws.connect(server)
             .pipe(
-                mergeMap(() => authWs),
+                mergeMap(() => Ws.request<AuthBean>(Actions.ApiUserAuth, data)),
+                map(() => "IM server auth success"),
                 onComplete(() => Ws.addMessageListener((r) => {
                     this.onMessage(r)
                 })),
@@ -124,11 +151,9 @@ export class LiveChat {
                 console.log("new contact: " + m.Data);
                 break;
             case Actions.MessageChat:
-                if (this.session != null) {
-                    const msg = m.Data as Message
-                    console.log("message: ", msg);
-                    this.session.onMessage(msg)
-                }
+                const msg = m.Data as Message
+                console.log("message: ", msg);
+                this.session?.onMessage(msg)
                 break;
             case Actions.MessageChatRecall:
                 break;
