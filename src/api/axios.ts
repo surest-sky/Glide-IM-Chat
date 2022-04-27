@@ -3,7 +3,7 @@ import { Response } from "./response";
 
 export const axiosInstance: AxiosInstance = axios.create({
     timeout: 3000,
-    baseURL: process.env.REACT_APP_BASE_URL || 'http://api.t.glide-im.pro/api/',
+    baseURL: process.env.REACT_APP_BASE_URL || 'https://api.t.glide-im.pro/api/',
     // baseURL: "http://localhost:8081/api/",
 });
 
