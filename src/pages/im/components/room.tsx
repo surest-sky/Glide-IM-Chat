@@ -54,7 +54,7 @@ const Room = () => {
         content = (
             <>
                 <div className="font-bold text-center room-content-title">...IM通道</div>
-                <div className="room-content">
+                <div className="room-content scrollbar">
                     <div className="room-content-wrapper">{MsgList}</div>
                 </div>
                 <Editor session={session}  />

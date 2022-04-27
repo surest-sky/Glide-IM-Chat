@@ -20,6 +20,8 @@ $mw-space: 10px;
     height: calc(500px - 40px);
     overflow-y: auto;
     padding-bottom: 20px;
+    padding-right: 5px;
+    padding-left: 5px;
 }
 
 .room-content-wrapper-item-avatar {
@@ -53,4 +55,19 @@ $mw-space: 10px;
     background-size: cover;
     background-image: url(https://cdn.surest.cn/images/im-background.jpg);
     background-repeat: no-repeat;
+}
+
+.scrollbar::-webkit-scrollbar {
+    width: 5px;
+    background-color: #f5f5f5;
+}
+.scrollbar::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    background-image: -webkit-gradient(linear, left bottom, left top, color-stop(0.44, rgb(122, 153, 217)), color-stop(0.72, rgb(73, 125, 189)), color-stop(0.86, rgb(28, 58, 148)));
+}
+
+.scrollbar::-webkit-scrollbar-track {
+    // -webkit-box-shadow: inset 0 0 6px rgb(0 0 0);
+    background-color: #f5f5f5;
+    border-radius: 10px;
 }

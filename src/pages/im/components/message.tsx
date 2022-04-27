@@ -11,7 +11,7 @@ function Message(props: { message: ChatMessage }) {
             <div className=" room-content-wrapper-item-avatar">
                 <Avatar shape={'circle'} size={'xs'} />
             </div>
-            <div className="room-content-wrapper-item-message">{props.message.Content}</div>
+            <div className="room-content-wrapper-item-message break-words ">{props.message.Content}</div>
         </div>
     );
 };
