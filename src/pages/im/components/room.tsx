@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react';
-import { delay, map } from 'rxjs';
+import { delay } from 'rxjs';
 import { LiveChat } from 'src/core/live_chat';
 import { Session } from 'src/core/session';
-import Message from './message';
 import Editor from './editor';
+import Message from './message';
 
 const Room = () => {
     const [session, setSession] = useState<Session | null>(null);
@@ -27,13 +27,25 @@ const Room = () => {
             error: error => {
                 console.log(error);
             },
-            complete: () => {},
+            complete: () => { },
         });
-        return () => {};
+        return () => { };
     }, []);
 
-    const sendMessage = (message:string) => {
+    const sendMessage = (message: string) => {
         // chatInstance.sendTextMessage(message)
+        session.sendTextMessage(message)
+            .subscribe({
+                next: (m) => {
+                    console.log("send message: message status changed=>", m);
+                },
+                error: error => {
+                    console.log(error);
+                },
+                complete: () => {
+                    // send sucess
+                },
+            });
     }
 
     const MsgList = messages.map((message, key) => {
