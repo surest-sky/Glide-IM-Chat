@@ -1,6 +1,5 @@
 import { useState } from 'react';
-import { Modal, Button } from 'react-daisyui';
-import { LiveChat } from 'src/core/live_chat';
+import { Button, Modal } from 'react-daisyui';
 import { ReactComponent as JoinSvg } from '../../../static/svg/join.svg';
 import Room from './room';
 
