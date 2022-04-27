@@ -85,6 +85,7 @@ class WebSocketClient {
 
         let cb = callback;
         this.stateChangeListener.forEach((value => value(State.CONNECTING, "")));
+
         this.websocket = new WebSocket(ws);
         setTimeout(() => {
             if (!this.websocket?.OPEN) {
@@ -97,6 +98,7 @@ class WebSocketClient {
         }, connectionTimeout);
 
         this.websocket.onerror = (e) => {
+            console.error(e)
             WebSocketClient.slog("onerror", "" + e)
             if (cb != null) {
                 cb(false, `ws connect failed ${e.type}`)

@@ -21,7 +21,7 @@ const getMessageLen = str => {
     }
 };
 
-const Editor = () => {
+const Editor = ({ sendMessage }) => {
     const [message, setMessage] = useState('');
     const [multiline, setMultiline] = useState(false);
     const [sendLoading, setSendLoading] = useState(false);
@@ -35,19 +35,23 @@ const Editor = () => {
         }
     };
 
-    const sendMessage = () => {
+    const _sendMessage = () => {
         setSendLoading(true);
-        setTimeout(() => {
-            setSendLoading(false);
-            setMessage('');
-            setMultiline(false);
-        }, 2000);
+        // setTimeout(() => {
+        //     setSendLoading(false);
+        //     setMessage('');
+        //     setMultiline(false);
+        // }, 2000);
+        sendMessage(message);
+        setSendLoading(false);
+        setMessage('');
+        setMultiline(false);
     };
 
     return (
         <div className="room-message-editor flex justify-between  items-end">
             <Textarea rows={multiline ? 2 : 1} color={'primary'} bordered={true} value={message} onChange={changeMessage} borderOffset={false} className="editor-item w-full"></Textarea>
-            <Button className="ml-2" onClick={sendMessage} loading={sendLoading}>
+            <Button className="ml-2" onClick={_sendMessage} loading={sendLoading}>
                 发送
             </Button>
         </div>
