@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Button, Textarea } from 'react-daisyui';
-import { getMessageLen } from '../../../utils/Utils';
+import { getMessageLen, scrollToBottom } from '../../../utils/Utils';
 import '../styles/editor.scss';
 
 const Editor = ({ session }) => {
@@ -20,9 +20,12 @@ const Editor = ({ session }) => {
                 console.log('send message: message status changed=>', m);
             },
             error: error => {
+                scrollToBottom(".room-content")
                 console.log(false);
+                // 发送失败，好像发送成功了
             },
             complete: () => {
+                scrollToBottom(".room-content")
                 // setSendLoading(false);
             },
         });
