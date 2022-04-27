@@ -6,6 +6,7 @@ import '../styles/editor.scss';
 const Editor = ({ session }) => {
     const [message, setMessage] = useState<string>('');
     const [multiline, setMultiline] = useState<boolean>(false);
+    // 这里暂时不要 Loading，发送太快了，有抖动感觉，很不好看
     const [sendLoading, setSendLoading] = useState<boolean>(false);
 
     /**
