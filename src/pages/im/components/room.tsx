@@ -9,41 +9,38 @@ import { initChat } from '../store/chat';
 const Room = () => {
     const [session, setSession] = useState<Session | null>(null);
     const [messages, setMessages] = useState([]);
-    const chatInstance = LiveChat.getInstance().getSession();
     const [loading, setLoading] = useState<boolean>(true);
 
-    useEffect(() => {
-        // if (session != null) {
-        //     session.setMessageListener(message => {
-        //         setMessages(messages => [...messages, message]);
-        //     });
-        // }
-    }, [session]);
+    // useEffect(() => {
+    //     if (session != null) {
+    //         session.setMessageListener(message => {
+    //             setMessages(messages => [...messages, message]);
+    //         });
+    //     }
+    // }, [session]);
 
-    const start = () => {
+    useEffect(() => {
         initChat(started());
-    };
-
-    useEffect(() => {
-        start()
         return () => {}
-    }, [])
+    })
 
     /**
      * 初始化完成
      */
     const started = () => {
-        chatInstance.pipe(delay(1000)).subscribe({
-            next: se => {
-                setSession(se);
-                setMessages(se.getMessages());
-                setLoading(false);
-            },
-            error: error => {
-                console.log(error);
-            },
-            complete: () => {},
-        });
+    //     const chatInstance = LiveChat.getInstance().getSession();
+    //     chatInstance.pipe(delay(1000)).subscribe({
+    //         next: se => {
+    //             setSession(se);
+    //             console.log('------------')
+    //             setMessages(se.getMessages());
+    //             setLoading(false);
+    //         },
+    //         error: error => {
+    //             console.log(error);
+    //         },
+    //         complete: () => {},
+    //     });
     };
 
     /**
