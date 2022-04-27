@@ -22,9 +22,9 @@ const getMessageLen = str => {
 };
 
 const Editor = ({ sendMessage }) => {
-    const [message, setMessage] = useState('');
-    const [multiline, setMultiline] = useState(false);
-    const [sendLoading, setSendLoading] = useState(false);
+    const [message, setMessage] = useState<string>('');
+    const [multiline, setMultiline] = useState<boolean>(false);
+    const [sendLoading, setSendLoading] = useState<boolean>(false);
 
     const _sendMessage = () => {
         setSendLoading(true);
