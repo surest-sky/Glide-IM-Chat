@@ -103,6 +103,7 @@ export class LiveChat {
         const data = { Token: this.getToken() };
         const server = this.servers[0];
 
+
         const authWs = Ws.request<AuthBean>(Actions.ApiUserAuth, data)
             .pipe(
                 map(() => "IM server auth success"),

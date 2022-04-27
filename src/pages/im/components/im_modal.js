@@ -6,7 +6,7 @@ import Room from './room';
 const ImModal = ({ visible, setVisible }) => {
     // tip 提示进入
     // room 房间
-    const [mode, setMode] = useState('tip');
+    const [mode, setMode] = useState('room');
 
     /**
      * 加入房间
