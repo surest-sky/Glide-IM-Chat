@@ -1,5 +1,7 @@
 import { Avatar } from 'react-daisyui';
 import { ChatMessage } from 'src/core/chat_message';
+import xss from 'xss'
+import HtmlApp  from 'src/components/HtmlApp';
 import '../styles/message.scss';
 
 function Message(props: { message: ChatMessage }) {
@@ -11,7 +13,9 @@ function Message(props: { message: ChatMessage }) {
             <div className=" room-content-wrapper-item-avatar">
                 <Avatar shape={'circle'} size={'xs'} />
             </div>
-            <div className="room-content-wrapper-item-message break-words ">{props.message.Content}</div>
+            <div className="room-content-wrapper-item-message break-words">
+                <HtmlApp html={xss(props.message.Content)} className="message-item"/>
+                </div>
         </div>
     );
 };
