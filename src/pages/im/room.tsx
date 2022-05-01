@@ -3,9 +3,11 @@ import { delay } from 'rxjs';
 import { ChatMessage } from 'src/core/chat_message';
 import { LiveChat } from 'src/core/live_chat';
 import { Session } from 'src/core/session';
-import Editor from './editor';
-import Message from './message';
-import { initChat } from '../store/chat';
+import Editor from './components/editor';
+import Message from './components/message';
+import { Avatar } from 'react-daisyui';
+import { initChat } from './store/chat';
+import { Rate } from '@arco-design/web-react';
 
 const Room = () => {
     const [session, setSession] = useState<Session | null>(null);
@@ -42,7 +44,6 @@ const Room = () => {
         initChat(started);
     }, []);
 
-
     const MsgList = messages.map((message, key) => {
         return <Message key={key} message={message} />;
     });
@@ -53,11 +54,29 @@ const Room = () => {
     } else {
         content = (
             <>
-                <div className="font-bold text-center room-content-title">...IM通道</div>
-                <div className="room-content scrollbar">
-                    <div className="room-content-wrapper">{MsgList}</div>
+                <div className="font-bold text-center room-content-title flex justify-between">
+                    <div className="flex items-center">
+                        <Avatar shape={'circle'} size={'xs'} className="title-avatar mr-2" />
+                        <span className=" title-name">锋</span>
+                    </div>
+                    <div className="flower">
+                        <Rate count={5} className="mr-3" />
+                    </div>
                 </div>
-                <Editor session={session}  />
+                {/* <div className="room-body flex justify-between"> */}
+                <div className="room-body">
+                    {/* <div className="contacts">
+                        <div className="contact">
+
+                        </div>
+                    </div> */}
+                    <div className="chat-body">
+                        <div className="room-content scrollbar">
+                            <div className="room-content-wrapper">{MsgList}</div>
+                        </div>
+                        <Editor session={session} />
+                    </div>
+                </div>
             </>
         );
     }

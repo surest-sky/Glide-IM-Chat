@@ -4,7 +4,7 @@ import { ReactComponent as MessageSvg } from '../../static/svg/message.svg';
 import ImModal from './components/im_modal';
 
 const Home = () => {
-    const [visible, setVisible] = useState(true);
+    const [visible, setVisible] = useState(false);
     return (
         <div className="start-btn im-wrapper">
             <Button

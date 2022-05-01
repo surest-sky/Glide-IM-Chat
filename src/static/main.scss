@@ -14,10 +14,15 @@ $mw-space: 10px;
 
 .room {
     min-height: 500px;
+
+    .room-body,
+    .chat-body {
+        height: 100%;
+    }
 }
 
 .room-content {
-    height: calc(500px - 40px);
+    height: 450px;
     overflow-y: auto;
     padding-bottom: 20px;
     padding-right: 5px;
@@ -77,4 +82,37 @@ img {
     border: 1px solid #f6f6f6 !important;
     border-radius: 5px !important;
     display: inline-block !important;
+}
+
+.room {
+    max-width: 1100px;
+    // min-height: 90vh;
+    margin: 0 auto;
+    box-shadow: 0 2px 12px 5px rgba(0, 0, 0, 0.1);
+    border-radius: 2px;
+    margin-top: 20px;
+
+    // max-width: 90% !important;
+    // background-position: center center;
+}
+
+.room-body {
+    border-top: 2px solid #babbbe;
+    background-size: cover;
+    background-image: url(https://cdn.surest.cn/images/im-background.jpg);
+    background-repeat: no-repeat;
+    padding: 10px;
+}
+
+.room-content-title {
+    height: 67px;
+    align-items: center;
+    .title-avatar {
+        margin-left: 25px;
+    }
+    .title-name {
+        height: 40px;
+        display: block;
+        line-height: 40px;
+    }
 }

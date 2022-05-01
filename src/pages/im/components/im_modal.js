@@ -1,18 +1,17 @@
 import { useState } from 'react';
 import { Button, Modal } from 'react-daisyui';
 import { ReactComponent as JoinSvg } from '../../../static/svg/join.svg';
-import Room from './room';
+import { useNavigate } from 'react-router-dom';
+import Room from '../room';
 
 const ImModal = ({ visible, setVisible }) => {
-    // tip 提示进入
-    // room 房间
-    const [mode, setMode] = useState('room');
+    const navigation = useNavigate();
 
     /**
      * 加入房间
      */
     const joinRoom = () => {
-        setMode('room');
+        navigation('/room');
     };
 
     const ModalImTip = () => {
@@ -45,10 +44,9 @@ const ImModal = ({ visible, setVisible }) => {
             open={visible}
             onClickBackdrop={() => {
                 setVisible(false);
-                setMode('');
             }}
         >
-            {mode === 'tip' ? <ModalImTip /> : <Room />}
+            <ModalImTip />
         </Modal>
     );
 };
