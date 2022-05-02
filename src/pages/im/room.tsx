@@ -78,7 +78,6 @@ const Room = () => {
         // }
 
         // console.log(messages[key - 1]);
-
         // // 当前 message 与 上一条 message 大于 5分钟则显示
         // lastAt = dayjs(messages[key - 1].SendAt * 1000);
         // console.log("lastAt.diff(dateDayjs, 'minutes')", lastAt.diff(dateDayjs, 'minute'));

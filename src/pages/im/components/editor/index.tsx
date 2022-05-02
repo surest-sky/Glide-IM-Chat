@@ -75,6 +75,10 @@ const Editor = forwardRef((props: any, ref) => {
         return false;
     };
 
+    const changeMessage = () => {
+        setMessage(editorRef.current.innerHTML);
+    };
+
     const insertFileMessage = (url: string) => {
         const imageNode = document.createElement('img');
         imageNode.src = url;
@@ -85,6 +89,7 @@ const Editor = forwardRef((props: any, ref) => {
         const position = window.getSelection().getRangeAt(0);
         position.insertNode(imageNode);
         setModalVisible(false);
+        changeMessage();
     };
 
     return (
@@ -103,9 +108,7 @@ const Editor = forwardRef((props: any, ref) => {
                         return false;
                     }
                 }}
-                onInput={(event: any) => {
-                    setMessage(editorRef.current.innerHTML);
-                }}
+                onInput={changeMessage}
                 className="textarea editor-item w-full textarea-primary focus:outline-offset-0 textarea-bordered"
             ></div>
             {/* <Textarea rows={multiline ? 2 : 1} color={'primary'} bordered={true} value={message} onChange={({ target: { value } }) => setMessage(value)} borderOffset={false} className="editor-item w-full"></Textarea> */}
