@@ -5,6 +5,7 @@ import { scrollToBottom } from '../../../../utils/Utils';
 import './editor.scss';
 import Draw from './draw';
 import { pasteImage } from './store';
+import { MessageType } from '../../../../core/message';
 
 const Editor = forwardRef((props: any, ref) => {
     // 这里暂时不要 Loading，发送太快了，有抖动感觉，很不好看
@@ -15,11 +16,27 @@ const Editor = forwardRef((props: any, ref) => {
     const [modalVisible, setModalVisible] = useState<boolean>(false);
 
     useImperativeHandle(ref, () => ({
-        insertContent: insertFileMessage,
+        sendFileMessage: sendFileMessage,
         scrollToBottom: () => {
             scrollToBottom('.room-content');
         },
     }));
+
+    const sendFileMessage = url => {
+        props.session?.send(url, MessageType.Image).subscribe({
+            next: m => {
+                console.log('send message: message status changed=>', m);
+            },
+            error: error => {
+                scrollToBottom('.room-content');
+                console.log(false);
+                // 发送失败，好像发送成功了
+            },
+            complete: () => {
+                scrollToBottom('.room-content');
+            },
+        });
+    };
 
     /**
      * 消息发送

@@ -10,7 +10,7 @@ const Tools = ({ editorRef }) => {
         input.onchange = async function () {
             var file = this.files[0];
             const { data } = await uploadFile(file, file.name);
-            editorRef.current.insertContent(data.data.url);
+            editorRef.current.sendFileMessage(data.data.url);
         };
         input.click();
     };

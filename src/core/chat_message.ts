@@ -1,5 +1,5 @@
-import { Message } from "./message";
-import { LiveChat } from "./live_chat";
+import { Message } from './message';
+import { LiveChat } from './live_chat';
 
 export enum SendingStatus {
     Unknown,
@@ -9,16 +9,16 @@ export enum SendingStatus {
 }
 
 export interface MessageUpdateListener {
-    (message: ChatMessage): void
+    (message: ChatMessage): void;
 }
 
 export class ChatMessage {
-
     public From: number;
     public To: number;
     public Content: string;
     public Mid: number;
     public SendAt: number;
+    public Type: number;
 
     public Status: number;
     public IsMe: boolean;
@@ -40,7 +40,8 @@ export class ChatMessage {
         ret.Mid = m.mid;
         ret.SendAt = m.sendAt;
         ret.IsMe = m.from === LiveChat.getInstance().getUID();
-        ret.Status = m.status
+        ret.Status = m.status;
+        ret.Type = m.type;
         return ret;
     }
 
@@ -53,6 +54,7 @@ export class ChatMessage {
         this.IsMe = m.IsMe;
         this.Status = m.Status;
         this.Sending = m.Sending;
+        this.Type = m.Type;
 
         if (this.updateListener) {
             this.updateListener(this);
