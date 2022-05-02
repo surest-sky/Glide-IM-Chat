@@ -1,7 +1,6 @@
-
 export function isMobile(): boolean {
-    let mobileAgent = false;///Android|iPhone|iPod|BlackBerry/i.test(navigator.userAgent);
-    let smallScreen = (window.innerWidth < 600);
+    let mobileAgent = false; ///Android|iPhone|iPod|BlackBerry/i.test(navigator.userAgent);
+    let smallScreen = window.innerWidth < 600;
     return mobileAgent || smallScreen;
 }
 
@@ -22,13 +21,14 @@ export const getMessageLen = str => {
 };
 
 /**
- * 
- * @param _class string Dom 节点 
+ *
+ * @param _class string Dom 节点
  */
-export function scrollToBottom(_class) { 
-    const wrapper = document.querySelector(_class)
-    console.log('wrapperScroolHeight', wrapper)
-    if(!wrapper) {return;}
+export function scrollToBottom(_class) {
+    const wrapper = document.querySelector(_class);
+    if (!wrapper) {
+        return;
+    }
     const wrapperScroolHeight = wrapper.scrollHeight;
-    wrapper.scrollTop = wrapperScroolHeight
+    wrapper.scrollTop = wrapperScroolHeight;
 }

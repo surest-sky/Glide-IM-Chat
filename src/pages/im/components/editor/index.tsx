@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { useRef, forwardRef, useImperativeHandle, useState } from 'react';
 import { Modal, Button } from 'react-daisyui';
 import xss from 'xss';
 import { scrollToBottom } from '../../../../utils/Utils';
@@ -6,13 +6,20 @@ import './editor.scss';
 import Draw from './draw';
 import { pasteImage } from './store';
 
-const Editor = ({ session }) => {
-    const [message, setMessage] = useState<string>('');
+const Editor = forwardRef((props: any, ref) => {
     // 这里暂时不要 Loading，发送太快了，有抖动感觉，很不好看
     const [sendLoading, setSendLoading] = useState<boolean>(false);
+    const [message, setMessage] = useState<string>('');
     const editorRef = useRef<HTMLDivElement | null>(null);
     const [src, setSrc] = useState<string>();
     const [modalVisible, setModalVisible] = useState<boolean>(false);
+
+    useImperativeHandle(ref, () => ({
+        insertContent: insertFileMessage,
+        scrollToBottom: () => {
+            scrollToBottom('.room-content');
+        },
+    }));
 
     /**
      * 消息发送
@@ -20,7 +27,7 @@ const Editor = ({ session }) => {
      */
     const sendMessage = (message: string) => {
         // setSendLoading(true);
-        session?.sendTextMessage(message).subscribe({
+        props.session?.sendTextMessage(message).subscribe({
             next: m => {
                 console.log('send message: message status changed=>', m);
             },
@@ -47,6 +54,7 @@ const Editor = ({ session }) => {
     };
 
     const resetEditor = () => {
+        setMessage('');
         editorRef.current.innerHTML = '';
     };
 
@@ -67,9 +75,15 @@ const Editor = ({ session }) => {
         return false;
     };
 
-    const insertMessage = (url: string) => {
-        const dom = `<img src="${url}" />`;
-        editorRef.current.innerHTML += dom;
+    const insertFileMessage = (url: string) => {
+        const imageNode = document.createElement('img');
+        imageNode.src = url;
+        editorRef.current.focus();
+        const range = window.getSelection();
+        range.selectAllChildren(editorRef.current);
+        range.collapseToEnd();
+        const position = window.getSelection().getRangeAt(0);
+        position.insertNode(imageNode);
         setModalVisible(false);
     };
 
@@ -80,11 +94,22 @@ const Editor = ({ session }) => {
                 onPaste={pasteEvent}
                 ref={editorRef}
                 suppressContentEditableWarning
-                // onInput={_changeTextContent}
+                onKeyDown={(event: any) => {
+                    if (event.keyCode === 13 && event.shiftKey === false) {
+                        event.preventDefault();
+                        if (message.length > 0) {
+                            _sendMessage();
+                        }
+                        return false;
+                    }
+                }}
+                onInput={(event: any) => {
+                    setMessage(editorRef.current.innerHTML);
+                }}
                 className="textarea editor-item w-full textarea-primary focus:outline-offset-0 textarea-bordered"
             ></div>
             {/* <Textarea rows={multiline ? 2 : 1} color={'primary'} bordered={true} value={message} onChange={({ target: { value } }) => setMessage(value)} borderOffset={false} className="editor-item w-full"></Textarea> */}
-            <Button style={{ height: 48 }} className="ml-2" onClick={_sendMessage} loading={sendLoading}>
+            <Button disabled={message.length < 1} style={{ height: 48 }} className="ml-2" onClick={_sendMessage} loading={sendLoading}>
                 发送
             </Button>
 
@@ -95,10 +120,10 @@ const Editor = ({ session }) => {
                 }}
             >
                 <Modal.Header>图片裁剪</Modal.Header>
-                <Draw insertMessage={insertMessage} src={src} />
+                <Draw insertFileMessage={insertFileMessage} src={src} />
             </Modal>
         </div>
     );
-};
+});
 
 export default Editor;

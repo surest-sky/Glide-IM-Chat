@@ -5,7 +5,7 @@ import { Button } from 'react-daisyui';
 import { uploadBase64File } from './store';
 import { useState } from 'react';
 
-const Draw = ({ insertMessage, src }) => {
+const Draw = ({ insertFileMessage, src }) => {
     const cropperRef = useRef(null);
     const [loading, setLoading] = useState(false);
     const onCrop = async () => {
@@ -16,7 +16,7 @@ const Draw = ({ insertMessage, src }) => {
         setLoading(true);
         const url = await uploadBase64File(base64);
         setLoading(false);
-        insertMessage(url);
+        insertFileMessage(url);
     };
 
     return (
@@ -25,7 +25,7 @@ const Draw = ({ insertMessage, src }) => {
                 src={src}
                 style={{ height: 400, width: '100%' }}
                 // Cropper.js options
-                initialAspectRatio={16 / 9}
+                initialAspectRatio={16 / 16}
                 guides={false}
                 ref={cropperRef}
             />

@@ -82,6 +82,7 @@ img {
     border: 1px solid #f6f6f6 !important;
     border-radius: 5px !important;
     display: inline-block !important;
+    margin-right: 5px;
 }
 
 .room {
@@ -97,7 +98,7 @@ img {
 }
 
 .room-body {
-    border-top: 2px solid #babbbe;
+    border-top: 1px solid #babbbe;
     background-size: cover;
     background-image: url(https://cdn.surest.cn/images/im-background.jpg);
     background-repeat: no-repeat;

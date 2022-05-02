@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { delay } from 'rxjs';
 import { ChatMessage } from 'src/core/chat_message';
 import { LiveChat } from 'src/core/live_chat';
@@ -7,17 +7,21 @@ import Editor from './components/editor';
 import Message from './components/message';
 import { Avatar } from 'react-daisyui';
 import { initChat } from './store/chat';
-import { Rate } from '@arco-design/web-react';
+import Tools from './components/tools';
+import dayjs from 'dayjs';
 
 const Room = () => {
     const [session, setSession] = useState<Session | null>(null);
     const [messages, setMessages] = useState<ChatMessage[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
+    const editorRef = useRef<any>(null);
 
     useEffect(() => {
         session?.setMessageListener(message => {
-            console.log('message===', message);
             setMessages(messages => [...messages, message]);
+            setTimeout(() => {
+                editorRef.current.scrollToBottom();
+            }, 400);
         });
         return () => session?.setMessageListener(null);
     }, [session]);
@@ -44,8 +48,54 @@ const Room = () => {
         initChat(started);
     }, []);
 
+    const dateLine = (at, key) => {
+        const dateDayjs = dayjs(at * 1000);
+        const _date = dateDayjs.format('YYYY-MM-DD HH:mm:ss');
+        // format('YYYY-MM-DD HH:mm:ss');
+        // console.log('key', key);
+        if (key === 0) {
+            return _date;
+        }
+
+        let lastAt = dayjs(messages[key - 1].SendAt * 1000);
+        if (dateDayjs.diff(lastAt, 'minute') > 1) {
+            return _date;
+        }
+
+        const fl: any = key / 5;
+        if (fl % 1 === 0) {
+            return _date;
+        }
+
+        // let lastAt;
+        // if (key > 5) {
+        //     const fl: any = key / 5;
+        //     lastAt = dayjs(messages[key - 4 * parseInt(fl)].SendAt * 1000);
+        //     console.log(lastAt.diff(dateDayjs, 'minute'));
+        //     if (lastAt.diff(dateDayjs, 'minute') <= -1) {
+        //         return _date;
+        //     }
+        // }
+
+        // console.log(messages[key - 1]);
+
+        // // 当前 message 与 上一条 message 大于 5分钟则显示
+        // lastAt = dayjs(messages[key - 1].SendAt * 1000);
+        // console.log("lastAt.diff(dateDayjs, 'minutes')", lastAt.diff(dateDayjs, 'minute'));
+        // if (lastAt.diff(dateDayjs, 'minute') > 1) {
+        //     return _date;
+        // }
+        return false;
+    };
+
     const MsgList = messages.map((message, key) => {
-        return <Message key={key} message={message} />;
+        const _dateline = dateLine(message.SendAt, key);
+        return (
+            <div>
+                {_dateline ? <div className="text-center text-gray-500 text-xs mb-5 mt-5">{_dateline}</div> : <></>}
+                <Message key={message.SendAt} message={message} />
+            </div>
+        );
     });
 
     let content: any;
@@ -60,7 +110,7 @@ const Room = () => {
                         <span className=" title-name">锋</span>
                     </div>
                     <div className="flower">
-                        <Rate count={5} className="mr-3" />
+                        <Tools editorRef={editorRef} />
                     </div>
                 </div>
                 {/* <div className="room-body flex justify-between"> */}
@@ -74,7 +124,7 @@ const Room = () => {
                         <div className="room-content scrollbar">
                             <div className="room-content-wrapper">{MsgList}</div>
                         </div>
-                        <Editor session={session} />
+                        <Editor ref={editorRef} session={session} />
                     </div>
                 </div>
             </>
