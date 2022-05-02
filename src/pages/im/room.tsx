@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { Image } from '@arco-design/web-react';
 import { delay } from 'rxjs';
 import { ChatMessage } from 'src/core/chat_message';
 import { LiveChat } from 'src/core/live_chat';
@@ -15,6 +16,10 @@ const Room = () => {
     const [messages, setMessages] = useState<ChatMessage[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
     const editorRef = useRef<any>(null);
+    const [imageVisible, setVisible] = useState<any>({
+        visible: false,
+        src: '',
+    });
 
     useEffect(() => {
         session?.setMessageListener(message => {
@@ -46,6 +51,11 @@ const Room = () => {
 
     useEffect(() => {
         initChat(started);
+
+        $('body').on('click', 'img', (element: any) => {
+            const src = element.target.getAttribute('src');
+            setVisible({ visible: true, src: src });
+        });
     }, []);
 
     const dateLine = (at, key) => {
@@ -92,7 +102,7 @@ const Room = () => {
         return (
             <div>
                 {_dateline ? <div className="text-center text-gray-500 text-xs mb-5 mt-5">{_dateline}</div> : <></>}
-                <Message key={message.SendAt} message={message} />
+                <Message setVisible={setVisible} key={message.SendAt} message={message} />
             </div>
         );
     });
@@ -126,6 +136,14 @@ const Room = () => {
                         <Editor ref={editorRef} session={session} />
                     </div>
                 </div>
+
+                <Image.Preview
+                    src={imageVisible.src}
+                    visible={imageVisible.visible}
+                    onVisibleChange={() => {
+                        setVisible({ visible: false, src: '' });
+                    }}
+                />
             </>
         );
     }

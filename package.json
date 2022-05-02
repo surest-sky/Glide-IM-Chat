@@ -53,6 +53,7 @@
   },
   "devDependencies": {
     "@faker-js/faker": "^6.2.0",
+    "@types/jquery": "^3.5.14",
     "autoprefixer": "9.7.2",
     "cross-env": "^7.0.3",
     "postcss": "8.4.11",

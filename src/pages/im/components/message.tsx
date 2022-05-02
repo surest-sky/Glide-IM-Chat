@@ -1,16 +1,15 @@
+import { useEffect } from 'react';
 import { Avatar } from 'react-daisyui';
-import { ChatMessage } from 'src/core/chat_message';
-import xss from 'xss';
 import HtmlApp from 'src/components/HtmlApp';
 import { MessageType } from 'src/core/message';
+import xss from 'xss';
 import '../styles/message.scss';
 
-function Message(props: { message: ChatMessage }) {
+function Message(props) {
     const messageAlign = props.message.IsMe ? 'flex-row-reverse to' : 'flex-row form';
-    console.log(props.message);
     const MessageHtml = ({ message }) => {
         if (message.Type === MessageType.Image) {
-            return <img src={message.Content} alt={'img'} />;
+            return <img src={message.Content} alt="2" />;
         }
         return <HtmlApp html={xss(props.message.Content)} className="message-item" />;
     };

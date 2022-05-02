@@ -6,6 +6,7 @@ import './editor.scss';
 import Draw from './draw';
 import { pasteImage } from './store';
 import { MessageType } from '../../../../core/message';
+import { uploadBase64File } from './store';
 
 const Editor = forwardRef((props: any, ref) => {
     // 这里暂时不要 Loading，发送太快了，有抖动感觉，很不好看
@@ -87,7 +88,9 @@ const Editor = forwardRef((props: any, ref) => {
         const file = await pasteImage(event);
         if (file) {
             setSrc(file);
-            setModalVisible(true);
+            // setModalVisible(true);
+            const url = await uploadBase64File(file);
+            insertFileMessage(url);
         }
         return false;
     };

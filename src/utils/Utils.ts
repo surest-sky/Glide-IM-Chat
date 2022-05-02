@@ -32,3 +32,18 @@ export function scrollToBottom(_class) {
     const wrapperScroolHeight = wrapper.scrollHeight;
     wrapper.scrollTop = wrapperScroolHeight;
 }
+
+export function eventDelegation(element, eventType, selector, func) {
+    element.addEventListener(eventType, function (e) {
+        let el = e.target;
+        while (!el.matches(selector)) {
+            if (el === element) {
+                el = null;
+                break;
+            }
+            el = el.parentNode;
+        }
+        el && func.call(el, el, e);
+    });
+    return element;
+}
