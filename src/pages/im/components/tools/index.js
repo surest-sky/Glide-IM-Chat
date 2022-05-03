@@ -2,11 +2,12 @@ import { ReactComponent as ImageSvg } from '../../../../static/svg/image.svg';
 import { ReactComponent as AudioSvg } from '../../../../static/svg/audio.svg';
 import { uploadFile } from '../../../../services/upload';
 import { useState } from 'react';
+import { MessageType } from 'src/core/message';
 import { Modal } from '@arco-design/web-react';
 import Audio from './audio';
 
-const Tools = ({ editorRef }) => {
-    const [audioVisible, setAudioVisible] = useState(true);
+const Tools = props => {
+    const [audioVisible, setAudioVisible] = useState(false);
     const imageUpload = () => {
         var input = document.createElement('input');
         input.setAttribute('type', 'file');
@@ -14,7 +15,7 @@ const Tools = ({ editorRef }) => {
         input.onchange = async function () {
             var file = this.files[0];
             const { data } = await uploadFile(file, file.name);
-            editorRef.current.sendFileMessage(data.data.url);
+            props.sendFileMessage(data.data.url, MessageType.text);
         };
         input.click();
     };

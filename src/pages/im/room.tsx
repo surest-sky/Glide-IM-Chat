@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { Image } from '@arco-design/web-react';
 import { delay } from 'rxjs';
 import { ChatMessage } from 'src/core/chat_message';
+import { MessageType } from 'src/core/message';
 import { LiveChat } from 'src/core/live_chat';
 import { Session } from 'src/core/session';
 import Editor from './components/editor';
@@ -97,6 +98,16 @@ const Room = () => {
         return false;
     };
 
+    const sendFileMessage = (message: string, type: MessageType, callbac: any) => {
+        session.send(message, type).subscribe({
+            next: m => {
+                console.log('send message: message status changed=>', m);
+            },
+            error: error => {},
+            complete: () => {},
+        });
+    };
+
     const MsgList = messages.map((message, key) => {
         const _dateline = dateLine(message.SendAt, key);
         return (
@@ -119,7 +130,7 @@ const Room = () => {
                         <span className=" title-name">锋</span>
                     </div>
                     <div className="flower">
-                        <Tools editorRef={editorRef} />
+                        <Tools sendFileMessage={sendFileMessage} />
                     </div>
                 </div>
                 {/* <div className="room-body flex justify-between"> */}
@@ -133,7 +144,7 @@ const Room = () => {
                         <div className="room-content scrollbar">
                             <div className="room-content-wrapper">{MsgList}</div>
                         </div>
-                        <Editor ref={editorRef} session={session} />
+                        <Editor sendFileMessage={sendFileMessage} />
                     </div>
                 </div>
 

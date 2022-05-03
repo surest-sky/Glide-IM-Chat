@@ -1,19 +1,18 @@
-import { map, mergeMap, Observable, of, throwError, toArray } from "rxjs";
-import { UserInfoBean } from "src/api/model";
-import { onNext } from "src/rx/next";
-import { timeStampSecToDate } from "src/utils/TimeUtils";
-import { Api } from "../api/api";
-import { ChatMessage, SendingStatus } from "./chat_message";
-import { LiveChat } from "./live_chat";
-import { Message, MessageType, SessionType } from "./message";
-import { Ws } from "./ws";
+import { map, mergeMap, Observable, of, throwError, toArray } from 'rxjs';
+import { UserInfoBean } from 'src/api/model';
+import { onNext } from 'src/rx/next';
+import { timeStampSecToDate } from 'src/utils/TimeUtils';
+import { Api } from '../api/api';
+import { ChatMessage, SendingStatus } from './chat_message';
+import { LiveChat } from './live_chat';
+import { Message, MessageType, SessionType } from './message';
+import { Ws } from './ws';
 
 export interface SessionUpdateListener {
-    (): void
+    (): void;
 }
 
 export class Session {
-
     public Avatar: string;
     public Title: string;
     public UpdateAt: string;
@@ -29,20 +28,17 @@ export class Session {
     constructor(userinfo: UserInfoBean) {
         this.Avatar = userinfo.Avatar;
         this.Title = userinfo.Nickname;
-        // TODO 
+        // TODO
         this.To = 543629; // userinfo.Uid;
     }
 
     public static create(): Observable<Session> {
-        return Api.getCustomerService()
-            .pipe(
-                map(res => new Session(res))
-            )
+        return Api.getCustomerService().pipe(map(res => new Session(res)));
     }
 
     public onMessage(message: Message) {
-        console.log("onMessage", message);
-        const c = ChatMessage.create(message)
+        console.log('onMessage', message);
+        const c = ChatMessage.create(message);
         this.UnreadCount++;
         this.addMessageByOrder(c);
     }
@@ -100,37 +96,33 @@ export class Session {
         }
     }
 
-    private send(content: string, type: number): Observable<ChatMessage> {
-
-        return Api.getMid()
-            .pipe(
-                map(resp => {
-                    const time = Date.parse(new Date().toString()) / 1000;
-                    return {
-                        content: content,
-                        from: LiveChat.getInstance().getUID(),
-                        mid: resp.Mid,
-                        sendAt: time,
-                        seq: 0,
-                        to: this.To,
-                        type: type,
-                        status: 0,
-                    }
-                }),
-                onNext(msg => {
-                    const r = ChatMessage.create(msg);
-                    r.Sending = SendingStatus.Sending;
-                    this.addMessageByOrder(r);
-                }),
-                mergeMap(msg =>
-                    Ws.sendChatMessage(msg)
-                ),
-                map(resp => {
-                    const r = ChatMessage.create(resp);
-                    r.Sending = SendingStatus.Sent;
-                    this.addMessageByOrder(r);
-                    return r;
-                }),
-            )
+    public send(content: string, type: number): Observable<ChatMessage> {
+        return Api.getMid().pipe(
+            map(resp => {
+                const time = Date.parse(new Date().toString()) / 1000;
+                return {
+                    content: content,
+                    from: LiveChat.getInstance().getUID(),
+                    mid: resp.Mid,
+                    sendAt: time,
+                    seq: 0,
+                    to: this.To,
+                    type: type,
+                    status: 0,
+                };
+            }),
+            onNext(msg => {
+                const r = ChatMessage.create(msg);
+                r.Sending = SendingStatus.Sending;
+                this.addMessageByOrder(r);
+            }),
+            mergeMap(msg => Ws.sendChatMessage(msg)),
+            map(resp => {
+                const r = ChatMessage.create(resp);
+                r.Sending = SendingStatus.Sent;
+                this.addMessageByOrder(r);
+                return r;
+            })
+        );
     }
 }
