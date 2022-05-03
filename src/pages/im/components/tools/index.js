@@ -15,17 +15,24 @@ const Tools = props => {
         input.onchange = async function () {
             var file = this.files[0];
             const { data } = await uploadFile(file, file.name);
-            props.sendFileMessage(data.data.url, MessageType.text);
+            props.sendFileMessage(data.data.url, MessageType.Image);
         };
         input.click();
     };
+
     return (
         <div className="mr-5 flex">
             <ImageSvg onClick={imageUpload} className="tranform cursor-pointer mr-2" />
             <AudioSvg className="tranform cursor-pointer mr-2" onClick={setAudioVisible} />
 
-            <Modal title={'语音发送'} onCancel={setAudioVisible} visible={audioVisible} footer={null}>
-                <Audio setAudioVisible={setAudioVisible} />
+            <Modal unmountOnExit={true} title={'语音发送'} onCancel={setAudioVisible} visible={audioVisible} footer={null}>
+                <Audio
+                    setAudioVisible={setAudioVisible}
+                    sendFileMessage={data => {
+                        setAudioVisible(false);
+                        props.sendFileMessage(data, MessageType.Audio);
+                    }}
+                />
             </Modal>
         </div>
     );

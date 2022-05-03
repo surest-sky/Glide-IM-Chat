@@ -1,4 +1,3 @@
-import { useEffect } from 'react';
 import { Avatar } from 'react-daisyui';
 import HtmlApp from 'src/components/HtmlApp';
 import { MessageType } from 'src/core/message';
@@ -11,7 +10,15 @@ function Message(props) {
         if (message.Type === MessageType.Image) {
             return <img src={message.Content} alt="2" />;
         }
-        return <HtmlApp html={xss(props.message.Content)} className="message-item" />;
+        if (message.Type === MessageType.Audio) {
+            return <audio className="mr-2" style={{ height: 36, width: 240 }} src={message.Content} controls />;
+        }
+
+        return (
+            <div className="room-content-wrapper-item-message break-words">
+                <HtmlApp html={xss(props.message.Content)} className="message-item" />
+            </div>
+        );
     };
 
     return (
@@ -19,7 +26,7 @@ function Message(props) {
             <div className=" room-content-wrapper-item-avatar">
                 <Avatar shape={'circle'} size={'xs'} />
             </div>
-            <div className="room-content-wrapper-item-message break-words">{<MessageHtml message={props.message} />}</div>
+            {<MessageHtml message={props.message} />}
         </div>
     );
 }

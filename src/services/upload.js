@@ -18,6 +18,7 @@ const uploadApi = data => {
 
 export const uploadFile = (data, name = null) => {
     var formData = new FormData();
+    console.log(data);
     formData.append('file', data, name || `${new Date().getTime()}.png`);
     // formData.append('name', `${new Date().getTime()}.png`);
     return uploadApi(formData);

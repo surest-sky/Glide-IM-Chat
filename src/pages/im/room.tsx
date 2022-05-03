@@ -11,6 +11,7 @@ import { Avatar } from 'react-daisyui';
 import { initChat } from './store/chat';
 import Tools from './components/tools';
 import dayjs from 'dayjs';
+import { scrollToBottom } from 'src/utils/Utils';
 
 const Room = () => {
     const [session, setSession] = useState<Session | null>(null);
@@ -26,8 +27,8 @@ const Room = () => {
         session?.setMessageListener(message => {
             setMessages(messages => [...messages, message]);
             setTimeout(() => {
-                editorRef.current.scrollToBottom();
-            }, 400);
+                scrollToBottom('.room-content');
+            }, 100);
         });
         return () => session?.setMessageListener(null);
     }, [session]);
@@ -98,13 +99,17 @@ const Room = () => {
         return false;
     };
 
-    const sendFileMessage = (message: string, type: MessageType, callbac: any) => {
+    const sendFileMessage = (message: string, type: MessageType, callback: any) => {
         session.send(message, type).subscribe({
             next: m => {
                 console.log('send message: message status changed=>', m);
             },
-            error: error => {},
-            complete: () => {},
+            error: error => {
+                callback && callback();
+            },
+            complete: () => {
+                callback && callback();
+            },
         });
     };
 
@@ -144,7 +149,7 @@ const Room = () => {
                         <div className="room-content scrollbar">
                             <div className="room-content-wrapper">{MsgList}</div>
                         </div>
-                        <Editor sendFileMessage={sendFileMessage} />
+                        <Editor editorRef={editorRef} sendFileMessage={sendFileMessage} />
                     </div>
                 </div>
 

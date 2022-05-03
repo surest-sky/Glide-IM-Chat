@@ -16,38 +16,12 @@ const Editor = forwardRef((props: any, ref) => {
     const [src, setSrc] = useState<string>();
     const [modalVisible, setModalVisible] = useState<boolean>(false);
 
-    useImperativeHandle(ref, () => ({
-        sendFileMessage: sendFileMessage,
-        scrollToBottom: () => {
-            scrollToBottom('.room-content');
-        },
-    }));
-
-    const sendFileMessage = url => {
-        props.sendFileMessage(url, MessageType.Image, () => {
-            scrollToBottom('.room-content');
-        });
-    };
-
     /**
      * 消息发送
      * @param message
      */
     const sendMessage = (message: string) => {
-        // setSendLoading(true);
-        props.session?.sendTextMessage(message).subscribe({
-            next: m => {
-                console.log('send message: message status changed=>', m);
-            },
-            error: error => {
-                scrollToBottom('.room-content');
-                console.log(false);
-                // 发送失败，好像发送成功了
-            },
-            complete: () => {
-                scrollToBottom('.room-content');
-            },
-        });
+        props.sendFileMessage(message, MessageType.Text);
     };
 
     const _sendMessage = () => {

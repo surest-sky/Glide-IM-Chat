@@ -1,12 +1,27 @@
 import { Button } from 'react-daisyui';
+import { Button as Abutton } from '@arco-design/web-react';
+
 import { Link } from '@arco-design/web-react';
 import { useState, useRef, useEffect } from 'react';
 import { ReactComponent as AudioSvg } from 'src/static/svg/audio.svg';
 import { ReactComponent as AudioRecordSvg } from 'src/static/svg/audio-record.svg';
+import { uploadFile } from 'src/services/upload';
 import './audio.scss';
 
-const Audio = ({ src }) => {
-    // console.log(audio);
+const Audio = ({ audio, sendFileMessage }) => {
+    const [sendAudio, setSendAudio] = useState({
+        loading: false,
+        src: '',
+    });
+
+    const send = async audio => {
+        console.log('audio', audio);
+        setSendAudio({ loading: true, src: '' });
+        const { data } = await uploadFile(audio.blob, `${new Date().getTime()}.mp3`);
+        setSendAudio({ loading: false, src: data.data.url });
+        sendFileMessage(data.data.url);
+    };
+
     return (
         <div className="ml-5 flex items-center justify-between">
             {/* <span>{audio?.duration}</span> */}
@@ -15,21 +30,29 @@ const Audio = ({ src }) => {
                 <span>(</span>
                 <span>(</span>
             </div> */}
-            <audio className="mr-2" style={{ height: 36, width: 250 }} src={src} controls />
-            <Link>发送</Link>
+            <audio className="mr-2" style={{ height: 36, width: 240 }} src={audio.stream} controls />
+            <Abutton
+                type="text"
+                loading={sendAudio.loading}
+                onClick={() => {
+                    send(audio);
+                }}
+            >
+                发送
+            </Abutton>
         </div>
     );
 };
 
-const AudioRecord = () => {
+const AudioRecord = ({ sendFileMessage }) => {
     const [state, setState] = useState('waiting');
     const chunks = useRef([]);
-    const [audio, setAudio] = useState({ duration: 0, stream: '' });
+    const [audio, setAudio] = useState({ duration: 0, stream: '', blob: '' });
     const recorder = useRef(null);
 
     const start = () => {
         recorder.current.start();
-        setAudio({ duration: 0, stream: '' });
+        setAudio({ duration: 0, stream: '', blob: '' });
         setState('recording');
     };
 
@@ -52,11 +75,7 @@ const AudioRecord = () => {
                 alert('说话时间太短');
                 return;
             }
-            if (duration > 60) {
-                duration = 60;
-            }
-            const _audio = { duration: duration, stream: audioStream };
-            console.log(_audio);
+            const _audio = { duration: duration, stream: audioStream, blob: blob };
             setAudio(_audio);
             chunks.current = [];
         };
@@ -92,7 +111,7 @@ const AudioRecord = () => {
                 )}
             </Button>
 
-            {audio.stream ? <Audio src={audio.stream} /> : null}
+            {audio.stream ? <Audio audio={audio} sendFileMessage={sendFileMessage} /> : null}
         </div>
     );
 };
