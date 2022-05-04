@@ -1,0 +1,57 @@
+.record-audio {
+    position: relative;
+    margin-right: 6px;
+    max-width: 130px;
+    min-width: 50px;
+    height: 30px;
+    line-height: 28px;
+    padding: 0 4px 0 10px;
+    border-radius: 2px;
+    color: #000;
+    text-align: right;
+    background: linear-gradient(90deg, #7e72f2 0%, #7e72f2 0%, rgba(126, 114, 242, 0.62) 100%, rgba(126, 114, 242, 0.62) 100%);
+    cursor: pointer;
+    span {
+        color: rgba(255, 255, 255, 0.8);
+        display: inline-block;
+        transform-origin: center;
+    }
+
+    span:nth-child(1) {
+        transform: scale(1.2);
+        font-weight: 400;
+    }
+
+    span:nth-child(2) {
+        transform: scale(1);
+        font-weight: 500;
+    }
+
+    span:nth-child(3) {
+        transform: scale(0.8);
+        font-weight: 700;
+    }
+
+    span:nth-child(4) {
+        transform: scale(0.5);
+        font-weight: 700;
+    }
+}
+
+.record-audio:hover {
+    background: linear-gradient(90deg, #6a5af4 0%, #5747eb 0%, rgba(126, 114, 242, 0.62) 100%, rgba(98, 83, 231, 0.62) 100%);
+}
+
+.record-audio.wink span {
+    animation: wink 1s ease infinite;
+}
+
+@keyframes wink {
+    from {
+        color: rgba(255, 255, 255, 0.8);
+    }
+
+    to {
+        color: rgba(255, 255, 255, 0.1);
+    }
+}

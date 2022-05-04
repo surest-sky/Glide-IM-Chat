@@ -12,6 +12,7 @@ import { initChat } from './store/chat';
 import Tools from './components/tools';
 import dayjs from 'dayjs';
 import { scrollToBottom } from 'src/utils/Utils';
+import AudioHtml from 'src/components/AudioHtml';
 
 const Room = () => {
     const [session, setSession] = useState<Session | null>(null);
@@ -160,6 +161,7 @@ const Room = () => {
                         setVisible({ visible: false, src: '' });
                     }}
                 />
+                <AudioHtml />
             </>
         );
     }

@@ -1,12 +1,10 @@
 import { Button } from 'react-daisyui';
 import { Button as Abutton } from '@arco-design/web-react';
 
-import { Link } from '@arco-design/web-react';
 import { useState, useRef, useEffect } from 'react';
 import { ReactComponent as AudioSvg } from 'src/static/svg/audio.svg';
 import { ReactComponent as AudioRecordSvg } from 'src/static/svg/audio-record.svg';
 import { uploadFile } from 'src/services/upload';
-import './audio.scss';
 
 const Audio = ({ audio, sendFileMessage }) => {
     const [sendAudio, setSendAudio] = useState({
@@ -15,21 +13,14 @@ const Audio = ({ audio, sendFileMessage }) => {
     });
 
     const send = async audio => {
-        console.log('audio', audio);
         setSendAudio({ loading: true, src: '' });
         const { data } = await uploadFile(audio.blob, `${new Date().getTime()}.mp3`);
         setSendAudio({ loading: false, src: data.data.url });
-        sendFileMessage(data.data.url);
+        sendFileMessage(JSON.stringify({ url: data.data.url, duration: audio.duration }));
     };
 
     return (
         <div className="ml-5 flex items-center justify-between">
-            {/* <span>{audio?.duration}</span> */}
-            {/* <div className="record-audio" style={{ width: 40 }}>
-                <span>(</span>
-                <span>(</span>
-                <span>(</span>
-            </div> */}
             <audio className="mr-2" style={{ height: 36, width: 240 }} src={audio.stream} controls />
             <Abutton
                 type="text"
@@ -49,9 +40,11 @@ const AudioRecord = ({ sendFileMessage }) => {
     const chunks = useRef([]);
     const [audio, setAudio] = useState({ duration: 0, stream: '', blob: '' });
     const recorder = useRef(null);
+    const start_int = useRef(0);
 
     const start = () => {
         recorder.current.start();
+        start_int.current = new Date().getTime();
         setAudio({ duration: 0, stream: '', blob: '' });
         setState('recording');
     };
@@ -70,7 +63,7 @@ const AudioRecord = ({ sendFileMessage }) => {
             let blob = new Blob(chunks.current, { type: 'audio/ogg; codecs=opus' }),
                 audioStream = URL.createObjectURL(blob),
                 //估算时长
-                duration = parseInt(blob.size / 6600);
+                duration = parseInt((new Date().getTime() - start_int.current) / 1000);
             if (duration <= 0) {
                 alert('说话时间太短');
                 return;
@@ -97,7 +90,7 @@ const AudioRecord = ({ sendFileMessage }) => {
     };
     return (
         <div className="flex">
-            <Button onMouseUp={stop} onMouseDown={start}>
+            <Button onMouseUp={stop} onMouseOut={stop} onTouchEnd={stop} onTouchStart={start} onMouseDown={start}>
                 {state === 'waiting' ? (
                     <>
                         <AudioSvg />
