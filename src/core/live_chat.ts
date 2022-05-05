@@ -4,7 +4,7 @@ import { Api } from '../api/api';
 import { setApiToken } from '../api/axios';
 import { AuthBean } from '../api/model';
 import { Glide } from './cache';
-import { Actions, CommonMessage, WebSocketUrl, Message } from './message';
+import { Actions, CommonMessage, WebSocketUrl, Message, CliCustomMessage } from './message';
 import { Session } from './session';
 import { Ws } from './ws';
 
@@ -30,7 +30,7 @@ export class LiveChat {
     // 初始化认证信息, 连接聊天服务器
     public initChat(): Observable<string> {
         const token = this.getToken();
-
+        
         let authrication: Observable<AuthBean>;
         if (token == null || token === '') {
             authrication = Api.guestLogin();
@@ -146,12 +146,23 @@ export class LiveChat {
                 console.log('message: ', msg);
                 this.session?.onMessage(msg);
                 break;
+            case Actions.MessageCli:
+                const m2 = m.Data as CliCustomMessage;
+                console.log('message: ', m2);
+                this.session?.onCliCustomMessage(m2);
+                break;
             case Actions.MessageChatRecall:
                 break;
             case Actions.NotifyKickOut:
+                alert('kick out');
+                this.clearAuth()
+                Ws.close();
                 break;
             case Actions.NotifyNeedAuth:
+                alert('need auth');
                 break;
+            default:
+                console.log('unknown message: ', m);
         }
     }
 }

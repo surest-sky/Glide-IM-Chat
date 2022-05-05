@@ -1,5 +1,5 @@
 import { map, mergeMap, Observable, Observer, timeout as timeoutOpt } from 'rxjs';
-import { AckMessage, AckRequest, Actions, CommonMessage, Message } from './message';
+import { AckMessage, AckRequest, Actions, CliCustomMessage, CommonMessage, Message } from './message';
 
 export type Listener = (msg: CommonMessage<any>) => void;
 
@@ -176,8 +176,14 @@ class WebSocketClient {
         return this.createCommonMessage(Actions.MessageChat, m).pipe(
             mergeMap(msg => this.send(msg)),
             mergeMap(msg => this.getAckObservable(msg.Data)),
-            map(msg => msg)
         );
+    }
+
+    public sendCliCustomMessage(m: CliCustomMessage): Observable<CliCustomMessage> {
+        return this.createCommonMessage(Actions.MessageCli, m).pipe(
+            mergeMap(msg => this.send(msg)),
+            map(() => m)
+        )
     }
 
     private createCommonMessage<T>(action: string, data: T): Observable<CommonMessage<T>> {

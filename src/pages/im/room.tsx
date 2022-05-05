@@ -41,6 +41,7 @@ const Room = () => {
             .pipe(delay(1000))
             .subscribe({
                 next: se => {
+                    se.notifyInputMessage()
                     setSession(se);
                     setMessages(se.getMessages());
                     setLoading(false);

@@ -1,14 +1,20 @@
-import { map, mergeMap, Observable, of, throwError, toArray } from 'rxjs';
+import { map, mergeMap, Observable } from 'rxjs';
 import { UserInfoBean } from 'src/api/model';
 import { onNext } from 'src/rx/next';
 import { timeStampSecToDate } from 'src/utils/TimeUtils';
 import { Api } from '../api/api';
 import { ChatMessage, SendingStatus } from './chat_message';
 import { LiveChat } from './live_chat';
-import { Message, MessageType, SessionType } from './message';
+import { CliCustomMessage, ClientMessageType, Message, MessageType } from './message';
 import { Ws } from './ws';
 
+// 会话更新监听器, 例如消息接收
 export interface SessionUpdateListener {
+    (): void;
+}
+
+// 对方输入中监听器, 如果对方在输入, 则回调这个方法, 如果在约定时间内没有回调, 则说明对方结束输入
+export interface MessageInputListener {
     (): void;
 }
 
@@ -24,23 +30,50 @@ export class Session {
 
     private messageListener: ((message: ChatMessage) => void) | null = null;
     private sessionUpdateListener: SessionUpdateListener | null = null;
+    private messageInputListener: MessageInputListener | null = null;
 
     constructor(userinfo: UserInfoBean) {
         this.Avatar = userinfo.Avatar;
         this.Title = userinfo.Nickname;
         // TODO
-        this.To = 543629; // userinfo.Uid;
+        this.To = 543662; // userinfo.Uid;
     }
 
     public static create(): Observable<Session> {
         return Api.getCustomerService().pipe(map(res => new Session(res)));
     }
 
+    // 收到客户端自定义消息
+    public onCliCustomMessage(msg: CliCustomMessage) {
+        switch (msg.Type) {
+            case ClientMessageType.Inputing:
+                this.messageInputListener?.();
+                break;
+            default:
+                console.log('onCliCustomMessage', msg);
+                break;
+        }
+    }
+
+    // 收到聊天消息
     public onMessage(message: Message) {
         console.log('onMessage', message);
+
         const c = ChatMessage.create(message);
         this.UnreadCount++;
         this.addMessageByOrder(c);
+    }
+
+    // 通知对方自己正在输入消息, 需要约定一个频率检测用户是否在输入消息, 然后调用这个方法
+    public notifyInputMessage() {
+        const msg :CliCustomMessage = {
+            From: 0,
+            To: this.To,
+            Type: ClientMessageType.Inputing,
+            Content: "",
+        }
+        Ws.sendCliCustomMessage(msg).pipe()
+        .subscribe()
     }
 
     public sendTextMessage(msg: string): Observable<ChatMessage> {
@@ -49,6 +82,10 @@ export class Session {
 
     public setSessionUpdateListener(listener: SessionUpdateListener | null) {
         this.sessionUpdateListener = listener;
+    }
+
+    public setMessageInputListener(listener: MessageInputListener | null) {
+        this.messageInputListener = listener;
     }
 
     public setMessageListener(listener: (message: ChatMessage) => void) {
