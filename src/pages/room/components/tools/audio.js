@@ -41,17 +41,22 @@ const AudioRecord = ({ sendFileMessage }) => {
     const [audio, setAudio] = useState({ duration: 0, stream: '', blob: '' });
     const recorder = useRef(null);
     const start_int = useRef(0);
+    const streamEq = useRef(null);
 
     const start = () => {
         recorder.current.start();
         start_int.current = new Date().getTime();
         setAudio({ duration: 0, stream: '', blob: '' });
         setState('recording');
+        streamEq.current.getAudioTracks()[0].enabled = true;
     };
 
     const stop = () => {
         setState('waiting');
-        recorder.current.stop();
+        if (recorder.current.state !== 'inactive') {
+            recorder.current.stop();
+            streamEq.current.getAudioTracks()[0].enabled = false;
+        }
     };
 
     useEffect(() => {
@@ -82,6 +87,7 @@ const AudioRecord = ({ sendFileMessage }) => {
                 recorder.current = new window.MediaRecorder(stream);
                 recorder.current.ondataavailable = recorderData;
                 recorder.current.onstop = recorderSave;
+                streamEq.current = stream;
             },
             error => {
                 alert('出错，请确保已允许浏览器获取录音权限');
