@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { Image } from '@arco-design/web-react';
+import { Image, Modal, Spin } from '@arco-design/web-react';
 import { delay } from 'rxjs';
 import { ChatMessage } from 'src/core/chat_message';
 import { MessageType } from 'src/core/message';
@@ -19,10 +19,11 @@ const Room = () => {
     const [messages, setMessages] = useState<ChatMessage[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
     const editorRef = useRef<any>(null);
-    const [imageVisible, setVisible] = useState<any>({
+    const [imageVisible, setImageVisible] = useState<any>({
         visible: false,
         src: '',
     });
+    const visible = true;
 
     useEffect(() => {
         session?.setMessageListener(message => {
@@ -41,10 +42,16 @@ const Room = () => {
             .pipe(delay(1000))
             .subscribe({
                 next: se => {
-                    se.notifyInputMessage()
+                    se.notifyInputMessage();
                     setSession(se);
                     setMessages(se.getMessages());
                     setLoading(false);
+                    setTimeout(() => {
+                        $('.room-container').on('click', 'img', (element: any) => {
+                            const src = element.target.getAttribute('src');
+                            setImageVisible({ visible: true, src: src });
+                        });
+                    });
                 },
                 error: error => {
                     console.log(error);
@@ -55,18 +62,11 @@ const Room = () => {
 
     useEffect(() => {
         initChat(started);
-
-        $('body').on('click', 'img', (element: any) => {
-            const src = element.target.getAttribute('src');
-            setVisible({ visible: true, src: src });
-        });
     }, []);
 
     const dateLine = (at, key) => {
         const dateDayjs = dayjs(at * 1000);
         const _date = dateDayjs.format('YYYY-MM-DD HH:mm:ss');
-        // format('YYYY-MM-DD HH:mm:ss');
-        // console.log('key', key);
         if (key === 0) {
             return _date;
         }
@@ -118,19 +118,23 @@ const Room = () => {
     const MsgList = messages.map((message, key) => {
         const _dateline = dateLine(message.SendAt, key);
         return (
-            <div>
+            <div key={key}>
                 {_dateline ? <div className="text-center text-gray-500 text-xs mb-5 mt-5">{_dateline}</div> : <></>}
-                <Message setVisible={setVisible} key={message.SendAt} message={message} />
+                <Message setVisible={setImageVisible} key={message.SendAt} message={message} />
             </div>
         );
     });
 
     let content: any;
     if (loading) {
-        content = <div className="font-bold text-center room-content-title">连接中...</div>;
+        content = (
+            <div className="loadin-container w-full h-full flex items-center justify-center">
+                <Spin className="mr-2" /> 加入中...
+            </div>
+        );
     } else {
         content = (
-            <>
+            <div className="room-container">
                 <div className="font-bold text-center room-content-title flex justify-between">
                     <div className="flex items-center">
                         <Avatar shape={'circle'} size={'xs'} className="title-avatar mr-2" />
@@ -140,13 +144,7 @@ const Room = () => {
                         <Tools sendFileMessage={sendFileMessage} />
                     </div>
                 </div>
-                {/* <div className="room-body flex justify-between"> */}
                 <div className="room-body">
-                    {/* <div className="contacts">
-                        <div className="contact">
-
-                        </div>
-                    </div> */}
                     <div className="chat-body">
                         <div className="room-content scrollbar">
                             <div className="room-content-wrapper">{MsgList}</div>
@@ -159,15 +157,24 @@ const Room = () => {
                     src={imageVisible.src}
                     visible={imageVisible.visible}
                     onVisibleChange={() => {
-                        setVisible({ visible: false, src: '' });
+                        setImageVisible({ visible: false, src: '' });
                     }}
                 />
                 <AudioHtml />
-            </>
+            </div>
         );
     }
 
-    return <div className="room">{content}</div>;
+    return (
+        <div className="room">
+            <Modal title="" className="room-modal" closeIcon={null} footer={null} visible={visible} autoFocus={false} focusLock={true}>
+                {content}
+            </Modal>
+            <div>
+                <img className="bg-img bg-container" src="https://img.js.design/assets/Resources/background/login-bg-5.jpg" alt="background-img" />
+            </div>
+        </div>
+    );
 };
 
 export default Room;

@@ -12,9 +12,8 @@ $mw-space: 10px;
     animation: tilt-in-fwd-br 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
 }
 
-.room {
-    min-height: 500px;
-
+.room-container {
+    // min-height: 500px;
     .room-body,
     .chat-body {
         height: 100%;
@@ -86,12 +85,12 @@ $mw-space: 10px;
 }
 
 .room {
-    max-width: 1100px;
+    // max-width: 1100px;
     // min-height: 90vh;
     margin: 0 auto;
     box-shadow: 0 2px 12px 5px rgba(0, 0, 0, 0.1);
     border-radius: 2px;
-    margin-top: 20px;
+    // margin-top: 20px;
 
     // max-width: 90% !important;
     // background-position: center center;
@@ -123,14 +122,35 @@ $mw-space: 10px;
     transition: all 500ms linear;
 }
 
-@media screen and (max-width: 1100px) {
-    .room {
-        max-width: 98%;
+.bg-container {
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    -webkit-box-align: center;
+    align-items: center;
+    -webkit-box-pack: center;
+    justify-content: center;
+}
+
+html,
+body {
+    line-height: 0 !important;
+}
+
+.room-modal {
+    width: 1000px;
+    min-height: 500px;
+
+    .loadin-container {
+        min-height: 500px;
     }
 }
 
+@media screen and (max-width: 1100px) {
+}
+
 @media screen and (max-width: 600px) {
-    .room {
+    .room-container {
         max-width: 100%;
         height: 100%;
         margin-top: 0;
@@ -140,8 +160,8 @@ $mw-space: 10px;
         height: 100vh;
     }
 
-    .room .room-body,
-    .room .chat-body {
+    .room-container .room-body,
+    .room-container .chat-body {
         height: calc(100vh - 80px);
     }
 

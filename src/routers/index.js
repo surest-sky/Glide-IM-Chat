@@ -1,13 +1,13 @@
 import * as React from 'react';
-import { Routes, Route } from 'react-router-dom';
-import Im from '../pages/im';
-import Room from '../pages/im/room';
+import { Route, Routes } from 'react-router-dom';
+import Admin from '../pages/cm';
+import Room from '../pages/room';
 
 const Routers = () => {
     return (
         <Routes>
-            <Route path="/" element={<Im />} />
-            <Route path="/room" element={<Room />} />
+            <Route path="/" element={<Room />} />
+            <Route path="/cm" element={<Admin />} />
         </Routes>
     );
 };

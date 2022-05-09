@@ -1,12 +1,10 @@
-import { useRef, forwardRef, useImperativeHandle, useState } from 'react';
-import { Modal, Button } from 'react-daisyui';
+import { forwardRef, useRef, useState, useEffect } from 'react';
+import { Button, Modal } from 'react-daisyui';
 import xss from 'xss';
-import { scrollToBottom } from '../../../../utils/Utils';
-import './editor.scss';
-import Draw from './draw';
-import { pasteImage } from './store';
 import { MessageType } from '../../../../core/message';
-import { uploadBase64File } from './store';
+import Draw from './draw';
+import './editor.scss';
+import { pasteImage, uploadBase64File } from './store';
 
 const Editor = forwardRef((props: any, ref) => {
     // 这里暂时不要 Loading，发送太快了，有抖动感觉，很不好看
@@ -76,6 +74,10 @@ const Editor = forwardRef((props: any, ref) => {
         changeMessage();
     };
 
+    useEffect(() => {
+        editorRef.current.focus();
+    }, []);
+
     return (
         <div className="room-message-editor flex justify-between  items-end">
             <div
@@ -95,7 +97,6 @@ const Editor = forwardRef((props: any, ref) => {
                 onInput={changeMessage}
                 className="textarea editor-item w-full textarea-primary focus:outline-offset-0 textarea-bordered"
             ></div>
-            {/* <Textarea rows={multiline ? 2 : 1} color={'primary'} bordered={true} value={message} onChange={({ target: { value } }) => setMessage(value)} borderOffset={false} className="editor-item w-full"></Textarea> */}
             <Button disabled={message.length < 1} style={{ height: 48 }} className="ml-2" onClick={_sendMessage} loading={sendLoading}>
                 发送
             </Button>
