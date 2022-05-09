@@ -1,6 +1,5 @@
-
 const maskFromWeb = 1 << 30;
-const maskMessageType = 1 << 31 | maskFromWeb;
+const maskMessageType = (1 << 31) | maskFromWeb;
 
 // 客户端自定义消息的类型
 export enum ClientMessageType {
@@ -21,7 +20,7 @@ export enum MessageType {
     System = maskMessageType | 10,
 }
 
-export const WebSocketUrl = "ws://ws.t.glide-im.pro/ws"//process.env.REACT_APP_WS_URL;
+export const WebSocketUrl = process.env.REACT_APP_WS_URL;
 
 // IM 指令
 export enum Actions {
