@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { Image, Modal, Spin } from '@arco-design/web-react';
+import { Image, Modal, Spin, Avatar, Divider } from '@arco-design/web-react';
 import { delay } from 'rxjs';
 import { ChatMessage } from 'src/core/chat_message';
 import { MessageType } from 'src/core/message';
@@ -7,12 +7,12 @@ import { LiveChat } from 'src/core/live_chat';
 import { Session } from 'src/core/session';
 import Editor from './components/editor';
 import Message from './components/message';
-import { Avatar } from 'react-daisyui';
 import { initChat } from './store/chat';
 import Tools from './components/tools';
 import dayjs from 'dayjs';
 import { scrollToBottom } from 'src/utils/Utils';
 import AudioHtml from 'src/components/AudioHtml';
+import { ChatRobot } from './store/chatrd';
 
 const Room = () => {
     const [session, setSession] = useState<Session | null>(null);
@@ -35,6 +35,14 @@ const Room = () => {
         return () => session?.setMessageListener(null);
     }, [session]);
 
+    const initFirstMessage = () => {
+        const robot = new ChatRobot();
+        const fmsg = robot.loadMessageByFirst();
+        const chatMsg = new ChatMessage();
+        chatMsg.Content = fmsg;
+        setMessages([...messages, chatMsg]);
+    };
+
     const started = () => {
         // 获取或初始化聊天会话
         LiveChat.getInstance()
@@ -56,7 +64,11 @@ const Room = () => {
                 error: error => {
                     console.log(error);
                 },
-                complete: () => {},
+                complete: () => {
+                    setTimeout(() => {
+                        initFirstMessage();
+                    }, 1000);
+                },
             });
     };
 
@@ -135,21 +147,59 @@ const Room = () => {
     } else {
         content = (
             <div className="room-container">
-                <div className="font-bold text-center room-content-title flex justify-between">
-                    <div className="flex items-center">
-                        <Avatar shape={'circle'} size={'xs'} className="title-avatar mr-2" />
-                        <span className=" title-name">锋</span>
-                    </div>
-                    <div className="flower">
-                        <Tools sendFileMessage={sendFileMessage} />
-                    </div>
-                </div>
-                <div className="room-body">
-                    <div className="chat-body">
-                        <div className="room-content scrollbar">
-                            <div className="room-content-wrapper">{MsgList}</div>
+                <div className="flex justify-between">
+                    <div className="w-2/3 p-5">
+                        <div className="font-bold text-center room-content-title flex justify-between">
+                            <div className="flex items-center">
+                                <Avatar className="mr-2">
+                                    <img alt="avatar" src="https://api.surest.cn/storage/resource/20220511/1652258608-1652258607609.png" />
+                                </Avatar>
+                                <div className="title-name ">Dianne Vanhorn</div>
+                            </div>
+                            <div className="flower">
+                                <Tools sendFileMessage={sendFileMessage} />
+                            </div>
                         </div>
-                        <Editor editorRef={editorRef} sendFileMessage={sendFileMessage} />
+                        <div className="room-body">
+                            <div className="chat-body">
+                                <div className="room-content scrollbar">
+                                    <div className="room-content-wrapper">{MsgList}</div>
+                                </div>
+                                <Editor editorRef={editorRef} sendFileMessage={sendFileMessage} />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="w-1/3 bg-slate-50 flex justify-center items-center align-center">
+                        <div className="">
+                            <div className="mt-10 flex justify-center">
+                                <Avatar size={128}>
+                                    <img alt="avatar" src="https://api.surest.cn/storage/resource/20220511/1652258608-1652258607609.png" />
+                                </Avatar>
+                            </div>
+                            <div className="mt-2 text-center">
+                                <div className=" text-2xl">Dianne Vanhorn</div>
+                                <div className=" text-base text-gray-500">Junior Developer</div>
+                            </div>
+
+                            <div className="mt-10 flex justify-center">
+                                <div>
+                                    <svg className="icon  mx-auto text-6xl cursor-pointer hover:scale-110 transition ease-in-out" style={{ color: '#1990FF' }} aria-hidden="true">
+                                        <use xlinkHref="#icon-dianhua1"></use>
+                                    </svg>
+                                    <div className="text-center mt-2 font-bold">Voice Call</div>
+                                </div>
+                                <div className="ml-10 mr-10 ">
+                                    <Divider type="vertical" style={{ height: 60 }} />
+                                </div>
+                                <div className="text-center">
+                                    <svg className=" mx-auto icon text-6xl cursor-pointer hover:scale-110 transition ease-in-out" aria-hidden="true">
+                                        <use xlinkHref="#icon-shipintonghua"></use>
+                                    </svg>
+                                    <div className=" mt-2 font-bold">Video Call</div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
 

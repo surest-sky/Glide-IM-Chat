@@ -97,7 +97,7 @@ $mw-space: 10px;
 }
 
 .room-body {
-    border-top: 1px solid #e5e6e8;
+    border-top: 1px solid #f0f0f0;
     background-size: cover;
     // background-image: url(https://cdn.surest.cn/im-background-v2.jpeg);
     background-repeat: no-repeat;
@@ -105,16 +105,18 @@ $mw-space: 10px;
 }
 
 .room-content-title {
-    height: 67px;
+    // height: 67px;
     align-items: center;
     .title-avatar {
-        margin-left: 25px;
+        margin-left: 16px;
     }
     .title-name {
-        height: 40px;
+        height: 30px;
         display: block;
-        line-height: 40px;
+        line-height: 30px;
+        margin-left: 5px;
     }
+    margin-bottom: 10px;
 }
 
 .tranform:hover {
@@ -144,6 +146,15 @@ body {
     .loadin-container {
         min-height: 500px;
     }
+    // border-radius: 16px !important;
+    .arco-modal-content {
+        padding: 0;
+    }
+}
+
+.icon-select {
+    fill: #1990ff !important;
+    color: #1990ff !important;
 }
 
 @media screen and (max-width: 1100px) {

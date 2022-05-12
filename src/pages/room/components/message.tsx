@@ -1,10 +1,9 @@
-import { Avatar } from 'react-daisyui';
 import HtmlApp from 'src/components/HtmlApp';
 import { MessageType } from 'src/core/message';
 import { SendingStatus } from 'src/core/chat_message';
 import xss from 'xss';
 import AudioApp from 'src/components/AudioApp';
-import { Spin } from '@arco-design/web-react';
+import { Spin, Avatar } from '@arco-design/web-react';
 import { IconInfoCircle } from '@arco-design/web-react/icon';
 import '../styles/message.scss';
 
@@ -47,7 +46,9 @@ function Message(props) {
     return (
         <div className={`flex ${messageAlign} room-content-wrapper-item`}>
             <div className=" room-content-wrapper-item-avatar">
-                <Avatar shape={'circle'} size={'xs'} />
+                <Avatar>
+                    <img src="http://cdn.surest.cn/iDJFWYmJX6maB6MhGawiZBhsz3xJT8zb" alt="" className="src" />
+                </Avatar>
             </div>
             {<MessageHtml message={props.message} />}
             <MessageStatus sending={props.message.Sending} />

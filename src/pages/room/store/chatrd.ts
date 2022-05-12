@@ -32,3 +32,11 @@ class ChatRecord {
      */
     public cacheMesage(): void {}
 }
+
+class ChatRobot {
+    public loadMessageByFirst() {
+        return '👏🏻 欢迎拉到 TTTTT, 你可以点击发送按钮快速与我聊天';
+    }
+}
+
+export { ChatRecord, ChatRobot };

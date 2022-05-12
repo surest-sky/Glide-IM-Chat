@@ -66,14 +66,13 @@ export class Session {
 
     // 通知对方自己正在输入消息, 需要约定一个频率检测用户是否在输入消息, 然后调用这个方法
     public notifyInputMessage() {
-        const msg :CliCustomMessage = {
+        const msg: CliCustomMessage = {
             From: 0,
             To: this.To,
             Type: ClientMessageType.Inputing,
-            Content: "",
-        }
-        Ws.sendCliCustomMessage(msg).pipe()
-        .subscribe()
+            Content: '',
+        };
+        Ws.sendCliCustomMessage(msg).pipe().subscribe();
     }
 
     public sendTextMessage(msg: string): Observable<ChatMessage> {

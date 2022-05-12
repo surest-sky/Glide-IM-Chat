@@ -1,10 +1,12 @@
 import { forwardRef, useRef, useState, useEffect } from 'react';
-import { Button, Modal } from 'react-daisyui';
+import { Modal } from 'react-daisyui';
+import { IconVoice, IconPlusCircle } from '@arco-design/web-react/icon';
 import xss from 'xss';
 import { MessageType } from '../../../../core/message';
 import Draw from './draw';
 import './editor.scss';
 import { pasteImage, uploadBase64File } from './store';
+import Audio from '../tools/audio';
 
 const Editor = forwardRef((props: any, ref) => {
     // 这里暂时不要 Loading，发送太快了，有抖动感觉，很不好看
@@ -13,6 +15,7 @@ const Editor = forwardRef((props: any, ref) => {
     const editorRef = useRef<HTMLDivElement | null>(null);
     const [src, setSrc] = useState<string>();
     const [modalVisible, setModalVisible] = useState<boolean>(false);
+    const [mode, setMode] = useState<string>('message');
 
     /**
      * 消息发送
@@ -50,7 +53,6 @@ const Editor = forwardRef((props: any, ref) => {
         const file = await pasteImage(event);
         if (file) {
             setSrc(file);
-            // setModalVisible(true);
             const url = await uploadBase64File(file);
             insertFileMessage(url);
         }
@@ -75,31 +77,60 @@ const Editor = forwardRef((props: any, ref) => {
     };
 
     useEffect(() => {
-        editorRef.current.focus();
+        // editorRef.current.focus();
     }, []);
+
+    const Editor = ({ mode }) => {
+        if (mode === 'video') {
+            return (
+                <Audio
+                    sendFileMessage={message => {
+                        alert(message);
+                        props.sendFileMessage(message, MessageType.Audio);
+                    }}
+                />
+            );
+        }
+
+        if (mode === 'message') {
+            return (
+                <div
+                    contentEditable="true"
+                    onPaste={pasteEvent}
+                    ref={editorRef}
+                    suppressContentEditableWarning
+                    onKeyDown={(event: any) => {
+                        if (event.keyCode === 13 && event.shiftKey === false) {
+                            event.preventDefault();
+                            if (message.length > 0) {
+                                _sendMessage();
+                            }
+                            return false;
+                        }
+                    }}
+                    onInput={changeMessage}
+                    className="editor-item"
+                ></div>
+            );
+        }
+    };
 
     return (
         <div className="room-message-editor flex justify-between  items-end">
-            <div
-                contentEditable="true"
-                onPaste={pasteEvent}
-                ref={editorRef}
-                suppressContentEditableWarning
-                onKeyDown={(event: any) => {
-                    if (event.keyCode === 13 && event.shiftKey === false) {
-                        event.preventDefault();
-                        if (message.length > 0) {
-                            _sendMessage();
-                        }
-                        return false;
-                    }
-                }}
-                onInput={changeMessage}
-                className="textarea editor-item w-full textarea-primary focus:outline-offset-0 textarea-bordered"
-            ></div>
-            <Button disabled={message.length < 1} style={{ height: 48 }} className="ml-2" onClick={_sendMessage} loading={sendLoading}>
-                发送
-            </Button>
+            <div className="relative flex w-full">
+                {<Editor mode={mode} />}
+                <div className="flex justify-center items-center ml-2 mr-2">
+                    <IconVoice
+                        onClick={() => {
+                            setMode('video');
+                        }}
+                        className="text-2xl cursor-pointer transition ease-in-out hover:scale-110"
+                    />
+                </div>
+                <div className="flex justify-center items-center">
+                    <IconPlusCircle className="text-2xl cursor-pointer transition ease-in-out hover:scale-110" />
+                </div>
+            </div>
 
             <Modal
                 open={modalVisible}

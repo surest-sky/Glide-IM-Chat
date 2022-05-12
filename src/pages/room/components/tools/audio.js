@@ -20,9 +20,10 @@ const Audio = ({ audio, sendFileMessage }) => {
     };
 
     return (
-        <div className="ml-5 flex items-center justify-between">
+        <div className="ml-5 w-full flex items-center justify-between">
             <audio className="mr-2" style={{ height: 36, width: 240 }} src={audio.stream} controls />
             <Abutton
+                className="w-full"
                 type="text"
                 loading={sendAudio.loading}
                 onClick={() => {
@@ -45,23 +46,39 @@ const AudioRecord = ({ sendFileMessage }) => {
 
     const start = () => {
         recorder.current.start();
-        start_int.current = new Date().getTime();
-        setAudio({ duration: 0, stream: '', blob: '' });
-        setState('recording');
-        streamEq.current.getAudioTracks()[0].enabled = true;
+        // console.log('recorder.current.state', recorder.current.state);
+        // start_int.current = new Date().getTime();
+        // setAudio({ duration: 0, stream: '', blob: '' });
+        // setState('recording');
+
+        setInterval(() => {
+            console.log('recorder.current.state', recorder.current.state);
+        }, 200);
     };
 
     const stop = () => {
-        setState('waiting');
-        if (recorder.current.state !== 'inactive') {
-            recorder.current.stop();
-            streamEq.current.getAudioTracks()[0].enabled = false;
-        }
+        // setState(state => {
+        //     console.log('state', state);
+        //     if (state === 'waiting') {
+        //         return;
+        //     }
+        //     console.log('recorder.current.state', recorder.current.state);
+        //     if (recorder.current.state !== 'inactive') {
+        //         recorder.current.stop();
+        //     }
+        //     return 'waiting';
+        // });
+    };
+
+    const send = async audio => {
+        const { data } = await uploadFile(audio.blob, `${new Date().getTime()}.mp3`);
+        console.log('send', 'sedn');
+        sendFileMessage(JSON.stringify({ url: data.data.url, duration: audio.duration }));
     };
 
     useEffect(() => {
         initRecord();
-    }, []);
+    });
 
     const initRecord = () => {
         const recorderSave = () => {
@@ -70,11 +87,13 @@ const AudioRecord = ({ sendFileMessage }) => {
                 //估算时长
                 duration = parseInt((new Date().getTime() - start_int.current) / 1000);
             if (duration <= 0) {
-                alert('说话时间太短');
-                return;
+                // alert('说话时间太短');
+                // return;
             }
             const _audio = { duration: duration, stream: audioStream, blob: blob };
             setAudio(_audio);
+            send(_audio);
+            console.log('_audio', _audio);
             chunks.current = [];
         };
 
@@ -95,8 +114,8 @@ const AudioRecord = ({ sendFileMessage }) => {
         );
     };
     return (
-        <div className="flex">
-            <Button onMouseUp={stop} onMouseOut={stop} onTouchEnd={stop} onTouchStart={start} onMouseDown={start}>
+        <div className="flex w-full">
+            <Button className="w-full" onMouseUp={stop} onTouchEnd={stop} onTouchStart={start} onMouseDown={start}>
                 {state === 'waiting' ? (
                     <>
                         <AudioSvg />
@@ -110,7 +129,7 @@ const AudioRecord = ({ sendFileMessage }) => {
                 )}
             </Button>
 
-            {audio.stream ? <Audio audio={audio} sendFileMessage={sendFileMessage} /> : null}
+            {/* {audio.stream ? <Audio audio={audio} sendFileMessage={sendFileMessage} /> : null} */}
         </div>
     );
 };
