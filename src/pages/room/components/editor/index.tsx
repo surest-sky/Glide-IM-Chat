@@ -1,6 +1,7 @@
 import { forwardRef, useRef, useState, useEffect } from 'react';
-import { Modal } from 'react-daisyui';
-import { IconVoice, IconPlusCircle } from '@arco-design/web-react/icon';
+import { IconVoice, IconPlusCircle, IconMessage } from '@arco-design/web-react/icon';
+import { Modal } from '@arco-design/web-react';
+
 import xss from 'xss';
 import { MessageType } from '../../../../core/message';
 import Draw from './draw';
@@ -76,24 +77,35 @@ const Editor = forwardRef((props: any, ref) => {
         changeMessage();
     };
 
+    const focusEditor = mode => {
+        if (mode === 'message') {
+            editorRef.current.focus();
+        }
+    };
+
+    const switchMode = () => {
+        const _mode = mode === 'video' ? 'message' : 'video';
+        setMode(_mode);
+        setMode(mode => {
+            focusEditor(mode);
+            return mode;
+        });
+    };
+
     useEffect(() => {
-        // editorRef.current.focus();
+        //
     }, []);
 
     const Editor = ({ mode }) => {
-        if (mode === 'video') {
-            return (
-                <Audio
-                    sendFileMessage={message => {
-                        alert(message);
-                        props.sendFileMessage(message, MessageType.Audio);
-                    }}
-                />
-            );
-        }
-
-        if (mode === 'message') {
-            return (
+        return (
+            <>
+                <div className={`w-full ${mode === 'message' ? 'hidden' : ''}`}>
+                    <Audio
+                        sendFileMessage={message => {
+                            props.sendFileMessage(message, MessageType.Audio);
+                        }}
+                    />
+                </div>
                 <div
                     contentEditable="true"
                     onPaste={pasteEvent}
@@ -108,37 +120,39 @@ const Editor = forwardRef((props: any, ref) => {
                             return false;
                         }
                     }}
-                    onInput={changeMessage}
-                    className="editor-item"
+                    className={`editor-item ${mode === 'video' ? 'hidden' : ''}`}
                 ></div>
-            );
-        }
+            </>
+        );
     };
 
     return (
-        <div className="room-message-editor flex justify-between  items-end">
+        <div className="flex items-end justify-between room-message-editor">
             <div className="relative flex w-full">
                 {<Editor mode={mode} />}
-                <div className="flex justify-center items-center ml-2 mr-2">
-                    <IconVoice
-                        onClick={() => {
-                            setMode('video');
-                        }}
-                        className="text-2xl cursor-pointer transition ease-in-out hover:scale-110"
-                    />
+                <div className="flex items-center justify-center ml-2 mr-2">
+                    {mode === 'message' ? (
+                        <IconVoice
+                            onClick={() => {
+                                switchMode();
+                            }}
+                            className="text-2xl transition ease-in-out cursor-pointer hover:scale-110"
+                        />
+                    ) : (
+                        <IconMessage
+                            onClick={() => {
+                                switchMode();
+                            }}
+                            className="text-2xl transition ease-in-out cursor-pointer hover:scale-110"
+                        />
+                    )}
                 </div>
-                <div className="flex justify-center items-center">
-                    <IconPlusCircle className="text-2xl cursor-pointer transition ease-in-out hover:scale-110" />
+                <div className="flex items-center justify-center">
+                    <IconPlusCircle className="text-2xl transition ease-in-out cursor-pointer hover:scale-110" />
                 </div>
             </div>
 
-            <Modal
-                open={modalVisible}
-                onClickBackdrop={() => {
-                    setModalVisible(false);
-                }}
-            >
-                <Modal.Header>图片裁剪</Modal.Header>
+            <Modal title="图片裁剪" visible={modalVisible} onOk={() => setModalVisible(false)} onCancel={() => setModalVisible(false)}>
                 <Draw insertFileMessage={insertFileMessage} src={src} />
             </Modal>
         </div>
