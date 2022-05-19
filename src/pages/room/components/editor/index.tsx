@@ -52,6 +52,7 @@ const Editor = forwardRef((props: any, ref) => {
         event.preventDefault();
 
         const file = await pasteImage(event);
+        console.log('file', file);
         if (file) {
             setSrc(file);
             const url = await uploadBase64File(file);
@@ -60,21 +61,16 @@ const Editor = forwardRef((props: any, ref) => {
         return false;
     };
 
-    const changeMessage = () => {
-        setMessage(editorRef.current.innerHTML);
-    };
-
     const insertFileMessage = (url: string) => {
         const imageNode = document.createElement('img');
         imageNode.src = url;
-        editorRef.current.focus();
+        focusEditor(mode);
         const range = window.getSelection();
         range.selectAllChildren(editorRef.current);
         range.collapseToEnd();
         const position = window.getSelection().getRangeAt(0);
         position.insertNode(imageNode);
         setModalVisible(false);
-        changeMessage();
     };
 
     const focusEditor = mode => {
@@ -86,43 +82,42 @@ const Editor = forwardRef((props: any, ref) => {
     const switchMode = () => {
         const _mode = mode === 'video' ? 'message' : 'video';
         setMode(_mode);
-        setMode(mode => {
-            focusEditor(mode);
-            return mode;
-        });
     };
 
     useEffect(() => {
-        //
-    }, []);
+        return () => {
+            setMode(mode => {
+                focusEditor(mode);
+                return mode;
+            });
+        };
+    });
 
     const Editor = ({ mode }) => {
-        return (
-            <>
-                <div className={`w-full ${mode === 'message' ? 'hidden' : ''}`}>
-                    <Audio
-                        sendFileMessage={message => {
-                            props.sendFileMessage(message, MessageType.Audio);
-                        }}
-                    />
-                </div>
-                <div
-                    contentEditable="true"
-                    onPaste={pasteEvent}
-                    ref={editorRef}
-                    suppressContentEditableWarning
-                    onKeyDown={(event: any) => {
-                        if (event.keyCode === 13 && event.shiftKey === false) {
-                            event.preventDefault();
-                            if (message.length > 0) {
-                                _sendMessage();
-                            }
-                            return false;
-                        }
+        return mode === 'video' ? (
+            <div className={`w-full ${mode === 'message' ? 'hidden' : ''}`}>
+                <Audio
+                    sendFileMessage={message => {
+                        props.sendFileMessage(message, MessageType.Audio);
                     }}
-                    className={`editor-item ${mode === 'video' ? 'hidden' : ''}`}
-                ></div>
-            </>
+                />
+            </div>
+        ) : (
+            <div
+                contentEditable="true"
+                onPaste={pasteEvent}
+                ref={editorRef}
+                suppressContentEditableWarning
+                onKeyDown={(event: any) => {
+                    console.log(event.keyCode);
+                    if (event.keyCode === 13 && event.shiftKey === false) {
+                        event.preventDefault();
+                        _sendMessage();
+                        return false;
+                    }
+                }}
+                className={`editor-item ${mode === 'video' ? 'hidden' : ''}`}
+            ></div>
         );
     };
 

@@ -20,7 +20,7 @@ const Audio = ({ audio, sendFileMessage }) => {
     };
 
     return (
-        <div className="ml-5 w-full flex items-center justify-between">
+        <div className="flex items-center justify-between w-full ml-5">
             <audio className="mr-2" style={{ height: 36, width: 240 }} src={audio.stream} controls />
             <Abutton
                 className="w-full"
@@ -39,46 +39,44 @@ const Audio = ({ audio, sendFileMessage }) => {
 const AudioRecord = ({ sendFileMessage }) => {
     const [state, setState] = useState('waiting');
     const chunks = useRef([]);
-    const [audio, setAudio] = useState({ duration: 0, stream: '', blob: '' });
     const recorder = useRef(null);
     const start_int = useRef(0);
     const streamEq = useRef(null);
+    const audio = useRef({ duration: 0, stream: '', blob: '' });
 
     const start = () => {
         recorder.current.start();
-        // console.log('recorder.current.state', recorder.current.state);
-        // start_int.current = new Date().getTime();
-        // setAudio({ duration: 0, stream: '', blob: '' });
-        // setState('recording');
-
-        setInterval(() => {
-            console.log('recorder.current.state', recorder.current.state);
-        }, 200);
+        start_int.current = new Date().getTime();
+        audio.current = { duration: 0, stream: '', blob: '' };
+        setState('recording');
     };
 
     const stop = () => {
-        // setState(state => {
-        //     console.log('state', state);
-        //     if (state === 'waiting') {
-        //         return;
-        //     }
-        //     console.log('recorder.current.state', recorder.current.state);
-        //     if (recorder.current.state !== 'inactive') {
-        //         recorder.current.stop();
-        //     }
-        //     return 'waiting';
-        // });
+        setState(state => {
+            if (recorder.current.state === 'recording') {
+                recorder.current.stop();
+            }
+            streamEq.current.getTracks().forEach(function (track) {
+                track.stop();
+            });
+            return 'waiting';
+        });
     };
 
     const send = async audio => {
         const { data } = await uploadFile(audio.blob, `${new Date().getTime()}.mp3`);
-        console.log('send', 'sedn');
         sendFileMessage(JSON.stringify({ url: data.data.url, duration: audio.duration }));
     };
 
     useEffect(() => {
+        console.log(233);
         initRecord();
-    });
+
+        return () => {
+            return stop();
+        };
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
     const initRecord = () => {
         const recorderSave = () => {
@@ -87,13 +85,11 @@ const AudioRecord = ({ sendFileMessage }) => {
                 //估算时长
                 duration = parseInt((new Date().getTime() - start_int.current) / 1000);
             if (duration <= 0) {
-                // alert('说话时间太短');
-                // return;
+                alert('说话时间太短');
+                return;
             }
-            const _audio = { duration: duration, stream: audioStream, blob: blob };
-            setAudio(_audio);
-            send(_audio);
-            console.log('_audio', _audio);
+            audio.current = { duration: duration, stream: audioStream, blob: blob };
+            send(audio.current);
             chunks.current = [];
         };
 

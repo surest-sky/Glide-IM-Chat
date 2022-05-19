@@ -74,6 +74,7 @@ const Room = () => {
 
     useEffect(() => {
         initChat(started);
+        console.log('222');
     }, []);
 
     const dateLine = (at, key) => {
@@ -131,7 +132,7 @@ const Room = () => {
         const _dateline = dateLine(message.SendAt, key);
         return (
             <div key={key}>
-                {_dateline ? <div className="text-center text-gray-500 text-xs mb-5 mt-5">{_dateline}</div> : <></>}
+                {_dateline ? <div className="mt-5 mb-5 text-xs text-center text-gray-500">{_dateline}</div> : <></>}
                 <Message setVisible={setImageVisible} key={message.SendAt} message={message} />
             </div>
         );
@@ -140,7 +141,7 @@ const Room = () => {
     let content: any;
     if (loading) {
         content = (
-            <div className="loadin-container w-full h-full flex items-center justify-center">
+            <div className="flex items-center justify-center w-full h-full loadin-container">
                 <Spin className="mr-2" /> 加入中...
             </div>
         );
@@ -149,7 +150,7 @@ const Room = () => {
             <div className="room-container">
                 <div className="flex justify-between">
                     <div className="w-2/3 p-5">
-                        <div className="font-bold text-center room-content-title flex justify-between">
+                        <div className="flex justify-between font-bold text-center room-content-title">
                             <div className="flex items-center">
                                 <Avatar className="mr-2">
                                     <img alt="avatar" src="https://api.surest.cn/storage/resource/20220511/1652258608-1652258607609.png" />
@@ -170,33 +171,33 @@ const Room = () => {
                         </div>
                     </div>
 
-                    <div className="w-1/3 bg-slate-50 flex justify-center items-center align-center">
+                    <div className="flex items-center justify-center w-1/3 bg-slate-50 align-center">
                         <div className="">
-                            <div className="mt-10 flex justify-center">
+                            <div className="flex justify-center mt-10">
                                 <Avatar size={128}>
                                     <img alt="avatar" src="https://api.surest.cn/storage/resource/20220511/1652258608-1652258607609.png" />
                                 </Avatar>
                             </div>
                             <div className="mt-2 text-center">
-                                <div className=" text-2xl">Dianne Vanhorn</div>
-                                <div className=" text-base text-gray-500">Junior Developer</div>
+                                <div className="text-2xl ">Dianne Vanhorn</div>
+                                <div className="text-base text-gray-500 ">Junior Developer</div>
                             </div>
 
-                            <div className="mt-10 flex justify-center">
+                            <div className="flex justify-center mt-10">
                                 <div>
-                                    <svg className="icon  mx-auto text-6xl cursor-pointer hover:scale-110 transition ease-in-out" style={{ color: '#1990FF' }} aria-hidden="true">
+                                    <svg className="mx-auto text-6xl transition ease-in-out cursor-pointer icon hover:scale-110" style={{ color: '#1990FF' }} aria-hidden="true">
                                         <use xlinkHref="#icon-dianhua1"></use>
                                     </svg>
-                                    <div className="text-center mt-2 font-bold">Voice Call</div>
+                                    <div className="mt-2 font-bold text-center">Voice Call</div>
                                 </div>
                                 <div className="ml-10 mr-10 ">
                                     <Divider type="vertical" style={{ height: 60 }} />
                                 </div>
                                 <div className="text-center">
-                                    <svg className=" mx-auto icon text-6xl cursor-pointer hover:scale-110 transition ease-in-out" aria-hidden="true">
+                                    <svg className="mx-auto text-6xl transition ease-in-out cursor-pointer icon hover:scale-110" aria-hidden="true">
                                         <use xlinkHref="#icon-shipintonghua"></use>
                                     </svg>
-                                    <div className=" mt-2 font-bold">Video Call</div>
+                                    <div className="mt-2 font-bold ">Video Call</div>
                                 </div>
                             </div>
                         </div>
