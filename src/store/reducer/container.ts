@@ -1,16 +1,14 @@
 import { createSlice } from '@reduxjs/toolkit';
 import defaultSettings from '../../settings.json';
+import { setLogin } from 'src/services/auth';
 
 export interface GlobalState {
     settings?: typeof defaultSettings;
     userInfo?: {
-        name?: string;
-        avatar?: string;
-        job?: string;
-        organization?: string;
-        location?: string;
-        email?: string;
-        permissions: Record<string, string[]>;
+        Account?: string;
+        Avatar?: string;
+        Nickname?: string;
+        Uid?: string;
     };
     authInfo?: {
         token: string;
@@ -21,9 +19,7 @@ export interface GlobalState {
 
 const initialState: GlobalState = {
     settings: defaultSettings,
-    userInfo: {
-        permissions: {},
-    },
+    userInfo: {},
     authInfo: {
         token: '',
         servers: [],
@@ -36,12 +32,12 @@ const containerReducers = {
         state.settings = payload.settings;
     },
     updateAuthInfo: (state, { payload }) => {
-        state.authInfo = payload.authInfo;
+        setLogin(payload);
+        state.authInfo = payload;
     },
     updateUserInfo: (state, { payload }) => {
-        const { userInfo = initialState.userInfo, userLoading } = payload;
-        state.userInfo = userInfo;
-        state.userLoading = userLoading;
+        console.log('payload', payload);
+        state.userInfo = payload;
     },
 };
 

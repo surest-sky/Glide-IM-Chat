@@ -1,4 +1,4 @@
-import { addContactsApi } from 'src/api/im/im';
+import { addContactsApi, getContactsListApi } from 'src/api/im/im';
 import { updateActiveUser } from 'src/store/reducer/chat';
 import { Avatar, Button, Input, List, Message, Modal } from '@arco-design/web-react';
 import { IconPlus } from '@arco-design/web-react/icon';
@@ -16,7 +16,12 @@ const Menu = () => {
     const allAontactList = useRef<Array<ContactsType>>([]);
     const activeUser = useSelector((state: any) => state.chat.activeUser);
     const dispatch = useDispatch();
-    const { run, loading } = useRequest(addContactsApi({ Uid: value, Remark: '备注' + value }), {
+
+    const addContacts = () => {
+        return addContactsApi({ Uid: parseInt(value), Remark: '备注' + value });
+    };
+
+    const { run, loading } = useRequest(addContacts, {
         manual: true,
         onSuccess: result => {
             console.log(result);
@@ -26,8 +31,9 @@ const Menu = () => {
         },
     });
 
-    const addContacts = () => {
-        return addContactsApi({ Uid: value, Remark: '备注' + value });
+    const getContactsList = async () => {
+        const data = await getContactsListApi();
+        console.log(data);
     };
 
     const setActiveUser = (activeUser: ContactsType) => {
@@ -88,6 +94,8 @@ const Menu = () => {
         allAontactList.current = _temp;
         // setActive(lodash.get(contacts, '0.uid'))
         setActiveUser(lodash.get(_temp, 0));
+
+        getContactsList();
     };
 
     React.useEffect(() => {
@@ -134,9 +142,9 @@ const Menu = () => {
                 )}
             />
 
-            {/* <Modal title="添加联系人" visible={visible} confirmLoading={loading} onOk={() => confirm()} onCancel={() => setVisible(false)} autoFocus={false} focusLock={true}>
-                <Input onChange={setValue} value={value} placeholder="联系人ID 或者 手机号码" className={'w-full'} />
-            </Modal> */}
+            <Modal title="添加联系人" visible={visible} confirmLoading={loading} onOk={() => confirm()} onCancel={() => setVisible(false)} autoFocus={false} focusLock={true}>
+                <Input onChange={setValue} value={value} placeholder="联系人ID" className={'w-full'} />
+            </Modal>
         </div>
     );
 };

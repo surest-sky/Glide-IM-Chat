@@ -1,10 +1,10 @@
-import { catchError, concat, map, mergeMap, Observable, of, timeout } from 'rxjs';
+import { catchError, map, mergeMap, Observable, of, timeout } from 'rxjs';
 import { onComplete, onNext } from 'src/rx/next';
+import { getToken, setLogout } from 'src/services/auth';
 import { Api } from '../api/api';
-import { setApiToken } from '../api/axios';
 import { AuthBean } from '../api/model';
 import { Glide } from './cache';
-import { Actions, CommonMessage, WebSocketUrl, Message, CliCustomMessage } from './message';
+import { Actions, CliCustomMessage, CommonMessage, Message, WebSocketUrl } from './message';
 import { Session } from './session';
 import { Ws } from './ws';
 
@@ -29,19 +29,20 @@ export class LiveChat {
 
     // 初始化认证信息, 连接聊天服务器
     public initChat(): Observable<string> {
-        const token = this.getToken();
-        
-        let authrication: Observable<AuthBean>;
-        if (token == null || token === '') {
-            authrication = Api.guestLogin();
-        } else {
-            authrication = Api.auth(token).pipe(
-                catchError(err => {
-                    this.clearAuth();
-                    throw new Error('auth failed: ' + err);
-                })
-            );
+        const token = getToken();
+        if (!token) {
+            setLogout();
+            return;
         }
+
+        // 这里不再鉴权也可以，放到全局去了
+        let authrication: Observable<AuthBean>;
+        authrication = Api.auth(token).pipe(
+            catchError(err => {
+                this.clearAuth();
+                throw new Error('auth failed: ' + err);
+            })
+        );
 
         return authrication.pipe(
             mergeMap(res => this.initAccount(res)),
@@ -113,10 +114,10 @@ export class LiveChat {
     }
 
     private initAccount(auth: AuthBean): Observable<string> {
-        setApiToken(auth.Token);
+        // setApiToken(auth.Token);
         this.uid = auth.Uid.toString();
         this.servers = auth.Servers;
-        Glide.storeToken(auth.Token);
+        // Glide.storeToken(auth.Token);
         return of('account init success');
     }
 
@@ -155,7 +156,7 @@ export class LiveChat {
                 break;
             case Actions.NotifyKickOut:
                 alert('kick out');
-                this.clearAuth()
+                this.clearAuth();
                 Ws.close();
                 break;
             case Actions.NotifyNeedAuth:

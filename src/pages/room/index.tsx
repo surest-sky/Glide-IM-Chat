@@ -1,19 +1,20 @@
+import { Avatar, Divider, Grid, Image, Spin } from '@arco-design/web-react';
+import dayjs from 'dayjs';
 import { useEffect, useRef, useState } from 'react';
-import { Image, Modal, Spin, Grid, Avatar, Divider } from '@arco-design/web-react';
 import { delay } from 'rxjs';
+import AudioHtml from 'src/components/AudioHtml';
 import { ChatMessage } from 'src/core/chat_message';
-import { MessageType } from 'src/core/message';
 import { LiveChat } from 'src/core/live_chat';
+import { MessageType } from 'src/core/message';
 import { Session } from 'src/core/session';
+import { scrollToBottom } from 'src/utils/Utils';
 import Editor from './components/editor';
 import Message from './components/message';
-import { initChat } from './store/chat';
 import Tools from './components/tools';
-import dayjs from 'dayjs';
-import { scrollToBottom } from 'src/utils/Utils';
-import AudioHtml from 'src/components/AudioHtml';
-import { ChatRobot } from './store/chatrd';
 import Menu from './menu';
+import { useSelector } from 'react-redux';
+import Modules from './modules';
+import { ChatRobot } from './store/chatrd';
 import './styles/room.scss';
 
 const Row = Grid.Row;
@@ -28,7 +29,7 @@ const Room = () => {
         visible: false,
         src: '',
     });
-    const visible = true;
+    const userInfo = useSelector((state: any) => state.container.userInfo);
 
     useEffect(() => {
         session?.setMessageListener(message => {
@@ -41,6 +42,7 @@ const Room = () => {
     }, [session]);
 
     const initFirstMessage = () => {
+        return;
         const robot = new ChatRobot();
         const fmsg = robot.loadMessageByFirst();
         const chatMsg = new ChatMessage();
@@ -48,37 +50,56 @@ const Room = () => {
         setMessages([...messages, chatMsg]);
     };
 
-    const started = () => {
+    /**
+     * 初始化房间
+     * @param se
+     */
+    const initLoadChatRoom = (se: Session) => {
+        se.notifyInputMessage();
+        setSession(se);
+        setMessages(se.getMessages());
+        setLoading(false);
+        setTimeout(() => {
+            $('.room-container').on('click', 'img', (element: any) => {
+                const src = element.target.getAttribute('src');
+                setImageVisible({ visible: true, src: src });
+            });
+        });
+
+        setTimeout(() => {
+            initFirstMessage();
+        }, 1000);
+    };
+
+    /**
+     * 初始化聊天回话
+     */
+    const initLoadSession = () => {
         // 获取或初始化聊天会话
         LiveChat.getInstance()
             .getOrInitSession()
             .pipe(delay(1000))
             .subscribe({
                 next: se => {
-                    se.notifyInputMessage();
-                    setSession(se);
-                    setMessages(se.getMessages());
-                    setLoading(false);
-                    setTimeout(() => {
-                        $('.room-container').on('click', 'img', (element: any) => {
-                            const src = element.target.getAttribute('src');
-                            setImageVisible({ visible: true, src: src });
-                        });
-                    });
+                    initLoadChatRoom(se);
                 },
                 error: error => {
                     console.log(error);
-                },
-                complete: () => {
-                    setTimeout(() => {
-                        initFirstMessage();
-                    }, 1000);
                 },
             });
     };
 
     useEffect(() => {
-        initChat(started);
+        LiveChat.getInstance()
+            .initChat()
+            .subscribe({
+                error: err => {
+                    console.error(err);
+                },
+                complete: () => {
+                    initLoadSession();
+                },
+            });
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
@@ -136,10 +157,13 @@ const Room = () => {
         content = (
             <div className="room-container">
                 <Row className="h-full">
-                    <Col span={4} xl={4} lg={6} md={6} className="h-full p-2 bg-white border-r border-gray-300">
+                    <Col span={1} xl={1} lg={1} md={1} className="h-full p-2 bg-black bg-white bg-gray-400 border-r">
+                        <Modules userInfo={userInfo} />
+                    </Col>
+                    <Col span={4} xl={4} lg={4} md={4} className="h-full p-2 bg-white border-r border-gray-300">
                         <Menu />
                     </Col>
-                    <Col span={20} xl={20} lg={18} md={18} className="h-full">
+                    <Col span={19} xl={19} lg={19} md={19} className="h-full">
                         <div className="flex justify-between h-full">
                             <div className="w-2/3 p-5">
                                 <div className="flex justify-between font-bold text-center room-content-title">
@@ -210,13 +234,7 @@ const Room = () => {
         );
     }
 
-    return (
-        <div className="room">
-            <Modal title="" className="room-modal" closeIcon={null} footer={null} visible={visible} autoFocus={false} focusLock={true}>
-                {content}
-            </Modal>
-        </div>
-    );
+    return <div className="room">{content}</div>;
 };
 
 export default Room;
