@@ -1,6 +1,6 @@
 import { catchError, map, mergeMap, Observable, of, timeout } from 'rxjs';
 import { onComplete, onNext } from 'src/rx/next';
-import { getToken, setLogout } from 'src/services/auth';
+import { getToken, setLogout, getAuthInfo } from 'src/services/auth';
 import { Api } from '../api/api';
 import { AuthBean } from '../api/model';
 import { Glide } from './cache';
@@ -36,16 +36,10 @@ export class LiveChat {
         }
 
         // 这里不再鉴权也可以，放到全局去了
-        let authrication: Observable<AuthBean>;
-        authrication = Api.auth(token).pipe(
-            catchError(err => {
-                this.clearAuth();
-                throw new Error('auth failed: ' + err);
-            })
-        );
+        let authrication: Observable<String>;
+        authrication = this.initAccount(getAuthInfo());
 
         return authrication.pipe(
-            mergeMap(res => this.initAccount(res)),
             mergeMap(() => this.connectIMServer()),
             map(() => 'chat init success')
         );

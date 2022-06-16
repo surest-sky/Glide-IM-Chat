@@ -5,9 +5,11 @@ import xss from 'xss';
 import AudioApp from 'src/components/AudioApp';
 import { Spin, Avatar } from '@arco-design/web-react';
 import { IconInfoCircle } from '@arco-design/web-react/icon';
+import { useSelector } from 'react-redux';
 import '../styles/message.scss';
 
 function Message(props) {
+    const activeUser = useSelector((state: any) => state.chat.activeUser);
     const messageAlign = props.message.IsMe ? 'flex-row-reverse to' : 'flex-row form';
     const MessageHtml = ({ message }) => {
         if (message.Type === MessageType.Image) {
@@ -20,7 +22,7 @@ function Message(props) {
         }
 
         return (
-            <div className="room-content-wrapper-item-message break-words">
+            <div className="break-words room-content-wrapper-item-message">
                 <HtmlApp html={xss(props.message.Content)} className="message-item" />
             </div>
         );
@@ -46,9 +48,7 @@ function Message(props) {
     return (
         <div className={`flex ${messageAlign} room-content-wrapper-item`}>
             <div className=" room-content-wrapper-item-avatar">
-                <Avatar>
-                    <img src="http://cdn.surest.cn/iDJFWYmJX6maB6MhGawiZBhsz3xJT8zb" alt="" className="src" />
-                </Avatar>
+                <Avatar>{activeUser.avatar ? <img src="http://cdn.surest.cn/iDJFWYmJX6maB6MhGawiZBhsz3xJT8zb" alt="" className="src" /> : activeUser.uid}</Avatar>
             </div>
             {<MessageHtml message={props.message} />}
             <MessageStatus sending={props.message.Sending} />

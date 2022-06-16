@@ -21,7 +21,7 @@ const Tools = props => {
         input.onchange = async function () {
             var file = this.files[0];
             const { data } = await uploadFile(file, file.name);
-            props.sendFileMessage(data.data.url, MessageType.Image);
+            props.sendChatMessage(data.data.url, MessageType.Image);
         };
         input.click();
     };
@@ -49,9 +49,9 @@ const Tools = props => {
             <Modal unmountOnExit={true} title={'语音发送'} onCancel={setAudioVisible} visible={audioVisible} footer={null}>
                 <Audio
                     setAudioVisible={setAudioVisible}
-                    sendFileMessage={data => {
+                    sendChatMessage={data => {
                         setAudioVisible(false);
-                        props.sendFileMessage(data, MessageType.Audio);
+                        props.sendChatMessage(data, MessageType.Audio);
                     }}
                 />
             </Modal>

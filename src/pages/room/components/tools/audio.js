@@ -6,7 +6,7 @@ import { ReactComponent as AudioSvg } from 'src/static/svg/audio.svg';
 import { ReactComponent as AudioRecordSvg } from 'src/static/svg/audio-record.svg';
 import { uploadFile } from 'src/services/upload';
 
-const Audio = ({ audio, sendFileMessage }) => {
+const Audio = ({ audio, sendChatMessage }) => {
     const [sendAudio, setSendAudio] = useState({
         loading: false,
         src: '',
@@ -16,7 +16,7 @@ const Audio = ({ audio, sendFileMessage }) => {
         setSendAudio({ loading: true, src: '' });
         const { data } = await uploadFile(audio.blob, `${new Date().getTime()}.mp3`);
         setSendAudio({ loading: false, src: data.data.url });
-        sendFileMessage(JSON.stringify({ url: data.data.url, duration: audio.duration }));
+        sendChatMessage(JSON.stringify({ url: data.data.url, duration: audio.duration }));
     };
 
     return (
@@ -36,7 +36,7 @@ const Audio = ({ audio, sendFileMessage }) => {
     );
 };
 
-const AudioRecord = ({ sendFileMessage }) => {
+const AudioRecord = ({ sendChatMessage }) => {
     const [state, setState] = useState('waiting');
     const chunks = useRef([]);
     const recorder = useRef(null);
@@ -65,7 +65,7 @@ const AudioRecord = ({ sendFileMessage }) => {
 
     const send = async audio => {
         const { data } = await uploadFile(audio.blob, `${new Date().getTime()}.mp3`);
-        sendFileMessage(JSON.stringify({ url: data.data.url, duration: audio.duration }));
+        sendChatMessage(JSON.stringify({ url: data.data.url, duration: audio.duration }));
     };
 
     useEffect(() => {
@@ -125,7 +125,7 @@ const AudioRecord = ({ sendFileMessage }) => {
                 )}
             </Button>
 
-            {/* {audio.stream ? <Audio audio={audio} sendFileMessage={sendFileMessage} /> : null} */}
+            {/* {audio.stream ? <Audio audio={audio} sendChatMessage={sendChatMessage} /> : null} */}
         </div>
     );
 };

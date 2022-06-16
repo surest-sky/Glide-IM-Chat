@@ -36,7 +36,8 @@ export class Session {
         this.Avatar = userinfo.Avatar;
         this.Title = userinfo.Nickname;
         // TODO
-        this.To = 543662; // userinfo.Uid;
+        // TOGO:0616 由 redux 接管传入数据
+        // this.To = 543662; // userinfo.Uid;
     }
 
     public static create(): Observable<Session> {
@@ -93,6 +94,10 @@ export class Session {
 
     public getMessages(): ChatMessage[] {
         return Array.from(this.messageMap.values());
+    }
+
+    public setToId(Uid: number): void {
+        this.To = Uid;
     }
 
     private getMessageBeforeMid(mid: number): ChatMessage[] {

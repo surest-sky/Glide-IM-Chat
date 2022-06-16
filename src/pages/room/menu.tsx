@@ -1,30 +1,46 @@
-import { addContactsApi, getContactsListApi } from 'src/api/im/im';
-import { updateActiveUser } from 'src/store/reducer/chat';
 import { Avatar, Button, Input, List, Message, Modal } from '@arco-design/web-react';
 import { IconPlus } from '@arco-design/web-react/icon';
 import { useRequest } from 'ahooks';
-import React, { useRef, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { ContactsType } from 'src/core/chat_type';
 import lodash from 'lodash';
+import React, { useRef, useState } from 'react';
+import { useSelector } from 'react-redux';
+import { addContactsApi, getContactsListApi, userInfoApi } from 'src/api/im/im';
+import { ContactsType } from 'src/core/chat_type';
 import './styles/menu.scss';
 
-const Menu = () => {
+const Menu = (props: any) => {
     const [visible, setVisible] = useState(false);
     const [value, setValue] = useState<string>('');
-    const [contactList, setContactList] = useState<Array<ContactsType>>([]);
+    const [contactsList, setContactsList] = useState<Array<ContactsType>>([]);
     const allAontactList = useRef<Array<ContactsType>>([]);
     const activeUser = useSelector((state: any) => state.chat.activeUser);
-    const dispatch = useDispatch();
 
     const addContacts = () => {
         return addContactsApi({ Uid: parseInt(value), Remark: '备注' + value });
     };
 
+    const contactsUsers = async (Uids: Array<string>) => {
+        try {
+            const {
+                data: { Data },
+            } = await userInfoApi({ Uid: Uids });
+            return Data;
+        } catch (error) {
+            return [];
+        }
+    };
+
     const { run, loading } = useRequest(addContacts, {
         manual: true,
-        onSuccess: result => {
-            console.log(result);
+        onSuccess: ({ data }) => {
+            console.log(data);
+            if (data.Code === 100) {
+                Message.success('添加成功 !');
+                return;
+            }
+
+            Message.warning('已经再好友列表里面了 !');
+            return;
         },
         onError: (result, params) => {
             console.log(result, params);
@@ -32,12 +48,25 @@ const Menu = () => {
     });
 
     const getContactsList = async () => {
-        const data = await getContactsListApi();
-        console.log(data);
-    };
-
-    const setActiveUser = (activeUser: ContactsType) => {
-        dispatch(updateActiveUser({ activeUser }));
+        try {
+            const {
+                data: { Data },
+            } = await getContactsListApi();
+            const uids = lodash.map(Data, 'Id');
+            let _contactsList = await contactsUsers(uids);
+            _contactsList = _contactsList.map(contacts => {
+                return {
+                    avatar: undefined,
+                    name: contacts.Nickname,
+                    motto: contacts.Nickname + ':测试格言',
+                    uid: contacts.Uid,
+                };
+            });
+            console.log('contactsList', contactsList);
+            setContactsList(_contactsList);
+            allAontactList.current = _contactsList;
+            props.changeActiveUser(lodash.get(_contactsList, 0));
+        } catch (error) {}
     };
 
     const confirm = () => {
@@ -49,7 +78,7 @@ const Menu = () => {
     };
 
     const searchUser = value => {
-        setContactList(list => {
+        setContactsList(list => {
             if (!value.length) {
                 return allAontactList.current;
             }
@@ -59,10 +88,9 @@ const Menu = () => {
         });
     };
 
-    const loadData = () => {
+    const mockContactsList = () => {
         const contacts = new Array<ContactsType[]>();
         const _temp = [];
-
         const temp: ContactsType[] = [
             {
                 avatar: 'https://api.surest.cn/storage/resource/20220511/1652258608-1652258607609.png',
@@ -90,11 +118,12 @@ const Menu = () => {
             _temp.push(...contact);
         });
 
-        setContactList(_temp);
+        setContactsList(_temp);
         allAontactList.current = _temp;
-        // setActive(lodash.get(contacts, '0.uid'))
-        setActiveUser(lodash.get(_temp, 0));
+        props.changeActiveUser(lodash.get(_temp, 0));
+    };
 
+    const loadData = () => {
         getContactsList();
     };
 
@@ -120,24 +149,16 @@ const Menu = () => {
                 size={'small'}
                 split={false}
                 className="contacts-list scrollbar"
-                dataSource={contactList}
+                dataSource={contactsList}
                 render={(item, index) => (
                     <List.Item
                         onClick={() => {
-                            setActiveUser(item);
+                            props.changeActiveUser(item);
                         }}
                         key={index}
                         className={activeUser.uid === item.uid ? 'active' : ''}
                     >
-                        <List.Item.Meta
-                            avatar={
-                                <Avatar shape="square">
-                                    <img src={item.avatar} alt="" />
-                                </Avatar>
-                            }
-                            title={item.name}
-                            description={item.message}
-                        />
+                        <List.Item.Meta avatar={<Avatar shape="square">{item.avatar ? <img alt="avatar" src={item.avatar} /> : item.uid}</Avatar>} title={item.name} description={item.message} />
                     </List.Item>
                 )}
             />

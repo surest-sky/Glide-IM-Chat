@@ -23,7 +23,7 @@ const Editor = forwardRef((props: any, ref) => {
      * @param message
      */
     const sendMessage = (message: string) => {
-        props.sendFileMessage(message, MessageType.Text);
+        props.sendChatMessage(message, MessageType.Text);
     };
 
     const _sendMessage = () => {
@@ -97,8 +97,8 @@ const Editor = forwardRef((props: any, ref) => {
         return mode === 'video' ? (
             <div className={`w-full ${mode === 'message' ? 'hidden' : ''}`}>
                 <Audio
-                    sendFileMessage={message => {
-                        props.sendFileMessage(message, MessageType.Audio);
+                    sendChatMessage={message => {
+                        props.sendChatMessage(message, MessageType.Audio);
                     }}
                 />
             </div>

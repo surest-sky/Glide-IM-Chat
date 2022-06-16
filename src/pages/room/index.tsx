@@ -12,15 +12,17 @@ import Editor from './components/editor';
 import Message from './components/message';
 import Tools from './components/tools';
 import Menu from './menu';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import Modules from './modules';
 import { ChatRobot } from './store/chatrd';
+import { updateActiveUser } from 'src/store/reducer/chat';
 import './styles/room.scss';
 
 const Row = Grid.Row;
 const Col = Grid.Col;
 
 const Room = () => {
+    const dispatch = useDispatch();
     const [session, setSession] = useState<Session | null>(null);
     const [messages, setMessages] = useState<ChatMessage[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
@@ -30,6 +32,7 @@ const Room = () => {
         src: '',
     });
     const userInfo = useSelector((state: any) => state.container.userInfo);
+    const activeUser = useSelector((state: any) => state.chat.activeUser);
 
     useEffect(() => {
         session?.setMessageListener(message => {
@@ -48,6 +51,13 @@ const Room = () => {
         const chatMsg = new ChatMessage();
         chatMsg.Content = fmsg;
         setMessages([...messages, chatMsg]);
+    };
+
+    /**
+     * 修改聊天对象
+     */
+    const changeActiveUser = () => {
+        dispatch(updateActiveUser({ activeUser }));
     };
 
     /**
@@ -122,7 +132,7 @@ const Room = () => {
         return false;
     };
 
-    const sendFileMessage = (message: string, type: MessageType, callback: any) => {
+    const sendChatMessage = (message: string, type: MessageType, callback: any) => {
         session.send(message, type).subscribe({
             next: m => {
                 console.log('send message: message status changed=>', m);
@@ -161,20 +171,18 @@ const Room = () => {
                         <Modules userInfo={userInfo} />
                     </Col>
                     <Col span={4} xl={4} lg={4} md={4} className="h-full p-2 bg-white border-r border-gray-300">
-                        <Menu />
+                        <Menu changeActiveUser={changeActiveUser} />
                     </Col>
                     <Col span={19} xl={19} lg={19} md={19} className="h-full">
                         <div className="flex justify-between h-full">
                             <div className="w-2/3 p-5">
                                 <div className="flex justify-between font-bold text-center room-content-title">
                                     <div className="flex items-center">
-                                        <Avatar className="mr-2">
-                                            <img alt="avatar" src="https://api.surest.cn/storage/resource/20220511/1652258608-1652258607609.png" />
-                                        </Avatar>
-                                        <div className="title-name ">Dianne Vanhorn</div>
+                                        <Avatar className="mr-2">{activeUser.avatar ? <img alt="avatar" src={activeUser.avatar} /> : activeUser.uid}</Avatar>
+                                        <div className="title-name ">{activeUser.name}</div>
                                     </div>
                                     <div className="flower">
-                                        <Tools sendFileMessage={sendFileMessage} />
+                                        <Tools sendChatMessage={sendChatMessage} />
                                     </div>
                                 </div>
                                 <div className="room-body">
@@ -182,7 +190,7 @@ const Room = () => {
                                         <div className="room-content scrollbar">
                                             <div className="room-content-wrapper">{MsgList}</div>
                                         </div>
-                                        <Editor editorRef={editorRef} sendFileMessage={sendFileMessage} />
+                                        <Editor editorRef={editorRef} sendChatMessage={sendChatMessage} />
                                     </div>
                                 </div>
                             </div>
@@ -190,13 +198,11 @@ const Room = () => {
                             <div className="flex items-center justify-center w-1/3 bg-slate-50 align-center">
                                 <div className="">
                                     <div className="flex justify-center mt-10">
-                                        <Avatar size={128}>
-                                            <img alt="avatar" src="https://api.surest.cn/storage/resource/20220511/1652258608-1652258607609.png" />
-                                        </Avatar>
+                                        <Avatar size={128}>{activeUser.avatar ? <img alt="avatar" src={activeUser.avatar} /> : activeUser.uid}</Avatar>
                                     </div>
                                     <div className="mt-2 text-center">
-                                        <div className="text-2xl ">Dianne Vanhorn</div>
-                                        <div className="text-base text-gray-500 ">Junior Developer</div>
+                                        <div className="text-2xl ">{activeUser.name}</div>
+                                        <div className="text-base text-gray-500 ">{activeUser.motto}</div>
                                     </div>
 
                                     <div className="flex justify-center mt-10">
@@ -204,7 +210,7 @@ const Room = () => {
                                             <svg className="mx-auto text-6xl transition ease-in-out cursor-pointer icon hover:scale-110" style={{ color: '#1990FF' }} aria-hidden="true">
                                                 <use xlinkHref="#icon-dianhua1"></use>
                                             </svg>
-                                            <div className="mt-2 font-bold text-center">Voice Call</div>
+                                            <div className="mt-2 font-bold text-center">打电话</div>
                                         </div>
                                         <div className="ml-10 mr-10 ">
                                             <Divider type="vertical" style={{ height: 60 }} />
@@ -213,7 +219,7 @@ const Room = () => {
                                             <svg className="mx-auto text-6xl transition ease-in-out cursor-pointer icon hover:scale-110" aria-hidden="true">
                                                 <use xlinkHref="#icon-shipintonghua"></use>
                                             </svg>
-                                            <div className="mt-2 font-bold ">Video Call</div>
+                                            <div className="mt-2 font-bold ">打视频</div>
                                         </div>
                                     </div>
                                 </div>

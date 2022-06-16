@@ -1,4 +1,3 @@
-import { window } from "rxjs";
 
 const key = "userInfo"
 const setLogin = (authInfo) => {

@@ -1,5 +1,6 @@
 import { Avatar, Button, Form, Input, Modal, Tooltip } from '@arco-design/web-react';
 import { useState } from 'react';
+import { setLogout } from 'src/services/auth';
 import './styles/modules.scss';
 
 const FormItem = Form.Item;
@@ -40,6 +41,18 @@ const Modules = ({ userInfo }) => {
                             </Button>
                         </FormItem>
                     </Tooltip>
+
+                    <FormItem>
+                        <Button
+                            onClick={() => {
+                                setLogout();
+                            }}
+                            className="w-full"
+                            type="primary"
+                        >
+                            退出登录
+                        </Button>
+                    </FormItem>
                 </Form>
             </Modal>
         </div>
