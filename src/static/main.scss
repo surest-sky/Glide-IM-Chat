@@ -4,7 +4,7 @@ $mw-space: 10px;
 #root {
     background-image: url(https://img.js.design/assets/Resources/background/login-bg-5.jpg);
     height: 100vh;
-    width: 100%h;
+    width: 100%;
 }
 
 .start-btn {
@@ -31,7 +31,7 @@ $mw-space: 10px;
     padding-bottom: 20px;
     padding-right: 5px;
     padding-left: 5px;
-    height: 630px;
+    height: 525px;
     overflow-x: hidden;
 }
 
@@ -147,16 +147,20 @@ body {
 }
 
 .room-modal {
-    width: 1000px;
-    height: 600px;
+    width: 1100px;
+    height: 700px;
 
     .loadin-container {
-        height: 600px;
+        height: 700px;
     }
     // border-radius: 16px !important;
     .arco-modal-content {
         padding: 0;
     }
+}
+
+.room-container {
+    height: 700px;
 }
 
 .icon-select {
