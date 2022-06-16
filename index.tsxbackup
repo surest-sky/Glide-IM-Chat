@@ -1,0 +1,27 @@
+import { Grid } from '@arco-design/web-react';
+import Menu from './src/pages/room/menu';
+import Room from './room';
+
+const Row = Grid.Row;
+const Col = Grid.Col;
+
+function Main() {
+    return (
+        <div className={'chat-container'}>
+            <Row className="h-full">
+                <Col span={4} xl={4} lg={6} md={6} className="h-full p-2 bg-white border-r border-gray-300">
+                    <Menu />
+                </Col>
+                <Col span={20} xl={20} lg={14} md={14} className="h-full">
+                    <Room />
+                </Col>
+            </Row>
+
+            {/* <div>
+                <img className="bg-img bg-container" src="https://img.js.design/assets/Resources/background/login-bg-5.jpg" alt="background-img" />
+            </div> */}
+        </div>
+    );
+}
+
+export default Main;

@@ -46,7 +46,7 @@ export enum Actions {
     Api = 'api',
     ApiFailed = 'api.failed',
     ApiSuccess = 'api.success',
-    ApiUserAuth = 'api.user.auth',
+    ApiUserAuth = 'api.auth',
     ApiUserLogout = 'api.user.logout',
     Heartbeat = 'heartbeat',
 }
