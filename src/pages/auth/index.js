@@ -9,7 +9,7 @@ const Auth = () => {
 
     return <div className='p-5 mx-auto mt-10 border border-gray-100 border-solid w-80'>
         <h1 className='mb-5 text-xl font-bold text-center'>{state ? '登录' : '注册'}</h1>
-        {state ? <LoginFrom /> : <RegisterFrom />}
+        {state ? <LoginFrom /> : <RegisterFrom toggle={toggle} />}
         <div className='flex justify-between'>
             <Link onClick={toggle}>{state ? '注册' : '登录'}</Link>
         </div>

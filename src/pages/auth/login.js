@@ -2,12 +2,10 @@ import { Button, Form, Input, Message } from '@arco-design/web-react';
 import { useRequest } from 'ahooks';
 import { loginUserApi } from 'src/api/im/im';
 import store from 'src/store/index';
-import { useNavigate } from 'react-router-dom';
 import { updateAuthInfo } from 'src/store/reducer/container';
 const FormItem = Form.Item;
 
 const LoginForm = () => {
-    const navigate = useNavigate();
     const loginUser = (formData) => {
         return loginUserApi({ Account: formData.name, Password: formData.password });
     };
@@ -20,7 +18,7 @@ const LoginForm = () => {
             if (parseInt(code) === 100) {
                 store.dispatch(updateAuthInfo(result?.data?.Data));
                 Message.success("登录成功...")
-                navigate('/')
+                window.location.href = '/'
                 return
             }
             Message.error(result?.data.Msg)

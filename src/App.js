@@ -29,7 +29,7 @@ function App() {
 
     function fetchUserAuth() {
         const userInfo = getAuthInfo()
-        if (!userInfo.Token) {
+        if (!userInfo || !userInfo.Token) {
             reLogin()
             return
         }

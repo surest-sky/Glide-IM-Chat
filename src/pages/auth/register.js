@@ -1,9 +1,10 @@
 import { Form, Input, Button, Message } from '@arco-design/web-react';
 import { registerUserApi } from 'src/api/im/im'
 import { useRequest } from 'ahooks'
+import { useNavigate } from 'react-router-dom';
 const FormItem = Form.Item;
 
-const RegisterForm = () => {
+const RegisterForm = ({ toggle }) => {
     const registerUser = (formData) => {
         return registerUserApi({ Account: formData.name, Password: formData.password });
     };
@@ -14,10 +15,11 @@ const RegisterForm = () => {
             const code = result?.data?.Code
             if (code === 100) {
                 Message.success("注册成功, 请登录...")
+                toggle()
                 return
             }
 
-            Message.error(result?.data.Msg + '...')
+            Message.error(result?.data.Msg + '... (可能已经被注册了，请尝试登录试试)')
         },
         onError: (result, params) => {
             console.log(result, params);

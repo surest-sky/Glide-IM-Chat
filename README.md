@@ -8,6 +8,4 @@
 
 ## 在线访问链接
 
-默认账户: goim123
-
-默认密码: goim123
+https://chat.surest.cn/

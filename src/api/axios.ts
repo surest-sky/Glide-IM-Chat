@@ -69,7 +69,7 @@ function get_(path: string): AxiosPromise {
 // request interceptor
 axiosInstance.interceptors.request.use(
     config => {
-        const token = authInfo.Token;
+        const token = authInfo?.Token;
         if (token) {
             config.headers.Authorization = 'Bearer ' + token;
         }
