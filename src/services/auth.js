@@ -41,6 +41,10 @@ const getAuthInfo = () => {
 
 const getToken = () => {
     const authInfo = getAuthInfo()
+    if (!authInfo) {
+        setLogout()
+        return ""
+    }
     return authInfo.Token
 }
 

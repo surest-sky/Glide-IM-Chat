@@ -116,7 +116,7 @@ const Editor = forwardRef((props: any, ref) => {
                         return false;
                     }
                 }}
-                className={`editor-item ${mode === 'video' ? 'hidden' : ''}`}
+                className={`editor-item scrollbar ${mode === 'video' ? 'hidden' : ''}`}
             ></div>
         );
     };

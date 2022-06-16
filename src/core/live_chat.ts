@@ -91,6 +91,7 @@ export class LiveChat {
         this.uid = '';
         Ws.close();
         Glide.storeToken('');
+        setLogout();
     }
 
     // @deprecated
@@ -149,7 +150,7 @@ export class LiveChat {
             case Actions.MessageChatRecall:
                 break;
             case Actions.NotifyKickOut:
-                alert('kick out');
+                alert('被挤下线了, 重新登录');
                 this.clearAuth();
                 Ws.close();
                 break;

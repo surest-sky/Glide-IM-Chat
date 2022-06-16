@@ -9,7 +9,7 @@ import { useSelector } from 'react-redux';
 import '../styles/message.scss';
 
 function Message(props) {
-    const activeUser = useSelector((state: any) => state.chat.activeUser);
+    const userInfo = useSelector((state: any) => state.container.userInfo);
     const messageAlign = props.message.IsMe ? 'flex-row-reverse to' : 'flex-row form';
     const MessageHtml = ({ message }) => {
         if (message.Type === MessageType.Image) {
@@ -48,7 +48,7 @@ function Message(props) {
     return (
         <div className={`flex ${messageAlign} room-content-wrapper-item`}>
             <div className=" room-content-wrapper-item-avatar">
-                <Avatar>{activeUser.avatar ? <img src="http://cdn.surest.cn/iDJFWYmJX6maB6MhGawiZBhsz3xJT8zb" alt="" className="src" /> : activeUser.uid}</Avatar>
+                <Avatar>{userInfo.avatar ? <img src={userInfo.avatar} alt="" className="src" /> : userInfo.Uid}</Avatar>
             </div>
             {<MessageHtml message={props.message} />}
             <MessageStatus sending={props.message.Sending} />

@@ -8,6 +8,8 @@
         width: 100%;
         box-sizing: border-box;
         background-color: rgb(242, 243, 245);
+        height: 60px;
+        overflow-y: auto;
     }
 
     .editor-item:focus {

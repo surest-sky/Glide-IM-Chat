@@ -34,15 +34,37 @@ const Room = () => {
     const userInfo = useSelector((state: any) => state.container.userInfo);
     const activeUser = useSelector((state: any) => state.chat.activeUser);
 
+    const isRoomMessage = (message, activeUser) => {
+        // 我发给对方
+        if (message.To === activeUser.uid && message.From === userInfo.Uid) {
+            return true;
+        }
+
+        // 对方发给我
+        if (message.To === userInfo.Uid && message.From === activeUser.uid) {
+            return true;
+        }
+
+        console.log(activeUser);
+        console.log(message.To, activeUser.uid, '----', message.From, userInfo.Uid);
+        return false;
+    };
+
     useEffect(() => {
-        session?.setMessageListener(message => {
+        return () => session?.setMessageListener(null);
+    }, [session]);
+
+    useEffect(() => {
+        return session?.setMessageListener(message => {
+            if (!isRoomMessage(message, activeUser)) {
+                return;
+            }
             setMessages(messages => [...messages, message]);
             setTimeout(() => {
                 scrollToBottom('.room-content');
             }, 100);
         });
-        return () => session?.setMessageListener(null);
-    }, [session]);
+    });
 
     const initFirstMessage = () => {
         return;
@@ -56,8 +78,9 @@ const Room = () => {
     /**
      * 修改聊天对象
      */
-    const changeActiveUser = () => {
+    const changeActiveUser = activeUser => {
         dispatch(updateActiveUser({ activeUser }));
+        session.setToId(activeUser.uid);
     };
 
     /**
@@ -210,7 +233,7 @@ const Room = () => {
                                             <svg className="mx-auto text-6xl transition ease-in-out cursor-pointer icon hover:scale-110" style={{ color: '#1990FF' }} aria-hidden="true">
                                                 <use xlinkHref="#icon-dianhua1"></use>
                                             </svg>
-                                            <div className="mt-2 font-bold text-center">打电话</div>
+                                            <div className="mt-2 font-bold text-center">电话</div>
                                         </div>
                                         <div className="ml-10 mr-10 ">
                                             <Divider type="vertical" style={{ height: 60 }} />
@@ -219,7 +242,7 @@ const Room = () => {
                                             <svg className="mx-auto text-6xl transition ease-in-out cursor-pointer icon hover:scale-110" aria-hidden="true">
                                                 <use xlinkHref="#icon-shipintonghua"></use>
                                             </svg>
-                                            <div className="mt-2 font-bold ">打视频</div>
+                                            <div className="mt-2 font-bold ">视频</div>
                                         </div>
                                     </div>
                                 </div>

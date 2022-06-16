@@ -31,7 +31,8 @@ $mw-space: 10px;
     padding-bottom: 20px;
     padding-right: 5px;
     padding-left: 5px;
-    height: 650px;
+    height: 630px;
+    overflow-x: hidden;
 }
 
 .room-content-wrapper-item-avatar {
@@ -146,11 +147,11 @@ body {
 }
 
 .room-modal {
-    width: 1300px;
-    min-height: 500px;
+    width: 1000px;
+    height: 600px;
 
     .loadin-container {
-        min-height: 500px;
+        height: 600px;
     }
     // border-radius: 16px !important;
     .arco-modal-content {
