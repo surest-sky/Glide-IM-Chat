@@ -17,7 +17,7 @@ function App() {
 
     const reLogin = () => {
         setLoading(false)
-        Message.error("请重新登录 !")
+        Message.error("请登录 !")
         navigate('/auth');
     }
 

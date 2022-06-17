@@ -1,11 +1,11 @@
 import { Avatar, Divider, Grid, Image } from '@arco-design/web-react';
-import dayjs from 'dayjs';
 import { useLiveQuery } from 'dexie-react-hooks';
 import { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import AudioHtml from 'src/components/AudioHtml';
 import { Message, MessageType } from 'src/core/message';
 import { Session } from 'src/core/session';
+import { switchRoom } from 'src/services/chat_db';
 import { db } from 'src/services/db';
 import { updateChatWithUser } from 'src/store/reducer/chat';
 import { scrollToBottom } from 'src/utils/Utils';
@@ -14,7 +14,7 @@ import MessageComponent from './components/message';
 import Tools from './components/tools';
 import Menu from './menu';
 import Modules from './modules';
-import { switchRoom } from 'src/services/chat_db';
+import { dateLine } from 'src/utils/Utils';
 import './styles/room.scss';
 
 const Row = Grid.Row;
@@ -22,7 +22,6 @@ const Col = Grid.Col;
 
 const Room = () => {
     const dispatch = useDispatch();
-    // const [session, setSession] = useState<Session | null>(null);
     const [messages, setMessages] = useState<Message[]>([]);
     const _messages = useLiveQuery(() => db.activeChat.toArray());
     const editorRef = useRef<any>(null);
@@ -38,18 +37,6 @@ const Room = () => {
         session.current = window.ChatSession;
     }, []);
 
-    // useEffect(() => {
-    //     return session.current.setMessageListener(message => {
-    //         if (!isRoomMessage(message, chatWithUser)) {
-    //             return;
-    //         }
-    //         setMessages(messages => [...messages, message]);
-    //         setTimeout(() => {
-    //             scrollToBottom('.room-content');
-    //         }, 100);
-    //     });
-    // });
-
     // 延迟触发
     useEffect(() => {
         setMessages(_messages ? _messages : []);
@@ -58,95 +45,17 @@ const Room = () => {
         });
     }, [_messages]);
 
-    // const initFirstMessage = () => {
-    //     return;
-    //     const robot = new ChatRobot();
-    //     const fmsg = robot.loadMessageByFirst();
-    //     const chatMsg = new ChatMessage();
-    //     chatMsg.Content = fmsg;
-    //     setMessages([...messages, chatMsg]);
-    // };
-
     /**
      * 修改聊天对象
      */
     const changechatWithUser = chatWithUser => {
+        console.log('chatWithUser', chatWithUser);
         dispatch(updateChatWithUser({ chatWithUser }));
         session.current.setToId(chatWithUser.uid);
         switchRoom(userInfo.Uid, chatWithUser.uid);
     };
 
-    /**
-     * 初始化房间
-     * @param se
-     */
-    // const initLoadChatRoom = (se: Session) => {
-    //     se.notifyInputMessage();
-    //     setSession(se);
-    //     setMessages(se.getMessages());
-    //     setLoading(false);
-    //     setTimeout(() => {
-    //         $('.room-container').on('click', 'img', (element: any) => {
-    //             const src = element.target.getAttribute('src');
-    //             setImageVisible({ visible: true, src: src });
-    //         });
-    //     });
-    //     setTimeout(() => {
-    //         initFirstMessage();
-    //     }, 1000);
-    // };
-
-    /**
-     * 初始化聊天回话
-     */
-    // const initLoadSession = () => {
-    //     // 获取或初始化聊天会话
-    //     LiveChat.getInstance()
-    //         .getOrInitSession()
-    //         .pipe(delay(1000))
-    //         .subscribe({
-    //             next: se => {
-    //                 initLoadChatRoom(se);
-    //             },
-    //             error: error => {
-    //                 console.log(error);
-    //             },
-    //         });
-    // };
-
-    useEffect(() => {
-        // LiveChat.getInstance()
-        //     .initChat()
-        //     .subscribe({
-        //         error: err => {
-        //             console.error(err);
-        //         },
-        //         complete: () => {
-        //             initLoadSession();
-        //         },
-        //     });
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
-
-    const dateLine = (at, key) => {
-        const dateDayjs = dayjs(at * 1000);
-        const _date = dateDayjs.format('YYYY-MM-DD HH:mm:ss');
-        if (key === 0) {
-            return _date;
-        }
-
-        let lastAt = dayjs(messages[key - 1].sendAt * 1000);
-        if (dateDayjs.diff(lastAt, 'minute') > 1) {
-            return _date;
-        }
-
-        const fl: any = key / 5;
-        if (fl % 1 === 0) {
-            return _date;
-        }
-        return false;
-    };
-
+    // 发送消息
     const sendChatMessage = (message: string, type: MessageType, callback: any) => {
         session.current.send(message, type).subscribe({
             next: m => {
@@ -162,7 +71,7 @@ const Room = () => {
     };
 
     const MsgList = messages.map((message, key) => {
-        const _dateline = dateLine(message.sendAt, key);
+        const _dateline = dateLine(message.sendAt, key, messages);
         return (
             <div key={key}>
                 {_dateline ? <div className="mt-5 mb-5 text-xs text-center text-gray-500">{_dateline}</div> : <></>}

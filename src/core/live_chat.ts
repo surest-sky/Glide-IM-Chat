@@ -7,6 +7,8 @@ import { Glide } from './cache';
 import { Actions, CliCustomMessage, CommonMessage, Message, WebSocketUrl } from './message';
 import { Session } from './session';
 import { Ws } from './ws';
+import store from 'src/store/index';
+import { updateContacts } from 'src/store/reducer/chat';
 
 export enum MessageLevel {
     // noinspection JSUnusedGlobalSymbols
@@ -135,7 +137,8 @@ export class LiveChat {
     private onMessage(m: CommonMessage<any>) {
         switch (m.Action) {
             case Actions.NotifyNewContact:
-                console.log('new contact: ' + m.Data);
+                // 触发更新联系人
+                store.dispatch(updateContacts());
                 break;
             case Actions.MessageChat:
                 const msg = m.Data as Message;

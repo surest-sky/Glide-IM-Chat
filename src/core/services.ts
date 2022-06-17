@@ -4,11 +4,8 @@ import { setLogout } from 'src/services/auth';
 import { LiveChat } from 'src/core/live_chat';
 import { delay } from 'rxjs';
 import { addMessage } from 'src/services/chat_db';
-
-// interface Window {
-//     ChatSession: Session;
-// }
-
+import store from 'src/store/index';
+import { updateContacts } from 'src/store/reducer/chat';
 declare global {
     interface Window {
         ChatSession: Session;
@@ -21,12 +18,13 @@ const serviceError = err => {
     setLogout();
 };
 
-// 聊天服务错误
+// 加载服务完成
 const serviceComplete = (session: Session, callback) => {
     session.notifyInputMessage();
     window.ChatSession = session;
     callback && callback();
     registerHanders(session);
+    store.dispatch(updateContacts());
 };
 
 // 进行注册 message 事件

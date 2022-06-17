@@ -1,5 +1,5 @@
 import { Avatar, Button, Form, Input, Modal, Tooltip } from '@arco-design/web-react';
-import { useState } from 'react';
+import { useState, memo } from 'react';
 import { setLogout } from 'src/services/auth';
 import './styles/modules.scss';
 
@@ -59,4 +59,4 @@ const Modules = ({ userInfo }) => {
     );
 };
 
-export default Modules;
+export default memo(Modules);

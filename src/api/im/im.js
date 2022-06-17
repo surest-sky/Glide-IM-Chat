@@ -1,4 +1,5 @@
 import { axiosInstance as request } from '../axios';
+import { map } from 'lodash';
 
 export function addContactsApi(data) {
     return request({
@@ -49,4 +50,38 @@ export function userAuthApi(data) {
         method: 'post',
         data,
     });
+}
+
+// 联系人数据补齐
+const contactsUsers = async (Uids: Array<string>) => {
+    try {
+        const {
+            data: { Data },
+        } = await userInfoApi({ Uid: Uids });
+        return Data;
+    } catch (error) {
+        return [];
+    }
+};
+
+// 获取联系人列表
+export async function getContacts() {
+    try {
+        const {
+            data: { Data },
+        } = await getContactsListApi();
+        const uids = map(Data, 'Id');
+        let contactsList = await contactsUsers(uids);
+        contactsList = contactsList.map(contacts => {
+            return {
+                avatar: undefined,
+                name: contacts.Nickname,
+                uid: contacts.Uid,
+                message_count: 0
+            };
+        });
+        return contactsList
+    } catch (error) {
+        return []
+    }
 }

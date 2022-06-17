@@ -1,3 +1,5 @@
+import dayjs from 'dayjs';
+
 export function isMobile(): boolean {
     let mobileAgent = false; ///Android|iPhone|iPod|BlackBerry/i.test(navigator.userAgent);
     let smallScreen = window.innerWidth < 600;
@@ -47,3 +49,22 @@ export function eventDelegation(element, eventType, selector, func) {
     });
     return element;
 }
+
+export const dateLine = (at, key, messages) => {
+    const dateDayjs = dayjs(at * 1000);
+    const _date = dateDayjs.format('YYYY-MM-DD HH:mm:ss');
+    if (key === 0) {
+        return _date;
+    }
+
+    let lastAt = dayjs(messages[key - 1].sendAt * 1000);
+    if (dateDayjs.diff(lastAt, 'minute') > 1) {
+        return _date;
+    }
+
+    const fl: any = key / 10;
+    if (fl % 1 === 0) {
+        return _date;
+    }
+    return false;
+};
