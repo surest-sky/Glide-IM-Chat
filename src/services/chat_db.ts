@@ -33,6 +33,7 @@ export const removeContacts = (contacts: ContactsType) => {
 
 // 添加多个联系人
 export const addBlukContacts = (contactsList: ContactsType[]) => {
+    db.contacts.clear();
     db.contacts.bulkAdd(contactsList);
 };
 

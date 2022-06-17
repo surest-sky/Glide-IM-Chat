@@ -38,13 +38,16 @@ const Menu = (props: any) => {
         manual: true,
         onSuccess: ({ data }) => {
             console.log(data);
-            if (data.Code === 100) {
-                Message.success('添加成功 !');
-                return;
-            }
-
-            Message.warning('已经再好友列表里面了 !');
+            Message.success('添加成功 !');
+            getContactsList();
             return;
+            // if (data.Code === 100) {
+            //     Message.success('添加成功 !');
+            //     return;
+            // }
+
+            // Message.warning('已经再好友列表里面了 !');
+            // return;
         },
         onError: (result, params) => {
             console.log(result, params);
