@@ -2,11 +2,11 @@ import { createSlice } from '@reduxjs/toolkit';
 import { ContactsType } from 'src/core/chat_type';
 
 export interface ChatState {
-    activeUser: ContactsType;
+    chatWithUser: ContactsType;
 }
 
 const initialState: ChatState = {
-    activeUser: {
+    chatWithUser: {
         avatar: '',
         name: '',
         message: '',
@@ -16,9 +16,9 @@ const initialState: ChatState = {
 };
 
 const chatReducers = {
-    updateActiveUser: (state, { payload }) => {
+    updateChatWithUser: (state, { payload }) => {
         console.log(payload);
-        state.activeUser = payload.activeUser;
+        state.chatWithUser = payload.chatWithUser;
     },
 };
 
@@ -28,6 +28,6 @@ export const Chat = createSlice({
     reducers: chatReducers,
 });
 
-export const { updateActiveUser } = Chat.actions;
+export const { updateChatWithUser } = Chat.actions;
 
 export default Chat.reducer;

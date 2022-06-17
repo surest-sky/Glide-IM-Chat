@@ -13,7 +13,7 @@ const Menu = (props: any) => {
     const [value, setValue] = useState<string>('');
     const [contactsList, setContactsList] = useState<Array<ContactsType>>([]);
     const allAontactList = useRef<Array<ContactsType>>([]);
-    const activeUser = useSelector((state: any) => state.chat.activeUser);
+    const chatWithUser = useSelector((state: any) => state.chat.chatWithUser);
 
     const addContacts = () => {
         return addContactsApi({ Uid: parseInt(value), Remark: '备注' + value });
@@ -65,7 +65,7 @@ const Menu = (props: any) => {
             console.log('contactsList', contactsList);
             setContactsList(_contactsList);
             allAontactList.current = _contactsList;
-            props.changeActiveUser(lodash.get(_contactsList, 0));
+            props.changechatWithUser(lodash.get(_contactsList, 0));
         } catch (error) {}
     };
 
@@ -120,7 +120,7 @@ const Menu = (props: any) => {
 
         setContactsList(_temp);
         allAontactList.current = _temp;
-        props.changeActiveUser(lodash.get(_temp, 0));
+        props.changechatWithUser(lodash.get(_temp, 0));
     };
 
     const loadData = () => {
@@ -153,10 +153,10 @@ const Menu = (props: any) => {
                 render={(item, index) => (
                     <List.Item
                         onClick={() => {
-                            props.changeActiveUser(item);
+                            props.changechatWithUser(item);
                         }}
                         key={index}
-                        className={activeUser.uid === item.uid ? 'active' : ''}
+                        className={chatWithUser.uid === item.uid ? 'active' : ''}
                     >
                         <List.Item.Meta avatar={<Avatar shape="square">{item.avatar ? <img alt="avatar" src={item.avatar} /> : item.uid}</Avatar>} title={item.name} description={item.message} />
                     </List.Item>

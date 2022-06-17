@@ -15,7 +15,7 @@ import Menu from './menu';
 import { useSelector, useDispatch } from 'react-redux';
 import Modules from './modules';
 import { ChatRobot } from './store/chatrd';
-import { updateActiveUser } from 'src/store/reducer/chat';
+import { updateChatWithUser } from 'src/store/reducer/chat';
 import './styles/room.scss';
 
 const Row = Grid.Row;
@@ -23,40 +23,41 @@ const Col = Grid.Col;
 
 const Room = () => {
     const dispatch = useDispatch();
-    const [session, setSession] = useState<Session | null>(null);
+    // const [session, setSession] = useState<Session | null>(null);
     const [messages, setMessages] = useState<ChatMessage[]>([]);
-    const [loading, setLoading] = useState<boolean>(true);
+    const [loading, setLoading] = useState<boolean>(false);
     const editorRef = useRef<any>(null);
     const [imageVisible, setImageVisible] = useState<any>({
         visible: false,
         src: '',
     });
     const userInfo = useSelector((state: any) => state.container.userInfo);
-    const activeUser = useSelector((state: any) => state.chat.activeUser);
+    const chatWithUser = useSelector((state: any) => state.chat.chatWithUser);
+    const session = useRef<Session>(null);
 
-    const isRoomMessage = (message, activeUser) => {
+    const isRoomMessage = (message, chatWithUser) => {
         // 我发给对方
-        if (message.To === activeUser.uid && message.From === userInfo.Uid) {
+        if (message.To === chatWithUser.uid && message.From === userInfo.Uid) {
             return true;
         }
 
         // 对方发给我
-        if (message.To === userInfo.Uid && message.From === activeUser.uid) {
+        if (message.To === userInfo.Uid && message.From === chatWithUser.uid) {
             return true;
         }
 
-        console.log(activeUser);
-        console.log(message.To, activeUser.uid, '----', message.From, userInfo.Uid);
+        console.log(chatWithUser);
+        console.log(message.To, chatWithUser.uid, '----', message.From, userInfo.Uid);
         return false;
     };
 
     useEffect(() => {
-        return () => session?.setMessageListener(null);
-    }, [session]);
+        session.current = window.ChatSession;
+    }, []);
 
     useEffect(() => {
-        return session?.setMessageListener(message => {
-            if (!isRoomMessage(message, activeUser)) {
+        return session.current.setMessageListener(message => {
+            if (!isRoomMessage(message, chatWithUser)) {
                 return;
             }
             setMessages(messages => [...messages, message]);
@@ -66,73 +67,72 @@ const Room = () => {
         });
     });
 
-    const initFirstMessage = () => {
-        return;
-        const robot = new ChatRobot();
-        const fmsg = robot.loadMessageByFirst();
-        const chatMsg = new ChatMessage();
-        chatMsg.Content = fmsg;
-        setMessages([...messages, chatMsg]);
-    };
+    // const initFirstMessage = () => {
+    //     return;
+    //     const robot = new ChatRobot();
+    //     const fmsg = robot.loadMessageByFirst();
+    //     const chatMsg = new ChatMessage();
+    //     chatMsg.Content = fmsg;
+    //     setMessages([...messages, chatMsg]);
+    // };
 
     /**
      * 修改聊天对象
      */
-    const changeActiveUser = activeUser => {
-        dispatch(updateActiveUser({ activeUser }));
-        session.setToId(activeUser.uid);
+    const changechatWithUser = chatWithUser => {
+        dispatch(updateChatWithUser({ chatWithUser }));
+        session.current.setToId(chatWithUser.uid);
     };
 
     /**
      * 初始化房间
      * @param se
      */
-    const initLoadChatRoom = (se: Session) => {
-        se.notifyInputMessage();
-        setSession(se);
-        setMessages(se.getMessages());
-        setLoading(false);
-        setTimeout(() => {
-            $('.room-container').on('click', 'img', (element: any) => {
-                const src = element.target.getAttribute('src');
-                setImageVisible({ visible: true, src: src });
-            });
-        });
-
-        setTimeout(() => {
-            initFirstMessage();
-        }, 1000);
-    };
+    // const initLoadChatRoom = (se: Session) => {
+    //     se.notifyInputMessage();
+    //     setSession(se);
+    //     setMessages(se.getMessages());
+    //     setLoading(false);
+    //     setTimeout(() => {
+    //         $('.room-container').on('click', 'img', (element: any) => {
+    //             const src = element.target.getAttribute('src');
+    //             setImageVisible({ visible: true, src: src });
+    //         });
+    //     });
+    //     setTimeout(() => {
+    //         initFirstMessage();
+    //     }, 1000);
+    // };
 
     /**
      * 初始化聊天回话
      */
-    const initLoadSession = () => {
-        // 获取或初始化聊天会话
-        LiveChat.getInstance()
-            .getOrInitSession()
-            .pipe(delay(1000))
-            .subscribe({
-                next: se => {
-                    initLoadChatRoom(se);
-                },
-                error: error => {
-                    console.log(error);
-                },
-            });
-    };
+    // const initLoadSession = () => {
+    //     // 获取或初始化聊天会话
+    //     LiveChat.getInstance()
+    //         .getOrInitSession()
+    //         .pipe(delay(1000))
+    //         .subscribe({
+    //             next: se => {
+    //                 initLoadChatRoom(se);
+    //             },
+    //             error: error => {
+    //                 console.log(error);
+    //             },
+    //         });
+    // };
 
     useEffect(() => {
-        LiveChat.getInstance()
-            .initChat()
-            .subscribe({
-                error: err => {
-                    console.error(err);
-                },
-                complete: () => {
-                    initLoadSession();
-                },
-            });
+        // LiveChat.getInstance()
+        //     .initChat()
+        //     .subscribe({
+        //         error: err => {
+        //             console.error(err);
+        //         },
+        //         complete: () => {
+        //             initLoadSession();
+        //         },
+        //     });
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
@@ -156,7 +156,7 @@ const Room = () => {
     };
 
     const sendChatMessage = (message: string, type: MessageType, callback: any) => {
-        session.send(message, type).subscribe({
+        session.current.send(message, type).subscribe({
             next: m => {
                 console.log('send message: message status changed=>', m);
             },
@@ -194,15 +194,15 @@ const Room = () => {
                         <Modules userInfo={userInfo} />
                     </Col>
                     <Col span={4} xl={4} lg={4} md={4} className="h-full p-2 bg-white border-r border-gray-300">
-                        <Menu changeActiveUser={changeActiveUser} />
+                        <Menu changechatWithUser={changechatWithUser} />
                     </Col>
                     <Col span={19} xl={19} lg={19} md={19} className="h-full">
                         <div className="flex justify-between h-full">
                             <div className="w-2/3 p-5">
                                 <div className="flex justify-between font-bold text-center room-content-title">
                                     <div className="flex items-center">
-                                        <Avatar className="mr-2">{activeUser.avatar ? <img alt="avatar" src={activeUser.avatar} /> : activeUser.uid}</Avatar>
-                                        <div className="title-name ">{activeUser.name}</div>
+                                        <Avatar className="mr-2">{chatWithUser.avatar ? <img alt="avatar" src={chatWithUser.avatar} /> : chatWithUser.uid}</Avatar>
+                                        <div className="title-name ">{chatWithUser.name}</div>
                                     </div>
                                     <div className="flower">
                                         <Tools sendChatMessage={sendChatMessage} />
@@ -221,11 +221,11 @@ const Room = () => {
                             <div className="flex items-center justify-center w-1/3 bg-slate-50 align-center">
                                 <div className="">
                                     <div className="flex justify-center mt-10">
-                                        <Avatar size={128}>{activeUser.avatar ? <img alt="avatar" src={activeUser.avatar} /> : activeUser.uid}</Avatar>
+                                        <Avatar size={128}>{chatWithUser.avatar ? <img alt="avatar" src={chatWithUser.avatar} /> : chatWithUser.uid}</Avatar>
                                     </div>
                                     <div className="mt-2 text-center">
-                                        <div className="text-2xl ">{activeUser.name}</div>
-                                        <div className="text-base text-gray-500 ">{activeUser.motto}</div>
+                                        <div className="text-2xl ">{chatWithUser.name}</div>
+                                        <div className="text-base text-gray-500 ">{chatWithUser.motto}</div>
                                     </div>
 
                                     <div className="flex justify-center mt-10">

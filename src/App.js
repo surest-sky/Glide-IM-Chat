@@ -7,6 +7,7 @@ import Routers from './routers/index';
 import store from 'src/store/index';
 import { updateAuthInfo, updateUserInfo } from 'src/store/reducer/container';
 import Loading from 'src/components/Loading'
+import { initChatSession } from 'src/core/services'
 import './static/main.scss';
 
 function App() {
@@ -25,6 +26,7 @@ function App() {
         console.log('authInfo2', authInfo.Uid);
         console.log('data', data.Data[0]);
         store.dispatch(updateUserInfo(data.Data[0]));
+        initChatSession(() => { setLoading(false) })
     };
 
     function fetchUserAuth() {
@@ -42,8 +44,6 @@ function App() {
         }).catch(err => {
             console.log(err)
             reLogin()
-        }).finally(() => {
-            setLoading(false)
         })
     }
 
