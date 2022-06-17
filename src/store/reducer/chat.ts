@@ -9,7 +9,7 @@ const initialState: ChatState = {
     chatWithUser: {
         avatar: '',
         name: '',
-        message: '',
+        message_count: 0,
         uid: 0,
         motto: '',
     },

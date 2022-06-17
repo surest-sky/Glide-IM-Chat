@@ -1,21 +1,19 @@
-import HtmlApp from 'src/components/HtmlApp';
-import { MessageType } from 'src/core/message';
-import { SendingStatus } from 'src/core/chat_message';
-import xss from 'xss';
-import AudioApp from 'src/components/AudioApp';
-import { Spin, Avatar } from '@arco-design/web-react';
+import { Avatar, Spin } from '@arco-design/web-react';
 import { IconInfoCircle } from '@arco-design/web-react/icon';
-import { useSelector } from 'react-redux';
+import AudioApp from 'src/components/AudioApp';
+import HtmlApp from 'src/components/HtmlApp';
+import { SendingStatus } from 'src/core/chat_message';
+import { MessageType } from 'src/core/message';
+import xss from 'xss';
 import '../styles/message.scss';
 
 function Message(props) {
-    const userInfo = useSelector((state: any) => state.container.userInfo);
-    const messageAlign = props.message.IsMe ? 'flex-row-reverse to' : 'flex-row form';
+    const messageAlign = props.userInfo.Uid === props.message.from ? 'flex-row-reverse to' : 'flex-row form';
     const MessageHtml = ({ message }) => {
-        if (message.Type === MessageType.Image) {
+        if (message.type === MessageType.Image) {
             return <img src={message.Content} alt="2" />;
         }
-        if (message.Type === MessageType.Audio) {
+        if (message.type === MessageType.Audio) {
             return <AudioApp src={message.Content} />;
 
             // <audio className="mr-2" style={{ height: 36, width: 240 }} src={message.Content} controls />;
@@ -23,7 +21,7 @@ function Message(props) {
 
         return (
             <div className="break-words room-content-wrapper-item-message">
-                <HtmlApp html={xss(props.message.Content)} className="message-item" />
+                <HtmlApp html={xss(props.message.content)} className="message-item" />
             </div>
         );
     };
@@ -48,10 +46,10 @@ function Message(props) {
     return (
         <div className={`flex ${messageAlign} room-content-wrapper-item`}>
             <div className=" room-content-wrapper-item-avatar">
-                <Avatar>{userInfo.avatar ? <img src={userInfo.avatar} alt="" className="src" /> : userInfo.Uid}</Avatar>
+                <Avatar>{props.userInfo.avatar ? <img src={props.userInfo.avatar} alt="" className="src" /> : props.userInfo.Uid}</Avatar>
             </div>
             {<MessageHtml message={props.message} />}
-            <MessageStatus sending={props.message.Sending} />
+            {/* <MessageStatus sending={props.message.Sending} /> */}
         </div>
     );
 }

@@ -1,7 +1,7 @@
 export interface ContactsType {
     avatar: string;
     name: string;
-    message?: string;
+    message_count: number;
     uid?: number;
     motto?: string;
 }

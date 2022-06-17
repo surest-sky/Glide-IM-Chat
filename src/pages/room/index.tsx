@@ -1,21 +1,20 @@
-import { Avatar, Divider, Grid, Image, Spin } from '@arco-design/web-react';
+import { Avatar, Divider, Grid, Image } from '@arco-design/web-react';
 import dayjs from 'dayjs';
+import { useLiveQuery } from 'dexie-react-hooks';
 import { useEffect, useRef, useState } from 'react';
-import { delay } from 'rxjs';
+import { useDispatch, useSelector } from 'react-redux';
 import AudioHtml from 'src/components/AudioHtml';
-import { ChatMessage } from 'src/core/chat_message';
-import { LiveChat } from 'src/core/live_chat';
-import { MessageType } from 'src/core/message';
+import { Message, MessageType } from 'src/core/message';
 import { Session } from 'src/core/session';
+import { db } from 'src/services/db';
+import { updateChatWithUser } from 'src/store/reducer/chat';
 import { scrollToBottom } from 'src/utils/Utils';
 import Editor from './components/editor';
-import Message from './components/message';
+import MessageComponent from './components/message';
 import Tools from './components/tools';
 import Menu from './menu';
-import { useSelector, useDispatch } from 'react-redux';
 import Modules from './modules';
-import { ChatRobot } from './store/chatrd';
-import { updateChatWithUser } from 'src/store/reducer/chat';
+import { switchRoom } from 'src/services/chat_db';
 import './styles/room.scss';
 
 const Row = Grid.Row;
@@ -24,8 +23,8 @@ const Col = Grid.Col;
 const Room = () => {
     const dispatch = useDispatch();
     // const [session, setSession] = useState<Session | null>(null);
-    const [messages, setMessages] = useState<ChatMessage[]>([]);
-    const [loading, setLoading] = useState<boolean>(false);
+    const [messages, setMessages] = useState<Message[]>([]);
+    const _messages = useLiveQuery(() => db.activeChat.toArray());
     const editorRef = useRef<any>(null);
     const [imageVisible, setImageVisible] = useState<any>({
         visible: false,
@@ -35,37 +34,29 @@ const Room = () => {
     const chatWithUser = useSelector((state: any) => state.chat.chatWithUser);
     const session = useRef<Session>(null);
 
-    const isRoomMessage = (message, chatWithUser) => {
-        // 我发给对方
-        if (message.To === chatWithUser.uid && message.From === userInfo.Uid) {
-            return true;
-        }
-
-        // 对方发给我
-        if (message.To === userInfo.Uid && message.From === chatWithUser.uid) {
-            return true;
-        }
-
-        console.log(chatWithUser);
-        console.log(message.To, chatWithUser.uid, '----', message.From, userInfo.Uid);
-        return false;
-    };
-
     useEffect(() => {
         session.current = window.ChatSession;
     }, []);
 
+    // useEffect(() => {
+    //     return session.current.setMessageListener(message => {
+    //         if (!isRoomMessage(message, chatWithUser)) {
+    //             return;
+    //         }
+    //         setMessages(messages => [...messages, message]);
+    //         setTimeout(() => {
+    //             scrollToBottom('.room-content');
+    //         }, 100);
+    //     });
+    // });
+
+    // 延迟触发
     useEffect(() => {
-        return session.current.setMessageListener(message => {
-            if (!isRoomMessage(message, chatWithUser)) {
-                return;
-            }
-            setMessages(messages => [...messages, message]);
-            setTimeout(() => {
-                scrollToBottom('.room-content');
-            }, 100);
+        setMessages(_messages ? _messages : []);
+        setTimeout(() => {
+            scrollToBottom('.room-content');
         });
-    });
+    }, [_messages]);
 
     // const initFirstMessage = () => {
     //     return;
@@ -82,6 +73,7 @@ const Room = () => {
     const changechatWithUser = chatWithUser => {
         dispatch(updateChatWithUser({ chatWithUser }));
         session.current.setToId(chatWithUser.uid);
+        switchRoom(userInfo.Uid, chatWithUser.uid);
     };
 
     /**
@@ -143,7 +135,7 @@ const Room = () => {
             return _date;
         }
 
-        let lastAt = dayjs(messages[key - 1].SendAt * 1000);
+        let lastAt = dayjs(messages[key - 1].sendAt * 1000);
         if (dateDayjs.diff(lastAt, 'minute') > 1) {
             return _date;
         }
@@ -170,24 +162,17 @@ const Room = () => {
     };
 
     const MsgList = messages.map((message, key) => {
-        const _dateline = dateLine(message.SendAt, key);
+        const _dateline = dateLine(message.sendAt, key);
         return (
             <div key={key}>
                 {_dateline ? <div className="mt-5 mb-5 text-xs text-center text-gray-500">{_dateline}</div> : <></>}
-                <Message setVisible={setImageVisible} key={message.SendAt} message={message} />
+                <MessageComponent userInfo={userInfo} setVisible={setImageVisible} key={message.sendAt} message={message} />
             </div>
         );
     });
 
-    let content: any;
-    if (loading) {
-        content = (
-            <div className="flex items-center justify-center w-full h-full loadin-container">
-                <Spin className="mr-2" /> 加入中...
-            </div>
-        );
-    } else {
-        content = (
+    return (
+        <div className="room">
             <div className="room-container">
                 <Row className="h-full">
                     <Col span={1} xl={1} lg={1} md={1} className="h-full p-2 bg-black bg-white bg-gray-400 border-r">
@@ -260,10 +245,8 @@ const Room = () => {
                 />
                 <AudioHtml />
             </div>
-        );
-    }
-
-    return <div className="room">{content}</div>;
+        </div>
+    );
 };
 
 export default Room;

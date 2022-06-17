@@ -6,6 +6,9 @@ import React, { useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { addContactsApi, getContactsListApi, userInfoApi } from 'src/api/im/im';
 import { ContactsType } from 'src/core/chat_type';
+import { useLiveQuery } from 'dexie-react-hooks';
+import { db } from 'src/services/db';
+import { addBlukContacts } from 'src/services/chat_db';
 import './styles/menu.scss';
 
 const Menu = (props: any) => {
@@ -14,6 +17,7 @@ const Menu = (props: any) => {
     const [contactsList, setContactsList] = useState<Array<ContactsType>>([]);
     const allAontactList = useRef<Array<ContactsType>>([]);
     const chatWithUser = useSelector((state: any) => state.chat.chatWithUser);
+    const _contactsList = useLiveQuery(() => db.contacts.toArray());
 
     const addContacts = () => {
         return addContactsApi({ Uid: parseInt(value), Remark: '备注' + value });
@@ -63,8 +67,9 @@ const Menu = (props: any) => {
                 };
             });
             console.log('contactsList', contactsList);
-            setContactsList(_contactsList);
-            allAontactList.current = _contactsList;
+            // setContactsList(_contactsList);
+            // allAontactList.current = _contactsList;
+            addBlukContacts(_contactsList);
             props.changechatWithUser(lodash.get(_contactsList, 0));
         } catch (error) {}
     };
@@ -96,18 +101,20 @@ const Menu = (props: any) => {
                 avatar: 'https://api.surest.cn/storage/resource/20220511/1652258608-1652258607609.png',
                 name: 'Lang',
                 motto: '推动科技同经济深度融合热',
+                message_count: 0,
                 uid: 12,
             },
             {
                 avatar: 'http://cdn.surest.cn/iDJFWYmJX6maB6MhGawiZBhsz3xJT8zb',
                 name: '峰',
-                message: '欢迎欢迎！',
+                message_count: 0,
                 motto: '名画《蒙娜丽莎》被游客扔蛋糕',
                 uid: 13,
             },
             {
                 avatar: 'https://api.surest.cn/storage/resource/20220530/1653891906-1653891905754.png',
                 name: '峰',
+                message_count: 0,
                 uid: 14,
                 motto: '欢迎欢迎！',
             },
@@ -149,7 +156,7 @@ const Menu = (props: any) => {
                 size={'small'}
                 split={false}
                 className="contacts-list scrollbar"
-                dataSource={contactsList}
+                dataSource={_contactsList}
                 render={(item, index) => (
                     <List.Item
                         onClick={() => {
@@ -158,7 +165,7 @@ const Menu = (props: any) => {
                         key={index}
                         className={chatWithUser.uid === item.uid ? 'active' : ''}
                     >
-                        <List.Item.Meta avatar={<Avatar shape="square">{item.avatar ? <img alt="avatar" src={item.avatar} /> : item.uid}</Avatar>} title={item.name} description={item.message} />
+                        <List.Item.Meta avatar={<Avatar shape="square">{item.avatar ? <img alt="avatar" src={item.avatar} /> : item.uid}</Avatar>} title={item.name} description={item.motto} />
                     </List.Item>
                 )}
             />

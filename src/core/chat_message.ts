@@ -60,4 +60,17 @@ export class ChatMessage {
             this.updateListener(this);
         }
     }
+
+    public revertMessage(): Message {
+        return {
+            mid: this.Mid,
+            seq: 0,
+            from: this.From,
+            to: this.To,
+            type: this.Type,
+            content: this.Content,
+            sendAt: this.SendAt,
+            status: this.Status,
+        };
+    }
 }
