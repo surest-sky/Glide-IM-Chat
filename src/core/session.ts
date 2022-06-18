@@ -1,11 +1,11 @@
-import { map, mergeMap, Observable } from 'rxjs';
+import { map, mergeMap, min, Observable } from 'rxjs';
 import { UserInfoBean } from 'src/api/model';
 import { onNext } from 'src/rx/next';
 import { timeStampSecToDate } from 'src/utils/TimeUtils';
 import { Api } from '../api/api';
 import { ChatMessage, SendingStatus } from './chat_message';
 import { LiveChat } from './live_chat';
-import { CliCustomMessage, ClientMessageType, Message, MessageType } from './message';
+import { CliCustomMessage, Recall, ClientMessageType, Message, MessageType } from './message';
 import { Ws } from './ws';
 
 // 会话更新监听器, 例如消息接收
@@ -165,5 +165,15 @@ export class Session {
                 return r;
             })
         );
+    }
+
+    // 发送撤回消息
+    public sendByRecall(mid: number, from: number) {
+        const recall: Recall = {
+            Mid: mid,
+            RecallBy: from,
+        };
+        Ws.sendRecallMessage(recall);
+        console.log('消息撤回', mid, from);
     }
 }

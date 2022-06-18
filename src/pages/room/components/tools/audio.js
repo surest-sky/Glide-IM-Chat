@@ -1,40 +1,10 @@
 import { Button } from 'react-daisyui';
-import { Button as Abutton } from '@arco-design/web-react';
 
-import { useState, useRef, useEffect } from 'react';
-import { ReactComponent as AudioSvg } from 'src/static/svg/audio.svg';
-import { ReactComponent as AudioRecordSvg } from 'src/static/svg/audio-record.svg';
+import { useEffect, useRef, useState } from 'react';
 import { uploadFile } from 'src/services/upload';
+import { ReactComponent as AudioRecordSvg } from 'src/static/svg/audio-record.svg';
+import { ReactComponent as AudioSvg } from 'src/static/svg/audio.svg';
 
-const Audio = ({ audio, sendChatMessage }) => {
-    const [sendAudio, setSendAudio] = useState({
-        loading: false,
-        src: '',
-    });
-
-    const send = async audio => {
-        setSendAudio({ loading: true, src: '' });
-        const { data } = await uploadFile(audio.blob, `${new Date().getTime()}.mp3`);
-        setSendAudio({ loading: false, src: data.data.url });
-        sendChatMessage(JSON.stringify({ url: data.data.url, duration: audio.duration }));
-    };
-
-    return (
-        <div className="flex items-center justify-between w-full ml-5">
-            <audio className="mr-2" style={{ height: 36, width: 240 }} src={audio.stream} controls />
-            <Abutton
-                className="w-full"
-                type="text"
-                loading={sendAudio.loading}
-                onClick={() => {
-                    send(audio);
-                }}
-            >
-                发送
-            </Abutton>
-        </div>
-    );
-};
 
 const AudioRecord = ({ sendChatMessage }) => {
     const [state, setState] = useState('waiting');
@@ -69,7 +39,6 @@ const AudioRecord = ({ sendChatMessage }) => {
     };
 
     useEffect(() => {
-        console.log(233);
         initRecord();
 
         return () => {
@@ -111,20 +80,17 @@ const AudioRecord = ({ sendChatMessage }) => {
     };
     return (
         <div className="flex w-full">
-            <Button className="w-full" onMouseUp={stop} onTouchEnd={stop} onTouchStart={start} onMouseDown={start}>
-                {state === 'waiting' ? (
-                    <>
-                        <AudioSvg />
-                        <span className="ml-2">长按开始录制</span>
-                    </>
-                ) : (
-                    <>
-                        <AudioRecordSvg />
-                        <span className="ml-2">松开暂停</span>
-                    </>
-                )}
-            </Button>
-
+            {state === 'waiting' ? (
+                <Button className="w-full" onClick={start} >
+                    <AudioSvg />
+                    <span className="ml-2">开始录制</span>
+                </Button>
+            ) : (
+                <Button className="w-full">
+                    <AudioRecordSvg />
+                    <span className="ml-2" onClick={stop}>发送</span>
+                </Button>
+            )}
             {/* {audio.stream ? <Audio audio={audio} sendChatMessage={sendChatMessage} /> : null} */}
         </div>
     );

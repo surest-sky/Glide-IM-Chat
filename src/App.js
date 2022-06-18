@@ -2,7 +2,7 @@ import { Modal, Message } from '@arco-design/web-react';
 import { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { userAuthApi, userInfoApi } from 'src/api/im/im';
-import { getAuthInfo } from 'src/services/auth';
+import { getAuthInfo, setLogout } from 'src/services/auth';
 import Routers from './routers/index';
 import store from 'src/store/index';
 import { updateAuthInfo, updateUserInfo } from 'src/store/reducer/container';
@@ -23,8 +23,6 @@ function App() {
 
     const fetchUserInfo = async (authInfo) => {
         const { data } = await userInfoApi({ Uid: [authInfo.Uid] });
-        console.log('authInfo2', authInfo.Uid);
-        console.log('data', data.Data[0]);
         store.dispatch(updateUserInfo(data.Data[0]));
         initChatSession(() => { setLoading(false) })
     };
@@ -39,10 +37,8 @@ function App() {
         userAuthApi({ Token: userInfo.Token }).then(res => {
             const data = res.data.Data
             store.dispatch(updateAuthInfo(data));
-            console.log("res", res.data.Data)
             fetchUserInfo(data)
         }).catch(err => {
-            console.log(err)
             reLogin()
         })
     }
@@ -52,7 +48,11 @@ function App() {
             setLoading(false)
             return
         }
-        fetchUserAuth()
+        try {
+            fetchUserAuth()
+        } catch (error) {
+            setLogout()
+        }
 
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);

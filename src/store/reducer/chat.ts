@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { getContacts } from 'src/api/im/im';
+import { getContacts, withdrawMessageApi } from 'src/api/im/im';
 import { ContactsType } from 'src/core/chat_type';
 import { addBlukContacts } from 'src/services/chat_db';
 
@@ -29,6 +29,13 @@ const chatReducers = {
             addBlukContacts(constacts);
         });
     },
+
+    // 消息撤回
+    withdrawMessage: (state, { payload }) => {
+        console.log('payload', payload);
+        const { mid, from } = payload;
+        withdrawMessageApi(mid, from);
+    },
 };
 
 export const Chat = createSlice({
@@ -37,6 +44,6 @@ export const Chat = createSlice({
     reducers: chatReducers,
 });
 
-export const { updateChatWithUser, updateContacts } = Chat.actions;
+export const { updateChatWithUser, withdrawMessage, updateContacts } = Chat.actions;
 
 export default Chat.reducer;

@@ -1473,6 +1473,18 @@
     redux-thunk "^2.4.1"
     reselect "^4.1.5"
 
+"@right-menu/core@^0.0.7":
+  version "0.0.7"
+  resolved "https://registry.npmmirror.com/@right-menu/core/-/core-0.0.7.tgz#65a731cc48b15b782d527e9a19d803c3281bb89b"
+  integrity sha512-DMqdTOfFflBWrBcmsq4oP+vDn47d4YopjOALVxSpt/KJdV0TYwsGiIXMPomd46eHjTHJS7NDDsfajPastgPR7w==
+
+"@right-menu/react@0.0.5":
+  version "0.0.5"
+  resolved "https://registry.npmmirror.com/@right-menu/react/-/react-0.0.5.tgz#be6f60320188b440ceee16cb3c47aae0a066dc69"
+  integrity sha512-x56/leWtW+cQhMNwEFxOTnhlGgCETzx4RWrnMq6Be7Bll/kcdzfprozoNUEDcTM1HykcSwxeSxIDuV/KwrzVsQ==
+  dependencies:
+    "@right-menu/core" "^0.0.7"
+
 "@rollup/plugin-babel@^5.2.0":
   version "5.3.1"
   resolved "https://registry.npmmirror.com/@rollup/plugin-babel/-/plugin-babel-5.3.1.tgz#04bc0608f4aa4b2e4b1aebf284344d0f68fda283"

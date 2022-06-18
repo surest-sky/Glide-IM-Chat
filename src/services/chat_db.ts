@@ -100,8 +100,6 @@ export const getMessagesByOne = (from: number, to: number) => {
 export const switchRoom = async (from: number, to: number) => {
     clearRoomMessages();
     getMessagesByOne(from, to).then(messages => {
-        console.log('messages', messages);
-        console.log('from, to', from, to);
         addBlukRoomMessages(messages);
     });
 };

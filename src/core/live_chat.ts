@@ -151,6 +151,7 @@ export class LiveChat {
                 this.session?.onCliCustomMessage(m2);
                 break;
             case Actions.MessageChatRecall:
+                console.log('接收到消息撤回的提醒: ', m);
                 break;
             case Actions.NotifyKickOut:
                 alert('被挤下线了, 重新登录');

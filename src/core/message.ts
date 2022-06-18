@@ -88,7 +88,7 @@ export interface AckMessage {
 
 // 撤回
 export interface Recall {
-    Mid: string;
+    Mid: number;
     RecallBy: number;
 }
 

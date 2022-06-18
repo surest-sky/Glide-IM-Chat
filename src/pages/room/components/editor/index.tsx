@@ -52,7 +52,6 @@ const Editor = forwardRef((props: any, ref) => {
         event.preventDefault();
 
         const file = await pasteImage(event);
-        console.log('file', file);
         if (file) {
             setSrc(file);
             const url = await uploadBase64File(file);

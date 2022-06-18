@@ -14,7 +14,7 @@ import MessageComponent from './components/message';
 import Tools from './components/tools';
 import Menu from './menu';
 import Modules from './modules';
-import { dateLine } from 'src/utils/Utils';
+import { dateLine, eventDelegation } from 'src/utils/Utils';
 import './styles/room.scss';
 
 const Row = Grid.Row;
@@ -33,6 +33,23 @@ const Room = () => {
     const chatWithUser = useSelector((state: any) => state.chat.chatWithUser);
     const session = useRef<Session>(null);
 
+    // 绑定图片显示
+    const bindImageWrapper = () => {
+        eventDelegation(document.querySelector('.room-content-wrapper'), 'click', 'img', el => {
+            console.log('el');
+            setImageVisible(v => {
+                const src = el.getAttribute('src');
+                if (v.visible === false) {
+                    return {
+                        visible: true,
+                        src: src,
+                    };
+                }
+                return v;
+            });
+        });
+    };
+
     useEffect(() => {
         session.current = window.ChatSession;
     }, []);
@@ -44,6 +61,12 @@ const Room = () => {
             scrollToBottom('.room-content');
         });
     }, [_messages]);
+
+    useEffect(() => {
+        return () => {
+            bindImageWrapper();
+        };
+    });
 
     /**
      * 修改聊天对象
