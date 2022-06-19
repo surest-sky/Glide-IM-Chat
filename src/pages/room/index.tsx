@@ -5,6 +5,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import AudioHtml from 'src/components/AudioHtml';
 import { Message, MessageType } from 'src/core/message';
 import { Session } from 'src/core/session';
+import RightMenu from '@right-menu/react';
+import { ConfigType, OptionsType } from '@right-menu/core';
 import { switchRoom } from 'src/services/chat_db';
 import { db } from 'src/services/db';
 import { updateChatWithUser } from 'src/store/reducer/chat';
@@ -15,6 +17,7 @@ import Tools from './components/tools';
 import Menu from './menu';
 import Modules from './modules';
 import { dateLine, eventDelegation } from 'src/utils/Utils';
+import { removeMessages } from 'src/services/chat_db';
 import './styles/room.scss';
 
 const Row = Grid.Row;
@@ -32,6 +35,16 @@ const Room = () => {
     const userInfo = useSelector((state: any) => state.container.userInfo);
     const chatWithUser = useSelector((state: any) => state.chat.chatWithUser);
     const session = useRef<Session>(null);
+    const options: OptionsType = [
+        {
+            type: 'li',
+            style: { padding: '10px 26px 10px 8px' },
+            text: '清空',
+            callback: () => {
+                removeMessages(userInfo.Uid, chatWithUser.uid);
+            },
+        },
+    ];
 
     // 绑定图片显示
     const bindImageWrapper = () => {
@@ -98,7 +111,7 @@ const Room = () => {
         return (
             <div key={key}>
                 {_dateline ? <div className="mt-5 mb-5 text-xs text-center text-gray-500">{_dateline}</div> : <></>}
-                <MessageComponent userInfo={userInfo} setVisible={setImageVisible} key={message.sendAt} message={message} />
+                <MessageComponent sendChatMessage={sendChatMessage} userInfo={userInfo} setVisible={setImageVisible} key={message.sendAt} message={message} />
             </div>
         );
     });
@@ -127,9 +140,12 @@ const Room = () => {
                                 </div>
                                 <div className="room-body">
                                     <div className="chat-body">
-                                        <div className="room-content scrollbar">
-                                            <div className="room-content-wrapper">{MsgList}</div>
-                                        </div>
+                                        <RightMenu theme={''} minWidth={200} maxWidth={200} onAfterInit={() => {}} onBeforeInit={() => {}} options={options}>
+                                            <div className="room-content scrollbar">
+                                                <div className="room-content-wrapper">{MsgList}</div>
+                                            </div>
+                                        </RightMenu>
+
                                         <Editor editorRef={editorRef} sendChatMessage={sendChatMessage} />
                                     </div>
                                 </div>

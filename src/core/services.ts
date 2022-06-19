@@ -3,9 +3,11 @@ import { ChatMessage } from './chat_message';
 import { setLogout } from 'src/services/auth';
 import { LiveChat } from 'src/core/live_chat';
 import { delay } from 'rxjs';
-import { addMessage } from 'src/services/chat_db';
+import { addMessage, withdrawMessage } from 'src/services/chat_db';
 import store from 'src/store/index';
 import { updateContacts } from 'src/store/reducer/chat';
+import { MessageType } from 'src/core/message';
+
 declare global {
     interface Window {
         ChatSession: Session;
@@ -32,7 +34,17 @@ const registerHanders = (session: Session) => {
     session.setMessageListener((message: ChatMessage) => {
         // 注册事件触发
         console.log('我是来自接受到的 message', message);
-        addMessage(message.revertMessage());
+        const convertMessage = message.revertMessage();
+
+        // 消息撤回
+        if (message.Type === MessageType.Recall) {
+            convertMessage.mid = parseInt(convertMessage.content);
+            withdrawMessage(convertMessage);
+            return;
+        }
+
+        // 添加一条消息到 库中
+        addMessage(convertMessage);
     });
 };
 

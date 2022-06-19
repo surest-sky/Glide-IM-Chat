@@ -18,6 +18,11 @@ export interface MessageInputListener {
     (): void;
 }
 
+// 消息撤回
+export interface MessageRecallListener {
+    (): void;
+}
+
 export class Session {
     public Avatar: string;
     public Title: string;
@@ -31,6 +36,7 @@ export class Session {
     private messageListener: ((message: ChatMessage) => void) | null = null;
     private sessionUpdateListener: SessionUpdateListener | null = null;
     private messageInputListener: MessageInputListener | null = null;
+    private messageRecallListener: MessageRecallListener | null = null;
 
     constructor(userinfo: UserInfoBean) {
         this.Avatar = userinfo.Avatar;
@@ -92,6 +98,10 @@ export class Session {
         this.messageListener = listener;
     }
 
+    public setMessageRecallListener(listener: MessageRecallListener | null) {
+        this.messageRecallListener = listener;
+    }
+
     public getMessages(): ChatMessage[] {
         return Array.from(this.messageMap.values());
     }
@@ -138,6 +148,7 @@ export class Session {
     }
 
     public send(content: string, type: number): Observable<ChatMessage> {
+        console.log('typetypetypetype', type);
         return Api.getMid().pipe(
             map(resp => {
                 const time = Date.parse(new Date().toString()) / 1000;
@@ -154,6 +165,7 @@ export class Session {
             }),
             onNext(msg => {
                 const r = ChatMessage.create(msg);
+                console.log('rrrr', r);
                 r.Sending = SendingStatus.Sending;
                 this.addMessageByOrder(r);
             }),

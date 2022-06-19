@@ -1,26 +1,36 @@
 import { Avatar, Spin } from '@arco-design/web-react';
-import { IconInfoCircle } from '@arco-design/web-react/icon';
+import { IconInfoCircle, } from '@arco-design/web-react/icon';
 import RightMenu from '@right-menu/react';
 import AudioApp from 'src/components/AudioApp';
 import HtmlApp from 'src/components/HtmlApp';
 import { SendingStatus } from 'src/core/chat_message';
 import { MessageType } from 'src/core/message';
-import store from 'src/store/index';
-import { withdrawMessage } from 'src/store/reducer/chat';
-
+import { removeMessage } from 'src/services/chat_db';
 import xss from 'xss';
 import '../styles/message.scss';
 
 function Message(props) {
-    const { mid, from } = props.message
-    const options = [{
-        type: 'li',
-        style: { padding: '10px 26px 10px 8px' },
-        text: '撤回',
-        callback: () => {
-            store.dispatch(withdrawMessage({ mid, from }));
+    const options = [
+        {
+            type: 'li',
+            style: { padding: '10px 26px 10px 8px' },
+            text: '撤回',
+            callback: () => {
+                props.sendChatMessage(props.message.mid, MessageType.Recall);
+            },
         },
-    }]
+        {
+            type: 'hr'
+        },
+        {
+            type: 'li',
+            style: { padding: '10px 26px 10px 8px' },
+            text: "删除",
+            callback: () => {
+                removeMessage(props.message)
+            }
+        }
+    ];
     const messageAlign = props.userInfo.Uid === props.message.from ? 'flex-row-reverse to' : 'flex-row form';
     const MessageHtml = ({ message }) => {
         if (message.type === MessageType.Image) {
@@ -28,9 +38,8 @@ function Message(props) {
         }
         if (message.type === MessageType.Audio) {
             return <AudioApp src={message.content} />;
-
-            // <audio className="mr-2" style={{ height: 36, width: 240 }} src={message.Content} controls />;
         }
+
 
         return (
             <div className="break-words room-content-wrapper-item-message">
@@ -38,6 +47,11 @@ function Message(props) {
             </div>
         );
     };
+
+    const who = props.userInfo.Uid === props.message.from ? "你撤回了一条消息" : "他撤回了一条消息"
+    if (props.message.type === MessageType.Recall) {
+        return <div className="text-center text-gray-400">{who}</div>
+    }
 
     const MessageStatus = ({ sending }) => {
         return <></>;
@@ -62,11 +76,19 @@ function Message(props) {
                 <Avatar>{props.userInfo.avatar ? <img src={props.userInfo.avatar} alt="" className="src" /> : props.userInfo.Uid}</Avatar>
             </div>
             {/* <MessageStatus sending={props.message.Sending} /> */}
-            <RightMenu options={options}>
-                <div>
-                    {<MessageHtml message={props.message} />}
-                </div>
-            </RightMenu>
+            {
+                props.userInfo.Uid === props.message.from ?
+                    <RightMenu options={options}>
+                        <div>
+                            {<MessageHtml message={props.message} />}
+                        </div>
+                    </RightMenu>
+                    :
+                    <div>
+                        {<MessageHtml message={props.message} />}
+                    </div>
+            }
+
         </div>
     );
 }

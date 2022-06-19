@@ -85,8 +85,3 @@ export async function getContacts() {
         return []
     }
 }
-
-// 消息撤回
-export async function withdrawMessageApi(mid, from) {
-    window.ChatSession.sendByRecall(mid, from)
-}

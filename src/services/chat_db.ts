@@ -2,6 +2,7 @@ import { db } from './db';
 import { Message } from 'src/core/message';
 import { ContactsType } from 'src/core/chat_type';
 import store from 'src/store/index';
+import { MessageType } from 'src/core/message';
 
 const isRoomMessage = (message: Message): boolean => {
     const currentUser = store.getState().container.userInfo;
@@ -60,6 +61,14 @@ export const addMessage = (message: Message) => {
     db.chat.add(message);
 };
 
+// 消息撤回
+export const withdrawMessage = (message: Message) => {
+    if (isRoomMessage(message)) {
+        withdrawRoomMessage(message);
+    }
+    db.chat.where({ mid: message.mid }).modify(f => (f.type = MessageType.Recall));
+};
+
 // 移除某一条消息 | 只是针对当前窗口移除 | 不等于撤回双方消息
 export const removeMessage = (message: Message) => {
     if (isRoomMessage(message)) {
@@ -83,6 +92,11 @@ export const removeRoomMessage = (message: Message) => {
     db.activeChat.where({ mid: message.mid }).delete();
 };
 
+// 房间内撤回双方消息
+export const withdrawRoomMessage = (message: Message) => {
+    db.activeChat.where({ mid: message.mid }).modify(f => (f.type = MessageType.Recall));
+};
+
 // 给当前活动的房间内添加一条消息
 export const addBlukRoomMessages = (messageList: Message[]) => {
     db.activeChat.bulkAdd(messageList);
@@ -104,11 +118,14 @@ export const switchRoom = async (from: number, to: number) => {
     });
 };
 
+// 消息移除
+export const removeMessages = (from: number, to: number) => {
+    db.chat.where({ from: from, to: to }).delete();
+    db.activeChat.where({ from: from, to: to }).delete();
+};
+
 // 消息已读
 export const readRoomMessage = () => {};
-
-// 消息撤回
-export const withdrawRoomMessage = () => {};
 
 // 消息发送中 pending
 export const sendPendingRoomMessage = () => {};
