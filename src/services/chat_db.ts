@@ -130,6 +130,9 @@ export const switchRoom = async (from: number, to: number) => {
 export const removeMessages = (from: number, to: number) => {
     db.chat.where({ from: from, to: to }).delete();
     db.activeChat.where({ from: from, to: to }).delete();
+
+    db.chat.where({ from: to, to: from }).delete();
+    db.activeChat.where({ from: to, to: from }).delete();
 };
 
 // 消息已读
