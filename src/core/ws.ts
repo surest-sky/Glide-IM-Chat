@@ -186,8 +186,8 @@ class WebSocketClient {
         );
     }
 
-    public sendRecallMessage(m: Recall): Observable<Recall> {
-        return this.createCommonMessage(Actions.MessageChatRecall, m).pipe(
+    public sendRecallMessage(m: Recall) {
+        return this.createCommonMessage(Actions.MessageChat, m).pipe(
             mergeMap(msg => this.send(msg)),
             map(() => m)
         );

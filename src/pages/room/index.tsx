@@ -89,6 +89,10 @@ const Room = () => {
         switchRoom(userInfo.Uid, chatWithUser.uid);
     };
 
+    const sendRecallMessage = (mid: number, from: number) => {
+        session.current.sendByRecall(mid, from);
+    };
+
     // 发送消息
     const sendChatMessage = (message: string, type: MessageType, callback: any) => {
         session.current.send(message, type).subscribe({
@@ -109,7 +113,7 @@ const Room = () => {
         return (
             <div key={key}>
                 {_dateline ? <div className="mt-5 mb-5 text-xs text-center text-gray-500">{_dateline}</div> : <></>}
-                <MessageComponent sendChatMessage={sendChatMessage} userInfo={userInfo} setVisible={setImageVisible} key={message.sendAt} message={message} />
+                <MessageComponent sendRecallMessage={sendRecallMessage} sendChatMessage={sendChatMessage} userInfo={userInfo} setVisible={setImageVisible} key={message.sendAt} message={message} />
             </div>
         );
     });

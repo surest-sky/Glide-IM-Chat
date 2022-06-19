@@ -174,6 +174,11 @@ export class Session {
                 const r = ChatMessage.create(resp);
                 r.Sending = SendingStatus.Sent;
                 this.addMessageByOrder(r);
+
+                // if (r.Type === MessageType.Recall) {
+                //     // 消息撤回
+                //     this.sendByRecall(r.Mid, r.From);
+                // }
                 return r;
             })
         );
@@ -185,7 +190,6 @@ export class Session {
             Mid: mid,
             RecallBy: from,
         };
-        Ws.sendRecallMessage(recall);
-        console.log('消息撤回', mid, from);
+        Ws.sendRecallMessage(recall).pipe().subscribe();
     }
 }
