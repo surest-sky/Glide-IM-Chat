@@ -1,5 +1,6 @@
 import { map, mergeMap, min, Observable } from 'rxjs';
 import { UserInfoBean } from 'src/api/model';
+import Message from 'src/pages/room/components/message';
 import { onNext } from 'src/rx/next';
 import { timeStampSecToDate } from 'src/utils/TimeUtils';
 import { Api } from '../api/api';
@@ -185,11 +186,44 @@ export class Session {
     }
 
     // 发送撤回消息
-    public sendByRecall(mid: number, from: number) {
+    public recallMessage(mid: number) {
         const recall: Recall = {
             Mid: mid,
-            RecallBy: from,
+            RecallBy: LiveChat.getInstance().getUID(),
         };
-        Ws.sendRecallMessage(recall).pipe().subscribe();
+        return Api.getMid().pipe(
+            map(resp => {
+                const time = Date.parse(new Date().toString()) / 1000;
+                return {
+                    content: recall,
+                    from: LiveChat.getInstance().getUID(),
+                    mid: resp.Mid,
+                    sendAt: time,
+                    seq: 0,
+                    to: this.To,
+                    type: MessageType.Recall,
+                    status: 0,
+                };
+            }),
+            onNext(msg => {
+                const r = ChatMessage.create(msg);
+                console.log('rrrr', r);
+                r.Sending = SendingStatus.Sending;
+                this.addMessageByOrder(r);
+            }),
+            mergeMap(msg => Ws.sendChatMessage(msg)),
+            map(resp => {
+                const r = ChatMessage.create(resp);
+                r.Sending = SendingStatus.Sent;
+                this.addMessageByOrder(r);
+
+                // if (r.Type === MessageType.Recall) {
+                //     // 消息撤回
+                //     this.sendByRecall(r.Mid, r.From);
+                // }
+                return r;
+            })
+        );
     }
+
 }
