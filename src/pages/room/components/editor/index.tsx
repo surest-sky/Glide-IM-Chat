@@ -27,7 +27,8 @@ const Editor = forwardRef((props: any, ref) => {
     };
 
     const _sendMessage = () => {
-        sendMessage(xss(getMessage()));
+        const m = xss(getMessage());
+        m.length && sendMessage(m);
         resetEditor();
     };
 
@@ -108,7 +109,6 @@ const Editor = forwardRef((props: any, ref) => {
                 ref={editorRef}
                 suppressContentEditableWarning
                 onKeyDown={(event: any) => {
-                    console.log(event.keyCode);
                     if (event.keyCode === 13 && event.shiftKey === false) {
                         event.preventDefault();
                         _sendMessage();

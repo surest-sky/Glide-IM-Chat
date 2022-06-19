@@ -48,6 +48,12 @@ export const decrContactsMessageCount = (uid: number) => {
     db.contacts.where({ uid }).modify(f => --f.message_count);
 };
 
+// 给联系人清空消息提醒
+export const clearContactsMessageCount = (uid: number) => {
+    console.log('uid', 'clearContactsMessageCount', uid);
+    db.contacts.where({ uid }).modify(f => (f.message_count = 0));
+};
+
 // 给联系人添加一条消息提醒
 export const incrContactsMessageCount = (uid: number) => {
     db.contacts.where({ uid }).modify(f => ++f.message_count);
@@ -57,6 +63,8 @@ export const incrContactsMessageCount = (uid: number) => {
 export const addMessage = (message: Message) => {
     if (isRoomMessage(message)) {
         addRoomMessages(message);
+    } else {
+        incrContactsMessageCount(message.from);
     }
     db.chat.add(message);
 };

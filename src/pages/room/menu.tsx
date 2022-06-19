@@ -1,15 +1,16 @@
-import { Avatar, Button, Input, List, Message, Modal } from '@arco-design/web-react';
+import { Avatar, Badge, Button, Input, List, Message, Modal } from '@arco-design/web-react';
 import { IconPlus } from '@arco-design/web-react/icon';
 import { useRequest } from 'ahooks';
 import { useLiveQuery } from 'dexie-react-hooks';
-import { useEffect, useState, memo } from 'react';
+import { useEffect, useState, useCallback, memo } from 'react';
 import { useSelector } from 'react-redux';
 import { addContactsApi } from 'src/api/im/im';
 import { ContactsType } from 'src/core/chat_type';
 import { updateContacts } from 'src/store/reducer/chat';
 import { db } from 'src/services/db';
+import { clearContactsMessageCount } from 'src/services/chat_db';
 import store from 'src/store/index';
-import { get } from 'lodash';
+import { get, orderBy } from 'lodash';
 import './styles/menu.scss';
 
 const Menu = (props: any) => {
@@ -57,14 +58,23 @@ const Menu = (props: any) => {
         });
     };
 
-    useEffect(() => {
-        setContactsList(() => {
+    const updateContactsList = useCallback(() => {
+        setContactsList(v => {
             if (_contactsList && _contactsList.length) {
-                props.changechatWithUser(get(_contactsList, 0));
+                if (!v.length) {
+                    props.changechatWithUser(get(_contactsList, 0));
+                }
                 return _contactsList;
             }
             return [];
         });
+
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [_contactsList]);
+
+    useEffect(() => {
+        updateContactsList();
+
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [_contactsList]);
 
@@ -89,12 +99,21 @@ const Menu = (props: any) => {
                 render={(item, index) => (
                     <List.Item
                         onClick={() => {
+                            clearContactsMessageCount(item.uid);
                             props.changechatWithUser(item);
                         }}
                         key={index}
                         className={chatWithUser.uid === item.uid ? 'active' : ''}
                     >
-                        <List.Item.Meta avatar={<Avatar shape="square">{item.avatar ? <img alt="avatar" src={item.avatar} /> : item.uid}</Avatar>} title={item.name} description={item.motto} />
+                        <List.Item.Meta
+                            avatar={
+                                <Badge count={item.message_count}>
+                                    <Avatar shape="square">{item.avatar ? <img alt="avatar" src={item.avatar} /> : item.uid} </Avatar>
+                                </Badge>
+                            }
+                            title={item.name}
+                            description={item.motto}
+                        />
                     </List.Item>
                 )}
             />

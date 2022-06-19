@@ -1,23 +1,21 @@
 import { Avatar, Divider, Grid, Image } from '@arco-design/web-react';
+import { OptionsType } from '@right-menu/core';
+import RightMenu from '@right-menu/react';
 import { useLiveQuery } from 'dexie-react-hooks';
 import { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import AudioHtml from 'src/components/AudioHtml';
 import { Message, MessageType } from 'src/core/message';
 import { Session } from 'src/core/session';
-import RightMenu from '@right-menu/react';
-import { ConfigType, OptionsType } from '@right-menu/core';
-import { switchRoom } from 'src/services/chat_db';
+import { removeMessages, switchRoom } from 'src/services/chat_db';
 import { db } from 'src/services/db';
 import { updateChatWithUser } from 'src/store/reducer/chat';
-import { scrollToBottom } from 'src/utils/Utils';
+import { dateLine, eventDelegation, scrollToBottom } from 'src/utils/Utils';
 import Editor from './components/editor';
 import MessageComponent from './components/message';
 import Tools from './components/tools';
 import Menu from './menu';
 import Modules from './modules';
-import { dateLine, eventDelegation } from 'src/utils/Utils';
-import { removeMessages } from 'src/services/chat_db';
 import './styles/room.scss';
 
 const Row = Grid.Row;
