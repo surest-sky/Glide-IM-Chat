@@ -2,6 +2,7 @@ import { db } from './db';
 import { Message } from 'src/core/message';
 import { ContactsType } from 'src/core/chat_type';
 import store from 'src/store/index';
+import { orderBy } from 'lodash';
 import { MessageType } from 'src/core/message';
 
 const isRoomMessage = (message: Message): boolean => {
@@ -121,8 +122,15 @@ export const getMessagesByOne = (from: number, to: number) => {
 };
 export const switchRoom = async (from: number, to: number) => {
     clearRoomMessages();
-    getMessagesByOne(from, to).then(messages => {
-        addBlukRoomMessages(messages);
+    Promise.all([getMessagesByOne(from, to), getMessagesByOne(to, from)]).then(messages => {
+        const _messages = [];
+        messages.forEach(ms => {
+            ms.forEach(message => {
+                _messages.push(message);
+            });
+        });
+        console.log(orderBy(_messages, 'sendAt'));
+        addBlukRoomMessages(orderBy(_messages, 'sendAt'));
     });
 };
 
