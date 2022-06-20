@@ -1,12 +1,11 @@
-import { map, mergeMap, min, Observable } from 'rxjs';
+import { map, mergeMap, Observable } from 'rxjs';
 import { UserInfoBean } from 'src/api/model';
-import Message from 'src/pages/room/components/message';
 import { onNext } from 'src/rx/next';
 import { timeStampSecToDate } from 'src/utils/TimeUtils';
 import { Api } from '../api/api';
 import { ChatMessage, SendingStatus } from './chat_message';
 import { LiveChat } from './live_chat';
-import { CliCustomMessage, Recall, ClientMessageType, Message, MessageType } from './message';
+import { CliCustomMessage, ClientMessageType, Message, MessageType, Recall } from './message';
 import { Ws } from './ws';
 
 // 会话更新监听器, 例如消息接收
@@ -149,7 +148,6 @@ export class Session {
     }
 
     public send(content: string, type: number): Observable<ChatMessage> {
-        console.log('typetypetypetype', type);
         return Api.getMid().pipe(
             map(resp => {
                 const time = Date.parse(new Date().toString()) / 1000;
@@ -166,7 +164,6 @@ export class Session {
             }),
             onNext(msg => {
                 const r = ChatMessage.create(msg);
-                console.log('rrrr', r);
                 r.Sending = SendingStatus.Sending;
                 this.addMessageByOrder(r);
             }),
@@ -175,55 +172,46 @@ export class Session {
                 const r = ChatMessage.create(resp);
                 r.Sending = SendingStatus.Sent;
                 this.addMessageByOrder(r);
-
-                // if (r.Type === MessageType.Recall) {
-                //     // 消息撤回
-                //     this.sendByRecall(r.Mid, r.From);
-                // }
                 return r;
             })
         );
     }
 
     // 发送撤回消息
-    public recallMessage(mid: number) {
+    public sendRecallMessage(mid: number) {
         const recall: Recall = {
             Mid: mid,
             RecallBy: LiveChat.getInstance().getUID(),
         };
-        return Api.getMid().pipe(
-            map(resp => {
-                const time = Date.parse(new Date().toString()) / 1000;
-                return {
-                    content: recall,
-                    from: LiveChat.getInstance().getUID(),
-                    mid: resp.Mid,
-                    sendAt: time,
-                    seq: 0,
-                    to: this.To,
-                    type: MessageType.Recall,
-                    status: 0,
-                };
-            }),
-            onNext(msg => {
-                const r = ChatMessage.create(msg);
-                console.log('rrrr', r);
-                r.Sending = SendingStatus.Sending;
-                this.addMessageByOrder(r);
-            }),
-            mergeMap(msg => Ws.sendChatMessage(msg)),
-            map(resp => {
-                const r = ChatMessage.create(resp);
-                r.Sending = SendingStatus.Sent;
-                this.addMessageByOrder(r);
 
-                // if (r.Type === MessageType.Recall) {
-                //     // 消息撤回
-                //     this.sendByRecall(r.Mid, r.From);
-                // }
-                return r;
-            })
-        );
+        return Api.getMid()
+            .pipe(
+                map(resp => {
+                    const time = Date.parse(new Date().toString()) / 1000;
+                    return {
+                        content: JSON.stringify(recall),
+                        from: LiveChat.getInstance().getUID(),
+                        mid: resp.Mid,
+                        sendAt: time,
+                        seq: 0,
+                        to: this.To,
+                        type: MessageType.Recall,
+                        status: 0,
+                    };
+                }),
+                onNext(msg => {
+                    const r = ChatMessage.create(msg);
+                    r.Sending = SendingStatus.Sending;
+                    this.addMessageByOrder(r);
+                }),
+                mergeMap(msg => Ws.sendRecallMessage(msg)),
+                map(resp => {
+                    const r = ChatMessage.create(resp);
+                    r.Sending = SendingStatus.Sent;
+                    this.addMessageByOrder(r);
+                    return r;
+                })
+            )
+            .subscribe();
     }
-
 }

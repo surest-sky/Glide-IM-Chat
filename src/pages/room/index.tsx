@@ -90,7 +90,7 @@ const Room = () => {
     };
 
     const sendRecallMessage = (mid: number, from: number) => {
-        session.current.sendByRecall(mid, from);
+        session.current.sendRecallMessage(mid);
     };
 
     // 发送消息
