@@ -89,6 +89,7 @@ const Room = () => {
         switchRoom(userInfo.Uid, chatWithUser.uid);
     };
 
+    // 发送撤回消息
     const sendRecallMessage = (mid: number, from: number) => {
         session.current.sendRecallMessage(mid);
     };
