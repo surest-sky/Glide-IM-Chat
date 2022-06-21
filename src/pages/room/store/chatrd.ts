@@ -4,8 +4,8 @@ import { MessageType, Message } from '../../../core/message';
 export interface MessageStruct {
     mid: number;
     seq: number;
-    from: number;
-    to: number;
+    from: string;
+    to: string;
     type: number;
     content: string;
     sendAt: number;

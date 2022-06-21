@@ -6,7 +6,7 @@ export enum ClientMessageType {
     Inputing = 1,
 }
 
-// 聊天消息类型
+// 聊天消息类型, 可以自定义, 但是需要客户端之间约定好
 export enum MessageType {
     Text = maskMessageType | 1,
     Image = maskMessageType | 2,
@@ -53,17 +53,19 @@ export enum Actions {
 
 // 公共消息体
 export interface CommonMessage<T> {
-    Seq: number;
-    Action: string;
-    Data: T;
+    seq: number;
+    action: string;
+    data: T;
+    to: string | null;
+    extra: Map<string, string> | null;
 }
 
 // 聊天消息
 export interface Message {
     mid: number;
     seq: number;
-    from: number;
-    to: number;
+    from: string;
+    to: string;
     type: number;
     content: string;
     sendAt: number;
@@ -72,13 +74,13 @@ export interface Message {
 
 // 接收者收到确认请求
 export interface AckRequest {
-    Mid: number;
-    From: number;
+    mid: number;
+    from: string;
 }
 
 // 接收者收到确认通知
 export interface AckNotify {
-    Mid: number;
+    mid: number;
 }
 
 // 服务器收到确认
@@ -88,14 +90,14 @@ export interface AckMessage {
 
 // 撤回
 export interface Recall {
-    Mid: number;
-    RecallBy: number;
+    mid: number;
+    recallBy: string;
 }
 
 // 客户端自定义控制类型消息
 export interface CliCustomMessage {
-    From: number;
-    To: number;
-    Type: number;
-    Content: string;
+    from: string;
+    to: string;
+    type: number;
+    content: string | null;
 }

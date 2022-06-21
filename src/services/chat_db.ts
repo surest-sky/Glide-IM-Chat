@@ -12,12 +12,12 @@ const isRoomMessage = (message: Message): boolean => {
     console.log(chatWithUser.uid, currentUser.Uid);
 
     // 我发给对方
-    if (message.to === chatWithUser.uid && message.from === parseInt(currentUser.Uid)) {
+    if (message.to === chatWithUser.uid.toString() && message.from === currentUser.Uid) {
         return true;
     }
 
     // 对方发给我
-    if (message.to === parseInt(currentUser.Uid) && message.from === chatWithUser.uid) {
+    if (message.to === currentUser.Uid && message.from === chatWithUser.uid.toString()) {
         return true;
     }
     return false;
@@ -65,7 +65,7 @@ export const addMessage = (message: Message) => {
     if (isRoomMessage(message)) {
         addRoomMessages(message);
     } else {
-        incrContactsMessageCount(message.from);
+        incrContactsMessageCount(parseInt(message.to));
     }
     db.chat.add(message);
 };
