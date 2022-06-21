@@ -6,7 +6,7 @@ import { delay } from 'rxjs';
 import { addMessage, withdrawMessage } from 'src/services/chat_db';
 import store from 'src/store/index';
 import { updateContacts } from 'src/store/reducer/chat';
-import { MessageType } from 'src/core/message';
+import { MessageType, Recall } from 'src/core/message';
 
 declare global {
     interface Window {
@@ -38,7 +38,8 @@ const registerHanders = (session: Session) => {
 
         // 消息撤回
         if (message.Type === MessageType.Recall) {
-            convertMessage.mid = parseInt(convertMessage.content);
+            const m: Recall = JSON.parse(convertMessage.content);
+            convertMessage.mid = m.Mid;
             withdrawMessage(convertMessage);
             return;
         }

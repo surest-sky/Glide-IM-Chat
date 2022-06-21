@@ -2,7 +2,7 @@ import { Modal, Message } from '@arco-design/web-react';
 import { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { userAuthApi, userInfoApi } from 'src/api/im/im';
-import { getAuthInfo, setLogout } from 'src/services/auth';
+import { getAuthInfo } from 'src/services/auth';
 import Routers from './routers/index';
 import store from 'src/store/index';
 import { updateAuthInfo, updateUserInfo } from 'src/store/reducer/container';
@@ -14,7 +14,6 @@ function App() {
     const [loading, setLoading] = useState(true)
     const navigate = useNavigate();
     const { pathname } = useLocation();
-
     const reLogin = () => {
         setLoading(false)
         Message.error("请登录 !")
@@ -36,6 +35,9 @@ function App() {
         setLoading(true);
         userAuthApi({ Token: userInfo.Token }).then(res => {
             const data = res.data.Data
+            if (!data) {
+                reLogin()
+            }
             store.dispatch(updateAuthInfo(data));
             fetchUserInfo(data)
         }).catch(err => {
@@ -48,12 +50,7 @@ function App() {
             setLoading(false)
             return
         }
-        try {
-            fetchUserAuth()
-        } catch (error) {
-            setLogout()
-        }
-
+        fetchUserAuth()
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
     return (
