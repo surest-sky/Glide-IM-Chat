@@ -2,9 +2,20 @@ $mw: 36px;
 $mw-space: 10px;
 
 #root {
+    height: 100vh;
+    width: 100%;
+}
+
+.app {
     background-image: url(https://img.js.design/assets/Resources/background/login-bg-5.jpg);
     height: 100vh;
     width: 100%;
+}
+
+.app-mobile {
+    height: 100vh;
+    width: 100%;
+    margin-top: 10px;
 }
 
 .start-btn {

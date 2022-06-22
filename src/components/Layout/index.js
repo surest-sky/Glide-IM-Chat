@@ -1,18 +1,16 @@
 import { Modal, Message } from '@arco-design/web-react';
 import { useEffect, useState } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate, useLocation, Outlet } from 'react-router-dom';
 import { userAuthApi, userInfoApi } from 'src/api/im/im';
 import { getAuthInfo } from 'src/services/auth';
-import Routers from './routers/index';
 import store from 'src/store/index';
 import { updateAuthInfo, updateUserInfo } from 'src/store/reducer/container';
 import Loading from 'src/components/Loading'
 import { initChatSession } from 'src/core/services'
-import './static/main.scss';
+import '../../static/main.scss';
 
-function App() {
-    const [loading, setLoading] = useState(true)
-    const [mode, setMode] = useState('p')
+const Layout = () => {
+    const [loading, setLoading] = useState(true);
     const navigate = useNavigate();
     const { pathname } = useLocation();
     const reLogin = () => {
@@ -47,12 +45,7 @@ function App() {
     }
 
     useEffect(() => {
-        if (['/m'].includes(pathname)) {
-            setMode('m')
-            return
-        }
-
-        if (['/auth', '/m'].includes(pathname)) {
+        if (pathname.replace(/\//g, '') === 'auth') {
             setLoading(false)
             return
         }
@@ -60,15 +53,12 @@ function App() {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
     return (
-        mode === 'p' ?
-            <div className="app">
-                <Modal className="room-modal" closeIcon={null} footer={null} visible={true} autoFocus={false} focusLock={true}>
-                    {loading ? <Loading text={'启动中'} /> : <Routers />}
-                </Modal>
-            </div>
-            :
-            <div className="app-mobile"><Routers /></div>
+        <div class="layout-container">
+            <Modal className="room-modal" closeIcon={null} footer={null} visible={true} autoFocus={false} focusLock={true}>
+                {loading ? <Loading text={'启动中'} /> : <Outlet />}
+            </Modal>
+        </div>
     );
-}
+};
 
-export default App;
+export default Layout;
