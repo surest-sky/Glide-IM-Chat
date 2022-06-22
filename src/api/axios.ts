@@ -6,7 +6,7 @@ const authInfo = getAuthInfo();
 console.log('authInfo', authInfo);
 export const axiosInstance: AxiosInstance = axios.create({
     timeout: 3000,
-    baseURL: process.env.REACT_APP_BASE_URL || 'https://api.t.glide-im.pro/api/',
+    baseURL: process.env.REACT_APP_BASE_URL || 'http://api.glide-im.pro/api/',
 });
 
 const setAuthHeader = (key: string, value: string) => {

@@ -10,19 +10,25 @@
             "request": "launch",
             "type": "node-terminal"
         },
-    {
-        "name": "Launch via NPM",
-        "request": "launch",
-        "runtimeArgs": [
-            "run-script",
-            "debug"
-        ],
-        "runtimeExecutable": "npm",
-        "skipFiles": [
-            "<node_internals>/**"
-        ],
-        "type": "node"
-    },
+        {
+            "command": "cross-env REACT_APP_ENV=development react-scripts start",
+            "name": "Run development",
+            "request": "launch",
+            "type": "node-terminal"
+        },
+        {
+            "name": "Launch via NPM",
+            "request": "launch",
+            "runtimeArgs": [
+                "run-script",
+                "debug"
+            ],
+            "runtimeExecutable": "npm",
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            "type": "node"
+        },
         {
             "type": "pwa-chrome",
             "request": "launch",
