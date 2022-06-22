@@ -1,5 +1,7 @@
+
+import 'src/static/mobile.scss';
 const Mobile = () => {
-    return <div>Mobile</div>
+    return <div className='mobile-container'>Mobile</div>
 }
 
 export default Mobile
