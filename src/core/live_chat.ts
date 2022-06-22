@@ -135,18 +135,18 @@ export class LiveChat {
     }
 
     private onMessage(m: CommonMessage<any>) {
-        switch (m.Action) {
+        switch (m.action) {
             case Actions.NotifyNewContact:
                 // 触发更新联系人
                 store.dispatch(updateContacts());
                 break;
             case Actions.MessageChat:
-                const msg = m.Data as Message;
+                const msg = m.data as Message;
                 console.log('message: ', msg);
                 this.session?.onMessage(msg);
                 break;
             case Actions.MessageCli:
-                const m2 = m.Data as CliCustomMessage;
+                const m2 = m.data as CliCustomMessage;
                 console.log('message: ', m2);
                 this.session?.onCliCustomMessage(m2);
                 break;

@@ -1,6 +1,6 @@
 export interface AuthBean {
     Token: string
-    Uid: number
+    Uid: string
     Servers: string[]
 }
 

@@ -28,7 +28,7 @@ export class Session {
     public Title: string;
     public UpdateAt: string;
     public UnreadCount: number;
-    public To: number;
+    public To: string;
 
     private messageList = new Array<ChatMessage>();
     private messageMap = new Map<number, ChatMessage>();
@@ -52,7 +52,7 @@ export class Session {
 
     // 收到客户端自定义消息
     public onCliCustomMessage(msg: CliCustomMessage) {
-        switch (msg.Type) {
+        switch (msg.type) {
             case ClientMessageType.Inputing:
                 this.messageInputListener?.();
                 break;
@@ -74,10 +74,10 @@ export class Session {
     // 通知对方自己正在输入消息, 需要约定一个频率检测用户是否在输入消息, 然后调用这个方法
     public notifyInputMessage() {
         const msg: CliCustomMessage = {
-            From: 0,
-            To: this.To,
-            Type: ClientMessageType.Inputing,
-            Content: '',
+            from: LiveChat.getInstance().getUID().toString(),
+            to: this.To,
+            type: ClientMessageType.Inputing,
+            content: null,
         };
         Ws.sendCliCustomMessage(msg).pipe().subscribe();
     }
@@ -107,7 +107,7 @@ export class Session {
     }
 
     public setToId(Uid: number): void {
-        this.To = Uid;
+        this.To = Uid.toString();
     }
 
     private getMessageBeforeMid(mid: number): ChatMessage[] {
@@ -151,9 +151,9 @@ export class Session {
         return Api.getMid().pipe(
             map(resp => {
                 const time = Date.parse(new Date().toString()) / 1000;
-                return {
+                const m: Message = {
                     content: content,
-                    from: LiveChat.getInstance().getUID(),
+                    from: LiveChat.getInstance().getUID().toString(),
                     mid: resp.Mid,
                     sendAt: time,
                     seq: 0,
@@ -161,8 +161,9 @@ export class Session {
                     type: type,
                     status: 0,
                 };
+                return m;
             }),
-            onNext(msg => {
+            onNext((msg: Message) => {
                 const r = ChatMessage.create(msg);
                 r.Sending = SendingStatus.Sending;
                 this.addMessageByOrder(r);
@@ -180,8 +181,8 @@ export class Session {
     // 发送撤回消息
     public sendRecallMessage(mid: number) {
         const recall: Recall = {
-            Mid: mid,
-            RecallBy: LiveChat.getInstance().getUID(),
+            mid: mid,
+            recallBy: LiveChat.getInstance().getUID().toString(),
         };
 
         return Api.getMid()
@@ -190,7 +191,7 @@ export class Session {
                     const time = Date.parse(new Date().toString()) / 1000;
                     return {
                         content: JSON.stringify(recall),
-                        from: LiveChat.getInstance().getUID(),
+                        from: LiveChat.getInstance().getUID().toString(),
                         mid: resp.Mid,
                         sendAt: time,
                         seq: 0,
@@ -199,7 +200,7 @@ export class Session {
                         status: 0,
                     };
                 }),
-                onNext(msg => {
+                onNext((msg: Message) => {
                     const r = ChatMessage.create(msg);
                     r.Sending = SendingStatus.Sending;
                     this.addMessageByOrder(r);

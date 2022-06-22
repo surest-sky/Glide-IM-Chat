@@ -46,7 +46,7 @@ class GlideIM {
                 }
             }),
             toArray(),
-            onNext(userInfo => {
+            onNext((userInfo: Array<UserInfoBean>) => {
                 userInfo.forEach(u => {
                     this._writeObject(`ui_${id}`, u);
                     this.tempUserInfo.set(u.Uid, u);

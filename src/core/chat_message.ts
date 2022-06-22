@@ -13,8 +13,8 @@ export interface MessageUpdateListener {
 }
 
 export class ChatMessage {
-    public From: number;
-    public To: number;
+    public From: string;
+    public To: string;
     public Content: string;
     public Mid: number;
     public SendAt: number;
@@ -39,7 +39,7 @@ export class ChatMessage {
         ret.Content = m.content;
         ret.Mid = m.mid;
         ret.SendAt = m.sendAt;
-        ret.IsMe = m.from === LiveChat.getInstance().getUID();
+        ret.IsMe = m.from === LiveChat.getInstance().getUID().toString();
         ret.Status = m.status;
         ret.Type = m.type;
         return ret;

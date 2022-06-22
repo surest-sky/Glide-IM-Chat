@@ -22,7 +22,7 @@ const serviceError = err => {
 
 // 加载服务完成
 const serviceComplete = (session: Session, callback) => {
-    session.notifyInputMessage();
+    // session.notifyInputMessage();
     window.ChatSession = session;
     callback && callback();
     registerHanders(session);
@@ -39,7 +39,7 @@ const registerHanders = (session: Session) => {
         // 消息撤回
         if (message.Type === MessageType.Recall) {
             const m: Recall = JSON.parse(convertMessage.content);
-            convertMessage.mid = m.Mid;
+            convertMessage.mid = m.mid;
             withdrawMessage(convertMessage);
             return;
         }

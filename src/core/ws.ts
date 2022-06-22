@@ -1,3 +1,4 @@
+import { NavLink } from 'react-router-dom';
 import { map, mergeMap, Observable, Observer, timeout as timeoutOpt } from 'rxjs';
 import { AckMessage, AckRequest, Actions, CliCustomMessage, Recall, CommonMessage, Message } from './message';
 
@@ -135,9 +136,11 @@ class WebSocketClient {
         const seq = this.seq++;
 
         const message: CommonMessage<any> = {
-            Action: action,
-            Data: d,
-            Seq: seq,
+            action: action,
+            data: d,
+            seq: seq,
+            to: null,
+            extra: null
         };
 
         return this.send(message).pipe(mergeMap(() => this.getApiRespObservable<T>(seq)));
@@ -173,32 +176,34 @@ class WebSocketClient {
     }
 
     public sendChatMessage(m: Message): Observable<Message> {
-        return this.createCommonMessage(Actions.MessageChat, m).pipe(
+        return this.createCommonMessage(m.to, Actions.MessageChat, m).pipe(
             mergeMap(msg => this.send(msg)),
-            mergeMap(msg => this.getAckObservable(msg.Data))
+            mergeMap(msg => this.getAckObservable(msg.data))
         );
     }
 
     public sendCliCustomMessage(m: CliCustomMessage): Observable<CliCustomMessage> {
-        return this.createCommonMessage(Actions.MessageCli, m).pipe(
+        return this.createCommonMessage(m.to, Actions.MessageCli, m).pipe(
             mergeMap(msg => this.send(msg)),
             map(() => m)
         );
     }
 
     public sendRecallMessage(m: Message) {
-        return this.createCommonMessage(Actions.MessageChatRecall, m).pipe(
+        return this.createCommonMessage(m.to, Actions.MessageChatRecall, m).pipe(
             mergeMap(msg => this.send(msg)),
-            mergeMap(msg => this.getAckObservable(msg.Data))
+            mergeMap(msg => this.getAckObservable(msg.data))
         );
     }
 
-    private createCommonMessage<T>(action: string, data: T): Observable<CommonMessage<T>> {
+    private createCommonMessage<T>(to: string | null, action: string, data: T): Observable<CommonMessage<T>> {
         return new Observable((observer: Observer<CommonMessage<T>>) => {
             const msg: CommonMessage<T> = {
-                Action: action,
-                Data: data,
-                Seq: this.seq++,
+                action: action,
+                data: data,
+                seq: this.seq++,
+                to: to,
+                extra: null,
             };
             observer.next(msg);
             observer.complete();
@@ -216,6 +221,7 @@ class WebSocketClient {
                 return;
             }
             const json = JSON.stringify(data);
+            console.log("send:", json);
             this.websocket.send(json);
             observer.next(data);
             observer.complete();
@@ -230,9 +236,11 @@ class WebSocketClient {
                 return;
             }
             const hb: CommonMessage<{}> = {
-                Action: Actions.Heartbeat,
-                Data: {},
-                Seq: this.seq++,
+                action: Actions.Heartbeat,
+                data: {},
+                seq: this.seq++,
+                to: null,
+                extra: null,
             };
             this.send(hb).subscribe({
                 next: (m: CommonMessage<any>) => {
@@ -241,7 +249,7 @@ class WebSocketClient {
                 error: e => {
                     WebSocketClient.slog('heartbeat', 'failed', e);
                 },
-                complete: () => {},
+                complete: () => { },
             });
         }, heartbeatInterval);
     }
@@ -258,11 +266,11 @@ class WebSocketClient {
     private getApiRespObservable<T>(seq: number): Observable<T> {
         return new Observable((observer: Observer<T>) => {
             this.apiCallbacks.set(seq, (m: CommonMessage<any>) => {
-                if (m.Action === Actions.ApiSuccess) {
-                    const obj = m.Data;
+                if (m.action === Actions.ApiSuccess) {
+                    const obj = m.data;
                     observer.next(obj as T);
                 } else {
-                    observer.error(m.Data);
+                    observer.error(m.data);
                 }
                 observer.complete();
             });
@@ -272,10 +280,10 @@ class WebSocketClient {
     private onIMMessage(msg: CommonMessage<any>) {
         this.messageListener.forEach(l => l(msg));
 
-        switch (msg.Action) {
+        switch (msg.action) {
             case Actions.MessageChat:
             case Actions.MessageChatRecall:
-                const m = msg.Data as Message;
+                const m = msg.data as Message;
                 this.ackRequestMessage(m.from, m.mid);
                 break;
             default:
@@ -283,16 +291,16 @@ class WebSocketClient {
         }
     }
 
-    private ackRequestMessage(from: number, mid: number) {
+    private ackRequestMessage(from: string, mid: number) {
         const ackR: AckRequest = {
-            Mid: mid,
-            From: from,
+            mid: mid,
+            from: from,
         };
 
-        this.createCommonMessage(Actions.AckRequest, ackR)
+        this.createCommonMessage(from, Actions.AckRequest, ackR)
             .pipe(mergeMap(msg => this.send(msg)))
             .subscribe({
-                next: () => {},
+                next: () => { },
                 error: e => {
                     WebSocketClient.slog('ackRequestMessage', 'failed', e);
                 },
@@ -300,7 +308,7 @@ class WebSocketClient {
     }
 
     private onAckMessage(msg: CommonMessage<any>) {
-        switch (msg.Action) {
+        switch (msg.action) {
             case Actions.AckMessage:
                 break;
             case Actions.AckNotify:
@@ -310,7 +318,7 @@ class WebSocketClient {
                 WebSocketClient.slog('onAckMessage', 'unknown', msg);
                 return;
         }
-        const ack = msg.Data as AckMessage;
+        const ack = msg.data as AckMessage;
         const callback = this.ackCallBacks.get(ack.mid);
 
         if (callback === undefined) {
@@ -327,8 +335,8 @@ class WebSocketClient {
     private onReceive(data: MessageEvent) {
         const msg: CommonMessage<any> = JSON.parse(data.data) as CommonMessage<any>;
 
-        if (msg.Action.startsWith('api')) {
-            const callback = this.apiCallbacks.get(msg.Seq);
+        if (msg.action.startsWith('api')) {
+            const callback = this.apiCallbacks.get(msg.seq);
             if (callback) {
                 callback(msg);
             } else {
@@ -336,15 +344,15 @@ class WebSocketClient {
             }
             return;
         }
-        if (msg.Action.startsWith('message')) {
+        if (msg.action.startsWith('message')) {
             this.onIMMessage(msg);
             return;
         }
-        if (msg.Action.startsWith('ack')) {
+        if (msg.action.startsWith('ack')) {
             this.onAckMessage(msg);
             return;
         }
-        if (msg.Action.startsWith('notify')) {
+        if (msg.action.startsWith('notify')) {
             this.onNotifyMessage(msg);
             return;
         }
