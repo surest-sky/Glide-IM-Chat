@@ -7,6 +7,7 @@ import { addMessage, withdrawMessage } from 'src/services/chat_db';
 import store from 'src/store/index';
 import { updateContacts } from 'src/store/reducer/chat';
 import { MessageType, Recall } from 'src/core/message';
+import { loadMessageRecord } from 'src/services/message';
 
 declare global {
     interface Window {
@@ -21,12 +22,13 @@ const serviceError = err => {
 };
 
 // 加载服务完成
-const serviceComplete = (session: Session, callback) => {
+const serviceComplete = async (session: Session, callback) => {
     // session.notifyInputMessage();
     window.ChatSession = session;
     callback && callback();
     registerHanders(session);
     store.dispatch(updateContacts());
+    await loadMessageRecord();
 };
 
 // 进行注册 message 事件

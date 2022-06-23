@@ -1,13 +1,12 @@
-import axios from 'axios';
-const baseUri = process.env.REACT_APP_API_URL;
+import { getQiniuToken } from 'src/api/im/common'
+import axios from 'axios'
 
-const uploadApi = data => {
-    console.log(baseUri);
+const uploadApi = async (data, baseUri) => {
     const request = axios.create({
         baseURL: baseUri,
     });
     return request({
-        url: '/api/upload',
+        url: '',
         method: 'post',
         headers: {
             'Content-Type': 'multipart/form-data',
@@ -16,10 +15,16 @@ const uploadApi = data => {
     });
 };
 
-export const uploadFile = (data, name = null) => {
+export const uploadFile = async (data, name) => {
+    const { data: { Data } } = await getQiniuToken()
+    const { token, upload_dir, url, host } = Data
+
+    const filename = [upload_dir, name].join('/')
     var formData = new FormData();
-    console.log(data);
-    formData.append('file', data, name || `${new Date().getTime()}.png`);
-    // formData.append('name', `${new Date().getTime()}.png`);
-    return uploadApi(formData);
+    formData.append('file', data, filename)
+    formData.append('token', token);
+    const result = await uploadApi(formData, url);
+    const rf = result.data.key
+    console.log('host + rf', host + rf)
+    return Promise.resolve(host + rf)
 };

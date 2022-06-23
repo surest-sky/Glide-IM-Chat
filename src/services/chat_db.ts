@@ -73,6 +73,11 @@ export const addMessage = (message: Message) => {
     db.chat.add(_message);
 };
 
+// 添加多条消息
+export const addMessages = (message: Message[]) => {
+    db.chat.bulkAdd(message);
+};
+
 // 消息撤回
 export const withdrawMessage = (message: Message) => {
     if (isRoomMessage(message)) {
@@ -120,10 +125,10 @@ export const clearRoomMessages = () => {
 };
 
 // 获取与某人的消息
-export const getMessagesByOne = (from: string, to: string) => {
+export const getMessagesByOne = (from: number, to: number) => {
     return db.chat.where({ from: from, to: to }).toArray();
 };
-export const switchRoom = async (from: string, to: string) => {
+export const switchRoom = async (from: number, to: number) => {
     clearRoomMessages();
     Promise.all([getMessagesByOne(from, to), getMessagesByOne(to, from)]).then(messages => {
         const _messages = [];
@@ -138,7 +143,7 @@ export const switchRoom = async (from: string, to: string) => {
 };
 
 // 消息移除
-export const removeMessages = (from: string, to: string) => {
+export const removeMessages = (from: number, to: number) => {
     db.chat.where({ from: from, to: to }).delete();
     db.activeChat.where({ from: from, to: to }).delete();
 

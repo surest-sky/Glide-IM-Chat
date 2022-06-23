@@ -24,7 +24,7 @@ const Col = Grid.Col;
 const Room = () => {
     const dispatch = useDispatch();
     const [messages, setMessages] = useState<Message[]>([]);
-    const _messages = useLiveQuery(() => db.activeChat.toArray());
+    const _messages = useLiveQuery(() => db.activeChat.orderBy('sendAt').toArray());
     const editorRef = useRef<any>(null);
     const [imageVisible, setImageVisible] = useState<any>({
         visible: false,

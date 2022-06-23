@@ -34,8 +34,8 @@ const AudioRecord = ({ sendChatMessage }) => {
     };
 
     const send = async audio => {
-        const { data } = await uploadFile(audio.blob, `${new Date().getTime()}.mp3`);
-        sendChatMessage(JSON.stringify({ url: data.data.url, duration: audio.duration }));
+        const url = await uploadFile(audio.blob, `${new Date().getTime()}.mp3`);
+        sendChatMessage(JSON.stringify({ url: url, duration: audio.duration }));
     };
 
     useEffect(() => {

@@ -1,5 +1,5 @@
 import lodash from 'lodash';
-import { uploadFile } from '../../../../services/upload';
+import { uploadFile } from 'src/services/upload';
 /**
  * 粘贴板图片处理
  * @param {*} event
@@ -46,6 +46,7 @@ export const uploadBase64File = async base64 => {
         u8arr[n] = bstr.charCodeAt(n);
     }
     const base64File = new Blob([u8arr], { type: mime });
-    const { data } = await uploadFile(base64File);
-    return Promise.resolve(data.data.url);
+    const rand = new Date().getTime()
+    const url = await uploadFile(base64File, `${rand}.png`);
+    return Promise.resolve(url);
 };

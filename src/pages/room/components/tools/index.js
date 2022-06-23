@@ -20,8 +20,8 @@ const Tools = props => {
         input.setAttribute('accept', 'image/*');
         input.onchange = async function () {
             var file = this.files[0];
-            const { data } = await uploadFile(file, file.name);
-            props.sendChatMessage(data.data.url, MessageType.Image);
+            const url = await uploadFile(file, `${new Date().getTime()}-` + file.name);
+            props.sendChatMessage(url, MessageType.Image);
         };
         input.click();
     };
