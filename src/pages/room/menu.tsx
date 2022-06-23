@@ -2,15 +2,15 @@ import { Avatar, Badge, Button, Input, List, Message, Modal } from '@arco-design
 import { IconPlus } from '@arco-design/web-react/icon';
 import { useRequest } from 'ahooks';
 import { useLiveQuery } from 'dexie-react-hooks';
-import { useEffect, useState, useCallback, memo } from 'react';
+import { get } from 'lodash';
+import { memo, useCallback, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { addContactsApi } from 'src/api/im/im';
 import { ContactsType } from 'src/core/chat_type';
-import { updateContacts } from 'src/store/reducer/chat';
-import { db } from 'src/services/db';
 import { clearContactsMessageCount } from 'src/services/chat_db';
+import { db } from 'src/services/db';
 import store from 'src/store/index';
-import { get, orderBy } from 'lodash';
+import { updateContacts } from 'src/store/reducer/chat';
 import './styles/menu.scss';
 
 const Menu = (props: any) => {

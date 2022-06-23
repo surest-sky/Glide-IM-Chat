@@ -12,6 +12,7 @@ import '../styles/message.scss';
 
 function Message(props) {
     const message = props.message;
+    const isMe = props.userInfo.Uid === parseInt(message.from);
     const options: OptionsType = [
         {
             type: 'li',
@@ -33,7 +34,7 @@ function Message(props) {
             },
         },
     ];
-    const messageAlign = props.userInfo.Uid === message.from ? 'flex-row-reverse to' : 'flex-row form';
+    const messageAlign = isMe ? 'flex-row-reverse to' : 'flex-row form';
     const MessageHtml = ({ message }) => {
         if (message.type === MessageType.Image) {
             return <img src={message.content} alt="2" />;
@@ -49,7 +50,7 @@ function Message(props) {
         );
     };
 
-    const who = props.userInfo.Uid === message.from ? '你撤回了一条消息' : '他撤回了一条消息';
+    const who = isMe ? '你撤回了一条消息' : '他撤回了一条消息';
     if (message.type === MessageType.Recall) {
         return <div className="text-center text-gray-400">{who}</div>;
     }
@@ -77,7 +78,7 @@ function Message(props) {
                 <Avatar>{props.userInfo.avatar ? <img src={props.userInfo.avatar} alt="" className="src" /> : props.userInfo.Uid}</Avatar>
             </div>
             {/* <MessageStatus sending={message.Sending} /> */}
-            {props.userInfo.Uid === message.from ? (
+            {isMe ? (
                 <RightMenu theme={''} minWidth={200} maxWidth={200} onAfterInit={() => {}} onBeforeInit={() => {}} options={options}>
                     <div>{<MessageHtml message={message} />}</div>
                 </RightMenu>

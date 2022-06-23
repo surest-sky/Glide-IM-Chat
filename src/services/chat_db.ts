@@ -5,19 +5,18 @@ import store from 'src/store/index';
 import { orderBy } from 'lodash';
 import { MessageType } from 'src/core/message';
 
-const isRoomMessage = (message: Message): boolean => {
+const isRoomMessage = (message): boolean => {
     const currentUser = store.getState().container.userInfo;
     const chatWithUser = store.getState().chat.chatWithUser;
-
-    console.log(chatWithUser.uid, currentUser.Uid);
-
+    const currentUserUid = chatWithUser.uid;
+    const cchatWithUserUid = currentUser.Uid;
     // 我发给对方
-    if (message.to === chatWithUser.uid.toString() && message.from === currentUser.Uid) {
+    if (message.to === cchatWithUserUid && message.from === currentUserUid) {
         return true;
     }
 
     // 对方发给我
-    if (message.to === currentUser.Uid && message.from === chatWithUser.uid.toString()) {
+    if (message.to === currentUserUid && message.from === cchatWithUserUid) {
         return true;
     }
     return false;
@@ -62,12 +61,16 @@ export const incrContactsMessageCount = (uid: number) => {
 
 // 添加一条消息
 export const addMessage = (message: Message) => {
-    if (isRoomMessage(message)) {
-        addRoomMessages(message);
+    const _message = Object.assign({}, message, {
+        from: parseInt(message.from),
+        to: parseInt(message.to),
+    });
+    if (isRoomMessage(_message)) {
+        addRoomMessages(_message);
     } else {
-        incrContactsMessageCount(parseInt(message.to));
+        incrContactsMessageCount(parseInt(_message.to));
     }
-    db.chat.add(message);
+    db.chat.add(_message);
 };
 
 // 消息撤回
@@ -117,10 +120,10 @@ export const clearRoomMessages = () => {
 };
 
 // 获取与某人的消息
-export const getMessagesByOne = (from: number, to: number) => {
+export const getMessagesByOne = (from: string, to: string) => {
     return db.chat.where({ from: from, to: to }).toArray();
 };
-export const switchRoom = async (from: number, to: number) => {
+export const switchRoom = async (from: string, to: string) => {
     clearRoomMessages();
     Promise.all([getMessagesByOne(from, to), getMessagesByOne(to, from)]).then(messages => {
         const _messages = [];
@@ -129,13 +132,13 @@ export const switchRoom = async (from: number, to: number) => {
                 _messages.push(message);
             });
         });
-        console.log(orderBy(_messages, 'sendAt'));
+        console.log('orderBy', orderBy(_messages, 'sendAt'));
         addBlukRoomMessages(orderBy(_messages, 'sendAt'));
     });
 };
 
 // 消息移除
-export const removeMessages = (from: number, to: number) => {
+export const removeMessages = (from: string, to: string) => {
     db.chat.where({ from: from, to: to }).delete();
     db.activeChat.where({ from: from, to: to }).delete();
 
