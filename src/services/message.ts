@@ -5,11 +5,6 @@ import { addMessages, switchRoom } from './chat_db';
 import { db } from './db';
 import store from 'src/store/index';
 
-const {
-    container: { userInfo },
-    chat: { chatWithUser },
-} = store.getState();
-
 const setFlag = () => {
     localStorage.setItem('message-record', new Date().getTime().toString());
 };
@@ -44,6 +39,7 @@ const loadMessageRecord = async () => {
     });
     setFlag();
     // 刷新当前聊天窗口的聊天记录
+    loadActiveMessageRecord();
 
     Promise.resolve(true);
 };
@@ -81,6 +77,15 @@ const loadMessageByUid = async uid => {
 };
 
 // 加载当前窗口的聊天记录
-const loadActiveMessageRecord = () => {};
+const loadActiveMessageRecord = () => {
+    const {
+        container: { userInfo },
+        chat: { chatWithUser },
+    } = store.getState();
+    console.log(chatWithUser, 'chatWithUserchatWithUserchatWithUserchatWithUser');
+    if (chatWithUser) {
+        switchRoom(parseInt(userInfo.Uid), chatWithUser.uid);
+    }
+};
 
 export { loadMessageRecord, loadMessageByUid };
