@@ -4,6 +4,7 @@ import Admin from '../pages/cm';
 import Room from '../pages/room';
 import Auth from '../pages/auth';
 import Mobile from '../pages/mobile';
+import Search from '../pages/search';
 
 const Routers = () => {
     return (
@@ -12,6 +13,7 @@ const Routers = () => {
             <Route path="/cm" element={<Admin />} />
             <Route path="/auth" element={<Auth />} />
             <Route path="/m" element={<Mobile />} />
+            <Route path="/s" element={<Search />} />
         </Routes>
     );
 };
