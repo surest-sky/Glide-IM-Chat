@@ -9,6 +9,7 @@ import { updateAuthInfo, updateUserInfo } from 'src/store/reducer/container';
 import Loading from 'src/components/Loading'
 import { initChatSession } from 'src/core/services'
 import './static/main.scss';
+import './static/animistr.css'
 
 function App() {
     const [loading, setLoading] = useState(true)
@@ -47,7 +48,7 @@ function App() {
     }
 
     useEffect(() => {
-        if (['/m'].includes(pathname)) {
+        if (['/m', '/m/chat', '/m/s'].includes(pathname)) {
             setMode('m')
             return
         }

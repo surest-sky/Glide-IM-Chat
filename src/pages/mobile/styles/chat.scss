@@ -1,0 +1,112 @@
+$linear-color: linear-gradient(135deg, rgb(48, 71, 236) 0%, rgb(15, 34, 167) 100%);
+$linear-simple: rgb(48, 71, 236);
+.chat-container-top {
+    padding-left: 20px;
+    padding-top: 20px;
+    display: flex;
+    padding-bottom: 40px;
+    background: $linear-color;
+
+    &-banner {
+        color: white;
+        // height: 100px;
+        margin-left: 20px;
+
+        h1 {
+            font-size: 20px;
+            font-weight: border;
+        }
+
+        > div {
+            margin-top: 10px;
+            width: 300px;
+        }
+
+        .reply {
+            margin-top: 20px;
+        }
+    }
+
+    &-left {
+        font-size: 25px;
+        color: white;
+        cursor: pointer;
+
+        &:hover {
+            background: #0d212a;
+        }
+    }
+}
+
+.chat-message-wrapper {
+    margin-top: 10px;
+
+    .init-message-wrapper {
+        padding-right: 20px;
+        &-title {
+            color: gray;
+            text-align: right;
+            margin: 0 auto;
+        }
+
+        .init-message {
+            font-size: 14px;
+            line-height: 18px;
+            padding: 10px;
+            border-radius: 6px;
+            background-color: rgb(232, 234, 253);
+            color: rgb(13, 28, 140);
+            transform: translate3d(0px, 0px, 0px);
+            max-width: 304px;
+            opacity: 1;
+            display: inline-block;
+            margin-top: 10px;
+            cursor: pointer;
+
+            &:hover {
+                color: white;
+                background-color: rgb(48, 71, 236);
+            }
+        }
+    }
+
+    .message-editor {
+        margin-top: 20px;
+        width: 100%;
+        border-top: 1px solid #f2f2f2;
+        position: relative;
+
+        &-input {
+            width: 100%;
+            box-sizing: border-box;
+            padding: 10px;
+            width: 100%;
+            height: 100%;
+            padding-right: 50px;
+            padding-bottom: 16px;
+            transition: background-color 200ms ease 0s, box-shadow 200ms ease 0s;
+            max-height: 200px;
+            resize: none;
+            // overflow: hidden;
+            outline-offset: -3px;
+
+            &:focus {
+                outline-color: rgb(59, 153, 252);
+                outline-style: auto;
+                outline-width: 5px;
+            }
+        }
+
+        &-send {
+            position: absolute;
+            right: 10px;
+            top: 10px;
+            color: #3047ec;
+            font-size: 16px;
+        }
+    }
+
+    .message-wrapper {
+        height: calc(100vh - 160px - 70px - 30px);
+    }
+}
