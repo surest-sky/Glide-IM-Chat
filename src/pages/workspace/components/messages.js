@@ -268,7 +268,6 @@ const Messages = () => {
     ]
 
     const Message = ({ message }) => {
-        console.log('message', message, me_id, message.from)
         return <div className={`flex message-wrapper  ${me_id === message.from ? 'message-to flex-row-reverse' : 'message-from flex-row'}`}>
             <img className="message-avatar" src="https://teacher.tutorpage.net/static/media/new-logo-circular.33be506198f72cf366b7.png" alt="message" />
             <div>
@@ -278,7 +277,7 @@ const Messages = () => {
         </div>
     }
 
-    return messages.map(message => <Message key={message.mid} message={message} />)
+    return messages.map((message, key) => <Message key={key} message={message} />)
 }
 
 

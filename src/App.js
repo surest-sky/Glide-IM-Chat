@@ -48,7 +48,7 @@ function App() {
     }
 
     useEffect(() => {
-        if (['/m', '/m/chat', '/m/s', '/workspace'].includes(pathname)) {
+        if (['/m', '/m/chat', '/m/s'].includes(pathname)) {
             setMode('m')
             return
         }
@@ -57,6 +57,13 @@ function App() {
             setLoading(false)
             return
         }
+
+        if ('/workspace'.includes(pathname)) {
+            setMode('m')
+        } else {
+            setMode('p')
+        }
+
         fetchUserAuth()
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
@@ -68,7 +75,8 @@ function App() {
                 </Modal>
             </div>
             :
-            <div className="app-mobile"><Routers /></div>
+            // <div className="app-mobile"></div>
+            <Routers />
     );
 }
 

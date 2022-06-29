@@ -18,7 +18,7 @@ const LoginForm = () => {
             if (parseInt(code) === 100) {
                 store.dispatch(updateAuthInfo(result?.data?.Data));
                 Message.success("登录成功...")
-                window.location.href = '/'
+                window.location.href = '/workspace'
                 return
             }
             Message.error(result?.data.Msg)
