@@ -1,0 +1,11 @@
+.message-editor {
+    textarea {
+        border: 1px solid red;
+    }
+
+    &:focus {
+        outline-color: rgb(59, 153, 252);
+        outline-style: auto;
+        outline-width: 5px;
+    }
+}

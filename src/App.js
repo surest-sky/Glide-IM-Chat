@@ -48,7 +48,7 @@ function App() {
     }
 
     useEffect(() => {
-        if (['/m', '/m/chat', '/m/s'].includes(pathname)) {
+        if (['/m', '/m/chat', '/m/s', '/workspace'].includes(pathname)) {
             setMode('m')
             return
         }

@@ -1,0 +1,49 @@
+.contacts-container {
+    width: 260px;
+    border-right: 1px solid var(--color-neutral-3);
+    .arco-list-item {
+        padding: 5px !important;
+        border: none !important;
+    }
+
+    .contacts-menu {
+        padding: 10px;
+    }
+
+    .contacts-select > div {
+        width: 100px;
+    }
+}
+
+.child-container {
+    .arco-list {
+        border: none;
+        border-radius: 0 !important;
+    }
+
+    .arco-list-item-main {
+        position: relative;
+        cursor: pointer;
+        padding: 5px !important;
+        transition: 0.1s;
+        border-radius: 5px !important;
+    }
+
+    .arco-list-item-main:hover {
+        background-color: rgb(235, 235, 235) !important;
+    }
+
+    .active > .arco-list-item-main {
+        background-color: rgb(235, 235, 235) !important;
+    }
+
+    .arco-list-item-mini {
+        align-self: self-start !important;
+        padding-top: 10px;
+        font-size: 12px;
+        position: absolute;
+        right: 5px;
+        top: 0;
+        color: #858585;
+    }
+}

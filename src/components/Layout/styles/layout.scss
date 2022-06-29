@@ -1,0 +1,37 @@
+.menu-container {
+    height: 100vh;
+    width: 200px;
+
+    .arco-menu-item-inner,
+    .arco-menu-item {
+        svg {
+            color: #0a93ed !important;
+            display: inline-block !important;
+            margin-right: 8px;
+        }
+    }
+}
+
+.menu-container-header {
+    margin-bottom: 20px;
+    margin-top: 8px;
+    line-height: 30px;
+    img {
+        width: 30px;
+        margin-right: 10px;
+    }
+    .operate {
+        svg {
+            cursor: pointer;
+        }
+    }
+}
+
+.space-container {
+    line-height: 1.5;
+    -webkit-text-size-adjust: 100%;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    font-family: Inter, -apple-system, BlinkMacSystemFont, PingFang SC, Hiragino Sans GB, noto sans, Microsoft YaHei, Helvetica Neue, Helvetica, Arial, sans-serif;
+    color: rgb(78, 89, 105);
+}

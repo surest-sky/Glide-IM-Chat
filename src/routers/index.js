@@ -6,6 +6,7 @@ import Auth from '../pages/auth';
 import Mobile from '../pages/mobile';
 import Search from '../pages/mobile/search';
 import Chat from '../pages/mobile/chat';
+import WorkSpace from '../pages/workspace/index';
 
 const Routers = () => {
     return (
@@ -16,6 +17,7 @@ const Routers = () => {
             <Route path="/m" element={<Mobile />} />
             <Route path="/m/s" element={<Search />} />
             <Route path="/m/chat" element={<Chat />} />
+            <Route path="/workspace" element={<WorkSpace />} />
         </Routes>
     );
 };
