@@ -1,5 +1,5 @@
 .w-chat-container {
-    width: 1000px;
+    width: calc(100vw - 860px);
     border-right: 1px solid var(--color-neutral-3);
     position: relative;
 
@@ -12,6 +12,7 @@
     .w-chat-wrapper {
         padding-left: 20px;
         padding-right: 20px;
+        padding-bottom: 20px;
         height: calc(100vh - 60px - 40px);
         overflow-y: auto;
     }
@@ -26,6 +27,10 @@
 
         .message-content:hover {
             background-color: rgba(149, 236, 55, 100);
+        }
+
+        > div {
+            text-align: right;
         }
     }
 

@@ -7,3 +7,12 @@ export function getChatHistory(data = {}) {
         data,
     });
 }
+
+// 获取会话列表
+export function getSessionRecent(data = {}) {
+    return request({
+        url: '/session/recent',
+        method: 'post',
+        data,
+    });
+}
