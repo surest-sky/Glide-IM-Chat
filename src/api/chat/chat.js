@@ -16,3 +16,4 @@ export function getSessionRecent(data = {}) {
         data,
     });
 }
+

@@ -1,43 +1,86 @@
-import { List, Avatar, Select, Input } from '@arco-design/web-react';
-import { getSessionRecent } from 'src/api/chat/chat'
-import { useState, useEffect } from 'react'
+import { Avatar, Input, List, Select } from '@arco-design/web-react';
 import { useRequest } from 'ahooks';
+import { useLiveQuery } from 'dexie-react-hooks';
+import { map } from 'lodash';
+import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { removeMessages, switchRoom } from 'src/services/chat_db';
+import { getSessionRecent } from 'src/api/chat/chat';
+import { userInfoApi } from 'src/api/chat/im';
+import { addBlukContacts, getMessagesByOnelastMessage, switchRoom } from 'src/services/chat_db';
+import { db } from 'src/services/db';
 import { updateChatWithUser } from 'src/store/reducer/chat';
 import './styles/menu.scss';
 
 const Menu = () => {
     const options = ['Beijing', 'Shanghai', 'Guangzhou', 'Shenzhen', 'Chengdu', 'Wuhan'];
-    const [list, setList] = useState([])
     const dispatch = useDispatch();
     const userInfo = useSelector((state: any) => state.container.userInfo);
-    const sessionUser = {
-        uid: 543750,
-        name: '峰',
-        lastMsg: '你吃饭了没有'
+    const chatWithUser = useSelector((state: any) => state.chat.chatWithUser);
+    const _contactsList = useLiveQuery(() => db.contacts.toArray())
+    const selfUser = {
+        avatar: '',
+        name: userInfo.Nickname + "(自己)",
+        message_count: 0,
+        uid: userInfo.Uid,
+        motto: '',
+    }
+
+    // 获取用户信息
+    const getUsersByIds = async (ids) => {
+        const { data } = await userInfoApi({ Uid: ids })
+        return data.Data
+    }
+
+    // 加载会话列表
+    const loadUsers = async (ids) => {
+        let data = await getUsersByIds(ids)
+        const uid = userInfo.Uid
+        const _list = []
+        for (let i = 0; i < data.length; i++) {
+            const item = data[i]
+            const message = await getMessagesByOnelastMessage(item.Uid, uid);
+            _list.push({
+                lastMessage: message,
+                avatar: '',
+                name: item.Nickname,
+                message_count: 0,
+                uid: item.Uid,
+                motto: '',
+            })
+        }
+        addBlukContacts(_list)
+        changechatWithUser(_list.length ? _list[0] : selfUser)
     }
 
     /**
      * 修改聊天对象
      */
-    const changechatWithUser = chatWithUser => {
-        dispatch(updateChatWithUser({ chatWithUser }));
-        window.ChatSession.setToId(chatWithUser.uid);
-        switchRoom(userInfo.Uid, chatWithUser.uid);
+    const changechatWithUser = withUser => {
+        dispatch(updateChatWithUser({ chatWithUser: withUser }));
+        switchRoom(userInfo.Uid, withUser.uid);
+        window.ChatSession && window.ChatSession.setToId(withUser.uid)
     };
 
-    const { run, loading } = useRequest(getSessionRecent, {
+    const { run } = useRequest(getSessionRecent, {
         manual: true,
         onSuccess: result => {
             // const code = result?.data?.Code
-            setList([sessionUser])
-            changechatWithUser(sessionUser)
+            const data = result.data.Data
+            const sids = map(data, 'To')
+            loadUsers(sids)
         },
         onError: (result, params) => {
             console.log(result, params);
         },
     });
+
+    const formatLastMessage = (message) => {
+        if (message.type)
+            if (!message) {
+                return ''
+            }
+        return message.content.replace(/<img[^>]*?src\s*=\s*[""']?([^'"" >]+?)[ '""][^>]*?>/g, '[图片]')
+    }
 
     useEffect(() => {
         run()
@@ -69,13 +112,14 @@ const Menu = () => {
             </Select>
         </div>
         <List
-            dataSource={list}
+            dataSource={_contactsList}
             render={(item, index) => (
-                <List.Item key={index} className={index === 0 ? 'active' : null}>
+                <List.Item key={item.uid} className={chatWithUser.uid === item.uid ? 'active' : null} onClick={() => { changechatWithUser(item) }}>
                     <List.Item.Meta
+                        data-id={item.uid}
                         avatar={<Avatar shape='square'>A</Avatar>}
                         title={item.name}
-                        description={item.lastMsg}
+                        description={formatLastMessage(item.lastMessage)}
                     />
                     <span className="arco-list-item-mini">一分钟前</span>
                 </List.Item>

@@ -3,7 +3,9 @@ import { useState, useEffect } from 'react';
 import { scrollToBottom } from 'src/utils/Utils';
 import { useSelector } from 'react-redux';
 import dayjs from 'dayjs';
+import HtmlApp from 'src/components/HtmlApp';
 import { db } from 'src/services/db';
+import xss from 'xss';
 
 const Messages = () => {
     const [messages, setMessages] = useState([]);
@@ -16,9 +18,13 @@ const Messages = () => {
     useEffect(() => {
         setMessages(_messages ? _messages : []);
         setTimeout(() => {
-            scrollToBottom('.room-content');
+            scrollToBottom('.w-chat-wrapper');
         });
     }, [_messages]);
+
+    if (!chatWithUser) {
+        return <></>;
+    }
 
     const Message = ({ message }) => {
         const isMe = me_id === message.from
@@ -27,7 +33,9 @@ const Messages = () => {
             <img className="message-avatar" src="https://teacher.tutorpage.net/static/media/new-logo-circular.33be506198f72cf366b7.png" alt="message" />
             <div>
                 <span className="message-at">{isMe ? userInfo.Nickname : chatWithUser.name} · {sendAt}</span>
-                <div className="message-content">{message.content}</div>
+                <div className="message-content">
+                    <HtmlApp html={xss(message.content)} />
+                </div>
             </div>
         </div>
     }

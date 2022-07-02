@@ -14,6 +14,7 @@ const initialState: ChatState = {
         message_count: 0,
         uid: 0,
         motto: '',
+        lastMessage: '',
     },
 };
 

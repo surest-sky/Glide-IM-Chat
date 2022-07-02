@@ -4,6 +4,7 @@ import { ContactsType } from 'src/core/chat_type';
 import store from 'src/store/index';
 import { orderBy } from 'lodash';
 import { MessageType } from 'src/core/message';
+import { addContactUserMessage } from 'src/services/store';
 
 const isRoomMessage = (message): boolean => {
     const currentUser = store.getState().container.userInfo;
@@ -20,6 +21,11 @@ const isRoomMessage = (message): boolean => {
         return true;
     }
     return false;
+};
+
+// 获取一个联系人
+export const getContacts = () => {
+    return db.contacts.toArray();
 };
 
 // 添加一个联系人
@@ -70,6 +76,9 @@ export const addMessage = (message: Message) => {
     } else {
         incrContactsMessageCount(parseInt(_message.to));
     }
+
+    addContactUserMessage(message);
+    // 给联系人添加一条消息
     db.chat.add(_message);
 };
 
@@ -128,6 +137,21 @@ export const clearRoomMessages = () => {
 export const getMessagesByOne = (from: number, to: number) => {
     return db.chat.where({ from: from, to: to }).toArray();
 };
+
+// 获取与某人的最后一条消息
+export const getMessagesByOnelastMessage = async (from: number, to: number) => {
+    const f1 = await db.chat.where({ from: from, to: to }).last();
+    const f2 = await db.chat.where({ from: to, to: from }).last();
+    if (f1 && f2) {
+        if (f1.sendAt > f2.sendAt) {
+            return f1;
+        }
+        return f2;
+    }
+
+    return f1 || f2;
+};
+
 export const switchRoom = async (from: number, to: number) => {
     clearRoomMessages();
     Promise.all([getMessagesByOne(from, to), getMessagesByOne(to, from)]).then(messages => {

@@ -66,6 +66,11 @@
             padding: 10px;
             cursor: pointer;
             transition: 0.1s;
+
+            img {
+                max-width: 100px;
+                border: 1px solid #ebebeb;
+            }
         }
     }
 }

@@ -37,6 +37,7 @@ export function loginUserApi(data) {
 }
 
 export function userInfoApi(data) {
+    console.log('userInfoApi', data)
     return request({
         url: '/user/info',
         method: 'post',
