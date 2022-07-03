@@ -3,7 +3,8 @@ $linear-simple: rgb(48, 71, 236);
 
 .chat-container {
     position: relative;
-    height: 100vh;
+    // height: 100vh;
+    overflow: hidden;
 }
 
 .chat-container-top {

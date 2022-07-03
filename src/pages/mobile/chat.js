@@ -12,12 +12,17 @@ const Mobile = () => {
     const navigate = useNavigate();
     const chatWithUser = useSelector((state: any) => state.chat.chatWithUser);
     const [uid, setUid] = useState(chatWithUser.uid)
+    const [height, setHeight] = useState(window.innerHeight - 185)
 
     useEffect(() => {
         setUid(chatWithUser.uid)
     }, [chatWithUser])
 
-    return <Layout> <div className='chat-container fade-in-top'>
+    const changeHeight = () => {
+        setHeight(window.innerHeight - 185 - 200)
+    }
+
+    return <Layout> <div className='chat-container fade-in-top' >
         <div className='chat-container-top'>
             <IconLeft className='chat-container-top-left' onClick={() => {
                 navigate('/m')
@@ -28,11 +33,11 @@ const Mobile = () => {
             </div>
         </div>
 
-        <div className="chat-message-wrapper scrollbar">
+        <div className="chat-message-wrapper scrollbar" style={{ height: height }}>
             <Messages />
         </div>
 
-        <div className="chat-message-editor"><Editor /></div>
+        <div className="chat-message-editor"><Editor changeHeight={changeHeight} /></div>
     </div>
     </Layout>
 }

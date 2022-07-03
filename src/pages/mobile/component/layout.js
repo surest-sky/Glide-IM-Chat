@@ -40,10 +40,9 @@ const Layout = (props) => {
         const data = result?.data?.Data
         userInfo.current = data
         store.dispatch(updateAuthInfo(data));
+        setLogin(data)
+        loadWidthUser()
 
-        setTimeout(() => {
-            loadWidthUser()
-        }, 1500)
     }
 
     useEffect(() => {

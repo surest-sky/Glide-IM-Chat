@@ -66,7 +66,7 @@ const Messages = () => {
         const sendAt = dayjs(message.SendAt).format('HH:mm a DD-MM');
         const avatar = isMe ? userInfo.avatar : chatWithUser.avatar
         return <div className={`flex message-wrapper  ${isMe ? 'message-to flex-row-reverse' : 'message-from flex-row'}`}>
-            {avatar ? <img className="message-avatar" src={avatar} alt="message" /> : <Avatar className="message-avatar">Messager</Avatar>}
+            {avatar ? <img className="message-avatar" src={avatar} alt="message" /> : <Avatar className="">Messager</Avatar>}
             <div className={isMe ? 'mr-1' : 'ml-1'}>
                 <span className="message-at">{(isMe ? userInfo.Nickname : chatWithUser.name) || "Messager"} · {sendAt}</span>
                 {

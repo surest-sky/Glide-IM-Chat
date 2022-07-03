@@ -4,6 +4,7 @@ import { MessageType, Recall } from 'src/core/message';
 import { setLogout } from 'src/services/auth';
 import { addMessage, withdrawMessage } from 'src/services/chat_db';
 import { loadMessageRecord } from 'src/services/message';
+import { Message } from '@arco-design/web-react';
 import { ChatMessage } from './chat_message';
 import { Session } from './session';
 
@@ -16,7 +17,8 @@ declare global {
 // 聊天服务错误
 const serviceError = err => {
     console.error('连接聊天服务器 失败: serviceError', err);
-    setLogout();
+    Message.error('连接聊天服务器 失败, 请刷新重试 ~');
+    // setLogout();
 };
 
 // 加载服务完成

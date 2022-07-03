@@ -2,8 +2,6 @@ import axios, { AxiosInstance, AxiosPromise } from 'axios';
 import { Response } from './response';
 import { getAuthInfo } from 'src/services/auth';
 
-const authInfo = getAuthInfo();
-console.log('authInfo', authInfo);
 export const axiosInstance: AxiosInstance = axios.create({
     timeout: 3000,
     baseURL: process.env.REACT_APP_BASE_URL || 'http://api.glide-im.pro/api/',
@@ -69,6 +67,7 @@ function get_(path: string): AxiosPromise {
 // request interceptor
 axiosInstance.interceptors.request.use(
     config => {
+        const authInfo = getAuthInfo();
         const token = authInfo?.Token;
         if (token) {
             config.headers.Authorization = 'Bearer ' + token;

@@ -1,5 +1,5 @@
 .chat-message-editor {
-    position: absolute;
+    // position: absolute;
     bottom: 5px;
     left: 0;
     display: flex;
@@ -13,7 +13,7 @@
     .editor-item {
         line-height: 1.5;
         padding: 0.5rem 1rem;
-        border: 2px solid rgb(242, 243, 245);
+        border: 2px solid #95b1e9;
         border-radius: 5px;
         width: 100%;
         box-sizing: border-box;

@@ -7,8 +7,9 @@ import { ReactComponent as AudioRecordSvg } from 'src/static/svg/audiov2.svg';
 import { useSelector } from 'react-redux';
 import xss from 'xss';
 import '../styles/editor.scss';
+import { Message } from '@arco-design/web-react';
 
-const Editors = () => {
+const Editors = (props) => {
     const chatWithUser = useSelector((state: any) => state.chat.chatWithUser);
     const editorRef = useRef(null);
     /**
@@ -33,10 +34,14 @@ const Editors = () => {
      * 发送前消息验证
      */
     const sendValidateMessage = () => {
-        if (!window.ChatSession.To) { window.ChatSession.setToId(chatWithUser.uid); }
-        const m = xss(getMessage());
-        m.length && sendChatMessage(m, MessageType.Text);
-        resetEditor();
+        try {
+            if (!window.ChatSession.To) { window.ChatSession.setToId(chatWithUser.uid); }
+            const m = xss(getMessage());
+            m.length && sendChatMessage(m, MessageType.Text);
+            resetEditor();
+        } catch (error) {
+            Message.error("网络异常，请稍后重试")
+        }
     };
 
     /**
@@ -94,6 +99,11 @@ const Editors = () => {
     useEffect(() => {
         editorRef.current.focus()
     }, [chatWithUser])
+
+    useEffect(() => {
+        window.addEventListener('resize', () => {
+        })
+    }, [])
 
     const Editor = ({ mode }) => {
         return <div
