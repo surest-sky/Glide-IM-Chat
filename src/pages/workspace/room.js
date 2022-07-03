@@ -23,7 +23,7 @@ const Room = () => {
 
     return <div className="w-chat-container">
         <div className="w-chat-header-container">
-            <Title heading={6}>峰发如4放</Title>
+            <Title heading={6}>{chatWithUser.name} (#{chatWithUser.uid})</Title>
         </div>
 
         <RightMenu theme={''} minWidth={200} maxWidth={200} onAfterInit={() => { }} onBeforeInit={() => { }} options={roomOptions}>

@@ -1,4 +1,5 @@
 import RightMenu from '@right-menu/react';
+import { Avatar } from '@arco-design/web-react';
 import dayjs from 'dayjs';
 import { useLiveQuery } from 'dexie-react-hooks';
 import { useEffect, useState } from 'react';
@@ -60,10 +61,11 @@ const Messages = () => {
             },
         ];
         const isMe = me_id === message.from
+        const avatar = isMe ? userInfo.avatar : chatWithUser.avatar
         const sendAt = dayjs(message.SendAt).format('HH:mm a DD-MM');
         return <div className={`flex message-wrapper  ${isMe ? 'message-to flex-row-reverse' : 'message-from flex-row'}`}>
-            <img className="message-avatar" src="https://teacher.tutorpage.net/static/media/new-logo-circular.33be506198f72cf366b7.png" alt="message" />
-            <div>
+            {avatar ? <img className="message-avatar" src={avatar} alt="message" /> : <Avatar className="message-avatar">Messager</Avatar>}
+            <div className={isMe ? 'mr-1' : 'ml-1'}>
                 <span className="message-at">{isMe ? userInfo.Nickname : chatWithUser.name} · {sendAt}</span>
                 {
                     isMe ?

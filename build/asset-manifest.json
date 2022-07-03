@@ -1,18 +1,27 @@
 {
   "files": {
-    "main.css": "/static/css/main.14e5d144.css",
-    "main.js": "/static/js/main.7cb32e20.js",
+    "main.css": "/static/css/main.11ca00a3.css",
+    "main.js": "/static/js/main.323dbe1b.js",
     "static/js/787.99ba04fa.chunk.js": "/static/js/787.99ba04fa.chunk.js",
+    "static/media/chat.svg": "/static/media/chat.0094fa608f8efad723bfa5b72ea0ce09.svg",
+    "static/media/chart.svg": "/static/media/chart.531ad695a75c6618bc3ff8ad5660a3d5.svg",
+    "static/media/users.svg": "/static/media/users.ffdff3a2c31597cccb5806a170ee031d.svg",
+    "static/media/robot.svg": "/static/media/robot.6c42669720bb683c1d415ec14fe50bf4.svg",
     "static/media/image.svg": "/static/media/image.a1f4db6f8a0eb325f099fc0062694e07.svg",
+    "static/media/pote.svg": "/static/media/pote.e6a1cdfd41a5453eb37f1d193c9fed00.svg",
+    "static/media/vip.svg": "/static/media/vip.9b9aa5352b3c83f4352559dd282cc660.svg",
     "index.html": "/index.html",
+    "static/media/audiov2.svg": "/static/media/audiov2.bae0f3e33f23b9cb819b000b5eebf89a.svg",
     "static/media/audio.svg": "/static/media/audio.fd7d2c5aff33a9809cdcee07aa034e8e.svg",
     "static/media/audio-record.svg": "/static/media/audio-record.496642e059743298af7f318795796121.svg",
-    "main.14e5d144.css.map": "/static/css/main.14e5d144.css.map",
-    "main.7cb32e20.js.map": "/static/js/main.7cb32e20.js.map",
+    "static/media/doubt.svg": "/static/media/doubt.ed58494cbd265bb058c59c309a1d6362.svg",
+    "static/media/bit.svg": "/static/media/bit.e8ab996998484fa3ea555cffa6156626.svg",
+    "main.11ca00a3.css.map": "/static/css/main.11ca00a3.css.map",
+    "main.323dbe1b.js.map": "/static/js/main.323dbe1b.js.map",
     "787.99ba04fa.chunk.js.map": "/static/js/787.99ba04fa.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.14e5d144.css",
-    "static/js/main.7cb32e20.js"
+    "static/css/main.11ca00a3.css",
+    "static/js/main.323dbe1b.js"
   ]
 }

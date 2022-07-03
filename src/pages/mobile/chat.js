@@ -23,7 +23,7 @@ const Mobile = () => {
                 navigate('/m')
             }} />
             <div className='chat-container-top-banner'>
-                <h1>Messager </h1>
+                <h1>Messager (#{uid})</h1>
                 <div>和我们一起来了解更多东西吧</div>
             </div>
         </div>
