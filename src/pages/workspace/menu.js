@@ -1,8 +1,9 @@
 import { Avatar, Input, List, Select } from '@arco-design/web-react';
 import { useRequest } from 'ahooks';
 import { useLiveQuery } from 'dexie-react-hooks';
-import { map } from 'lodash';
+import { map, orderBy } from 'lodash';
 import { useEffect } from 'react';
+import { MessageType } from 'src/core/message'
 import { useDispatch, useSelector } from 'react-redux';
 import { getSessionRecent } from 'src/api/chat/chat';
 import { userInfoApi } from 'src/api/chat/im';
@@ -75,11 +76,15 @@ const Menu = () => {
     });
 
     const formatLastMessage = (message) => {
-        if (message.type)
-            if (!message) {
-                return ''
-            }
-        return message.content.replace(/<img[^>]*?src\s*=\s*[""']?([^'"" >]+?)[ '""][^>]*?>/g, '[图片]')
+        if (!message) {
+            return ''
+        }
+        if (message.type === MessageType.Image) {
+            return "[图片]"
+        }
+        if (message.type === MessageType.Text) {
+            return message.content.replace(/<img[^>]*?src\s*=\s*[""']?([^'"" >]+?)[ '""][^>]*?>/g, '[图片]')
+        }
     }
 
     useEffect(() => {
@@ -112,7 +117,8 @@ const Menu = () => {
             </Select>
         </div>
         <List
-            dataSource={_contactsList}
+            dataSource={orderBy(_contactsList, 'weight', 'desc')}
+            className="contacts-menu-wrapper"
             render={(item, index) => (
                 <List.Item key={item.uid} className={chatWithUser.uid === item.uid ? 'active' : null} onClick={() => { changechatWithUser(item) }}>
                     <List.Item.Meta
@@ -121,6 +127,9 @@ const Menu = () => {
                         title={item.name}
                         description={formatLastMessage(item.lastMessage)}
                     />
+                    {item.message_count ? <span className='item-badge arco-badge-number badge-zoom-appear-done badge-zoom-enter-done'>
+                        <span>{item.message_count}</span>
+                    </span> : null}
                     <span className="arco-list-item-mini">一分钟前</span>
                 </List.Item>
             )}

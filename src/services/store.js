@@ -1,20 +1,26 @@
 
 
-import lodash from 'lodash';
+import { get } from 'lodash';
 import { addBlukContacts, getContacts } from 'src/services/chat_db';
 import { uploadFile } from 'src/services/upload';
+import store from 'src/store/index';
 
 // 给联系人添加一条消息
 export const addContactUserMessage = async (message) => {
+    const chatWithUser = store.getState().chat.chatWithUser;
     const contacts = await getContacts()
-    console.log(message)
-    const _contacts = contacts.map(item => {
-        console.log(item.uid.toString() === message.from || item.uid.toString() === message.to)
+    let _contacts = contacts.map(item => {
+        item.weight = 0
         if (message.from === item.uid.toString()) {
             item.lastMessage = message
+            item.weight = message.SendAt;
+            if (message.from !== chatWithUser.uid.toString()) {
+                item.message_count += 1
+            }
         }
         if (message.to === item.uid.toString()) {
             item.lastMessage = message
+            item.weight = message.SendAt;
         }
         return item;
     });
@@ -35,9 +41,9 @@ export const pasteImage = (event): string => {
 
     // 检测剪贴板是否包含图片
     if (items && items.length) {
-        const type = lodash.get(items, '[0].type');
+        const type = get(items, '[0].type');
         if (type !== -1) {
-            file = lodash.get(items, '0').getAsFile();
+            file = get(items, '0').getAsFile();
             if (!file) {
                 return Promise.resolve(false);
             }

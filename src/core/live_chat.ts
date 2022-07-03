@@ -33,6 +33,7 @@ export class LiveChat {
     public initChat(): Observable<string> {
         const token = getToken();
         if (!token) {
+            console.error('连接聊天服务器 失败: initChat');
             setLogout();
             return;
         }

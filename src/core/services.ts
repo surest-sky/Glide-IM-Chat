@@ -1,13 +1,11 @@
-import { Session } from './session';
-import { ChatMessage } from './chat_message';
-import { setLogout } from 'src/services/auth';
-import { LiveChat } from 'src/core/live_chat';
 import { delay } from 'rxjs';
-import { addMessage, withdrawMessage } from 'src/services/chat_db';
-import store from 'src/store/index';
-import { updateContacts } from 'src/store/reducer/chat';
+import { LiveChat } from 'src/core/live_chat';
 import { MessageType, Recall } from 'src/core/message';
+import { setLogout } from 'src/services/auth';
+import { addMessage, withdrawMessage } from 'src/services/chat_db';
 import { loadMessageRecord } from 'src/services/message';
+import { ChatMessage } from './chat_message';
+import { Session } from './session';
 
 declare global {
     interface Window {
@@ -17,7 +15,7 @@ declare global {
 
 // 聊天服务错误
 const serviceError = err => {
-    console.log(err);
+    console.error('连接聊天服务器 失败: serviceError', err);
     setLogout();
 };
 
@@ -27,7 +25,7 @@ const serviceComplete = async (session: Session, callback) => {
     window.ChatSession = session;
     callback && callback();
     registerHanders(session);
-    store.dispatch(updateContacts());
+    // store.dispatch(updateContacts());
     await loadMessageRecord();
 };
 

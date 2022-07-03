@@ -1,11 +1,13 @@
 
-const key = "userInfo"
-const setLogin = (authInfo) => {
+const adminKey = "userInfo"
+const mobileKey = "mobile:userInfo"
+const setLogin = (authInfo, source = null) => {
+    const key = source === 'mobile' ? mobileKey : adminKey
     localStorage.setItem(key, JSON.stringify(authInfo));
 }
 
 const isLogin = () => {
-    const userInfo = localStorage.getItem(key);
+    const userInfo = localStorage.getItem(adminKey);
     try {
         const _userInfo = JSON.parse(userInfo)
         return _userInfo.Token
@@ -15,11 +17,12 @@ const isLogin = () => {
 }
 
 const setLogout = () => {
-    localStorage.removeItem(key)
+    localStorage.removeItem(adminKey)
     window.location.reload()
 }
 
-const getAuthInfo = () => {
+const getAuthInfo = (source) => {
+    const key = source === 'mobile' ? mobileKey : adminKey
     const defaultVal = {
         Token: "",
         Servers: [],

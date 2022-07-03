@@ -11,6 +11,7 @@ const isRoomMessage = (message): boolean => {
     const chatWithUser = store.getState().chat.chatWithUser;
     const currentUserUid = chatWithUser.uid;
     const cchatWithUserUid = currentUser.Uid;
+    console.log(chatWithUser, currentUser);
     // 我发给对方
     if (message.to === cchatWithUserUid && message.from === currentUserUid) {
         return true;
@@ -76,7 +77,7 @@ export const addMessage = (message: Message) => {
     } else {
         incrContactsMessageCount(parseInt(_message.to));
     }
-
+    console.log('message', message);
     addContactUserMessage(message);
     // 给联系人添加一条消息
     db.chat.add(_message);
@@ -163,6 +164,7 @@ export const switchRoom = async (from: number, to: number) => {
         });
         console.log('orderBy', orderBy(_messages, 'sendAt'));
         addBlukRoomMessages(orderBy(_messages, 'sendAt'));
+        clearContactsMessageCount(to);
     });
 };
 

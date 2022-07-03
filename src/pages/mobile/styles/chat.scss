@@ -1,11 +1,18 @@
 $linear-color: linear-gradient(135deg, rgb(48, 71, 236) 0%, rgb(15, 34, 167) 100%);
 $linear-simple: rgb(48, 71, 236);
+
+.chat-container {
+    position: relative;
+    height: 100vh;
+}
+
 .chat-container-top {
     padding-left: 20px;
     padding-top: 20px;
     display: flex;
-    padding-bottom: 40px;
+    padding-bottom: 20px;
     background: $linear-color;
+    line-height: 1.5;
 
     &-banner {
         color: white;
@@ -104,9 +111,5 @@ $linear-simple: rgb(48, 71, 236);
             color: #3047ec;
             font-size: 16px;
         }
-    }
-
-    .message-wrapper {
-        height: calc(100vh - 160px - 70px - 30px);
     }
 }

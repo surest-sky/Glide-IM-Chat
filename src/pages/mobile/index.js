@@ -1,11 +1,13 @@
 
 import { Avatar, Button } from '@arco-design/web-react';
 import { IconClockCircle, IconClose, IconIdcard, IconRight, IconSearch, IconSend } from '@arco-design/web-react/icon';
+import Layout from './component/layout'
 import { useNavigate } from 'react-router-dom';
 import './styles/mobile.scss';
+
 const Mobile = () => {
     const navigate = useNavigate();
-    return <div className='mobile-container fade-in-top'>
+    return <Layout> <div className='mobile-container fade-in-top'>
         <div className='mobile-close-container-btn cur'>
             <div className='mobile-container-top-btn cur' style={{ backgroundColor: 'rgba(0, 0, 0, 0)' }}>
                 <IconClose className='close-btn' />
@@ -53,7 +55,7 @@ const Mobile = () => {
                     </div>
                     <div className='mobile-container-message-card'>
                         <div className='height186'>
-                            <h2 className='h2'>开始另外一个对话</h2>
+                            <h2 className='h2'>开始一个新的对话</h2>
                             <div className='mobile-container-message-send'>
                                 <div className='img-content'>
                                     <div className='img-one'>
@@ -145,6 +147,7 @@ const Mobile = () => {
             </div>
         </div>
     </div>
+    </Layout>
 }
 
 export default Mobile

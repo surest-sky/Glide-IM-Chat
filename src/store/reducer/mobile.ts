@@ -11,9 +11,9 @@ export interface GlobalState {
         Uid?: string;
     };
     authInfo?: {
-        Token: string;
-        Servers: Array<string>;
-        Uid: string;
+        token: string;
+        servers: Array<string>;
+        uid: string;
     };
 }
 
@@ -21,9 +21,9 @@ const initialState: GlobalState = {
     settings: defaultSettings,
     userInfo: {},
     authInfo: {
-        Token: '',
-        Servers: [],
-        Uid: '',
+        token: '',
+        servers: [],
+        uid: '',
     },
 };
 
@@ -34,7 +34,6 @@ const containerReducers = {
     updateAuthInfo: (state, { payload }) => {
         setLogin(payload);
         state.authInfo = payload;
-        state.userInfo.Uid = payload.Uid;
     },
     updateUserInfo: (state, { payload }) => {
         console.log('payload', payload);

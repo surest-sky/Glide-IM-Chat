@@ -1,4 +1,5 @@
 import RightMenu from '@right-menu/react';
+import { Avatar } from '@arco-design/web-react';
 import dayjs from 'dayjs';
 import { useLiveQuery } from 'dexie-react-hooks';
 import { useEffect, useState } from 'react';
@@ -7,7 +8,9 @@ import HtmlApp from 'src/components/HtmlApp';
 import { removeMessage } from 'src/services/chat_db';
 import { db } from 'src/services/db';
 import { scrollToBottom } from 'src/utils/Utils';
-import '../styles/message.scss'
+import '../styles/message.scss';
+
+
 import xss from 'xss';
 
 const Messages = () => {
@@ -28,7 +31,7 @@ const Messages = () => {
         console.log(_messages)
         return () => {
             setTimeout(() => {
-                scrollToBottom('.w-chat-wrapper');
+                scrollToBottom('.chat-message-wrapper');
             }, 0);
         }
     }, [_messages]);
@@ -61,10 +64,11 @@ const Messages = () => {
         ];
         const isMe = me_id === message.from
         const sendAt = dayjs(message.SendAt).format('HH:mm a DD-MM');
+        const avatar = isMe ? userInfo.avatar : chatWithUser.avatar
         return <div className={`flex message-wrapper  ${isMe ? 'message-to flex-row-reverse' : 'message-from flex-row'}`}>
-            <img className="message-avatar" src="https://teacher.tutorpage.net/static/media/new-logo-circular.33be506198f72cf366b7.png" alt="message" />
-            <div>
-                <span className="message-at">{isMe ? userInfo.Nickname : chatWithUser.name} · {sendAt}</span>
+            {avatar ? <img className="message-avatar" src={avatar} alt="message" /> : <Avatar>Messager</Avatar>}
+            <div className={isMe ? 'mr-1' : 'ml-1'}>
+                <span className="message-at">{(isMe ? userInfo.Nickname : chatWithUser.name) || "Messager"} · {sendAt}</span>
                 {
                     isMe ?
                         <RightMenu theme={''} minWidth={200} maxWidth={200} onAfterInit={() => { }} onBeforeInit={() => { }} options={options}>

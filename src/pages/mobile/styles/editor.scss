@@ -1,0 +1,46 @@
+.chat-message-editor {
+    position: absolute;
+    bottom: 5px;
+    left: 0;
+    display: flex;
+    width: 100%;
+    padding: 2px;
+
+    .message-editor-input {
+        width: 100%;
+    }
+
+    .editor-item {
+        line-height: 1.5;
+        padding: 0.5rem 1rem;
+        border: 2px solid rgb(242, 243, 245);
+        border-radius: 5px;
+        width: 100%;
+        box-sizing: border-box;
+        background-color: rgb(242, 243, 245);
+        height: 60px;
+        overflow-y: auto;
+    }
+
+    .editor-item:focus {
+        border: 2px solid #2868fb;
+    }
+
+    .arco-btn-size-large.arco-btn-shape-circle {
+        width: 50px;
+        height: 50px;
+    }
+
+    .editor-operate {
+        width: 35px;
+        text-align: center;
+        padding-top: 5px;
+
+        svg {
+            margin: 0 auto;
+        }
+        svg + svg {
+            margin-top: 2px;
+        }
+    }
+}

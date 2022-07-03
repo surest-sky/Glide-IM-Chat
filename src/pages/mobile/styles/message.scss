@@ -1,9 +1,10 @@
-.w-chat-wrapper {
+.chat-message-wrapper {
     padding-left: 20px;
     padding-right: 20px;
     padding-bottom: 20px;
-    height: calc(100vh - 60px - 40px);
+    height: calc(100vh - 185px);
     overflow-y: auto;
+    line-height: 1.5;
 
     .message-to {
         > img {
