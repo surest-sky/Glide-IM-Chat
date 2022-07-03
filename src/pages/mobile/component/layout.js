@@ -1,6 +1,6 @@
 import { generateFrontId } from 'src/services/plugins/fingerprint'
 import { guestLogin, getToUid } from '../apis/mobile'
-import { setLogin } from 'src/services/auth';
+import { setLogin, isLogin } from 'src/services/auth';
 import { useEffect, useState, useRef } from 'react'
 import store from 'src/store/index';
 import Loading from 'src/components/Loading'
@@ -12,7 +12,7 @@ import { get } from 'lodash'
 import '../styles/mobile.scss';
 
 const Layout = (props) => {
-    const [loading, setLoading] = useState(true)
+    const [loading, setLoading] = useState(!isLogin())
     const userInfo = useRef()
     const frontId = useRef()
     const uid = useRef()
@@ -46,11 +46,17 @@ const Layout = (props) => {
     }
 
     useEffect(() => {
-        generateFrontId().then(v => {
-            frontId.current = v
-            login()
+        if (!isLogin()) {
+            generateFrontId().then(v => {
+                frontId.current = v
+                login()
+                setLoading(false)
+            })
+        } else {
+            loadWidthUser()
             setLoading(false)
-        })
+        }
+
     }, [])
 
     if (loading) {
