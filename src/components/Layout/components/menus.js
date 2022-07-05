@@ -15,7 +15,7 @@ const MenuItemGroup = Menu.ItemGroup;
 const MenuItem = Menu.Item;
 
 const Menus = () => {
-    const [cateVisible, setCateVisible] = useState(true);
+    const [cateVisible, setCateVisible] = useState(false);
     const editCategory = () => {
 
     }

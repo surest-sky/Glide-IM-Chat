@@ -8,7 +8,7 @@ const Convert = () => {
 
     useEffect(() => {
         if (process.env.NODE_ENV === 'production') {
-            if (window.host.indexOf("mobile") >= 0) {
+            if (window.location.href.indexOf("chat.surest.cn") >= 0) {
                 return <Mobile />
             }
         }
