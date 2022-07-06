@@ -1,6 +1,7 @@
 import { Menu, Modal, Button } from '@arco-design/web-react';
 import { IconEdit, IconPlusCircle } from '@arco-design/web-react/icon';
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 import { ReactComponent as BitSvg } from 'src/static/svg/bit.svg';
 import { ReactComponent as ChartSvg } from 'src/static/svg/chart.svg';
@@ -10,19 +11,23 @@ import { ReactComponent as PoteSvg } from 'src/static/svg/pote.svg';
 import { ReactComponent as RobotSvg } from 'src/static/svg/robot.svg';
 import { ReactComponent as UsersSvg } from 'src/static/svg/users.svg';
 import { ReactComponent as VipSvg } from 'src/static/svg/vip.svg';
+import { ReactComponent as SettingSvg } from 'src/static/svg/setting.svg';
 
 const MenuItemGroup = Menu.ItemGroup;
 const MenuItem = Menu.Item;
 
 const Menus = () => {
     const [cateVisible, setCateVisible] = useState(false);
+    const navigate = useNavigate();
     const editCategory = () => {
-
+        setCateVisible(true)
+        alert(2)
     }
 
     return <div>
         <Menu className="menu-container" theme='dark' levelIndent={0} onClickMenuItem={(key, path) => {
-            console.log(key, path)
+            // console.log(key, path)
+            navigate(key)
         }}>
             <div className="flex justify-between menu-container-header">
                 <div className="flex">
@@ -34,11 +39,11 @@ const Menus = () => {
                     <IconPlusCircle className="text-white hover:text-gray-300" />
                 </div>
             </div>
-            <MenuItem key='workspace'>
+            <MenuItem key='/workspace'>
                 <ChatSvg />
                 工作台
             </MenuItem>
-            <MenuItemGroup key='2_0' title={<div className="flex items-center justify-start"><span className="mr-2">分类</span> <IconEdit onClick={editCategory} className="text-white hover:text-gray-300" /></div>} className="mb-5">
+            <MenuItemGroup key='2_0' onClick={editCategory} title={<div className="flex items-center justify-start cursor-pointer"><span className="mr-2">分类</span> <IconEdit className="text-white hover:text-gray-300" /></div>} className="mb-5">
                 <MenuItem key='2_0_0'><VipSvg /> VIP</MenuItem>
                 <MenuItem key='2_0_2'><PoteSvg /> 待沟通客户</MenuItem>
                 <MenuItem key='2_0_3'><UsersSvg /> 潜在客户</MenuItem>
@@ -49,6 +54,7 @@ const Menus = () => {
                 <MenuItem key='3_0_2'><ChartSvg /> 市场分析</MenuItem>
                 <MenuItem key='3_0_3'><DoubtSvg /> 帮助中心</MenuItem>
                 <MenuItem key='3_0_4'><RobotSvg /> 回复机器人</MenuItem>
+                <MenuItem key='/setting'><SettingSvg /> 设置中心</MenuItem>
             </MenuItemGroup>
         </Menu>
         <Modal

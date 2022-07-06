@@ -6,6 +6,7 @@ import Admin from '../pages/cm';
 import Chat from '../pages/mobile/chat';
 import Search from '../pages/mobile/search';
 import WorkSpace from '../pages/workspace/index';
+import Setting from '../pages/setting/index';
 
 
 const Routers = () => {
@@ -18,6 +19,7 @@ const Routers = () => {
             <Route path="/m/s" element={<Search />} />
             <Route path="/m/chat" element={<Chat />} />
             <Route path="/workspace" element={<WorkSpace />} />
+            <Route path="/setting" element={<Setting />} />
         </Routes>
     );
 };

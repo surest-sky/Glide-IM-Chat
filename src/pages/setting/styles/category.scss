@@ -1,0 +1,28 @@
+.category-container {
+    max-width: 600px;
+    .category-item {
+        border: 1px dashed #ccc;
+        cursor: pointer;
+        position: relative;
+    }
+
+    .category-item-disabled::before {
+        content: ' ';
+        background: #edeff3;
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        left: 0;
+        opacity: 0.5;
+    }
+
+    .category-action {
+        text-align: center;
+        width: 60px;
+        line-height: 30px;
+    }
+
+    .category-action svg:hover {
+        color: #ccc;
+    }
+}

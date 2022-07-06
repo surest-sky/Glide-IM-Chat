@@ -4,18 +4,18 @@ import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { userAuthApi, userInfoApi } from 'src/api/im/im';
 import { initChatSession } from 'src/core/services';
-import { getAuthInfo } from 'src/services/auth';
+import { getAuthInfo, isLogin } from 'src/services/auth';
 import Loading from 'src/components/Loading'
 import store from 'src/store/index';
 import { updateAuthInfo, updateUserInfo } from 'src/store/reducer/container';
 import Menus from './components/menus'
-
 import './styles/layout.scss';
 
 
 const Layout = (props) => {
     const [loading, setLoading] = useState(true)
     const navigate = useNavigate();
+    const userInfo = getAuthInfo()
     const reLogin = () => {
         setLoading(false)
         Message.error("请登录 !")
@@ -33,7 +33,6 @@ const Layout = (props) => {
     };
 
     function fetchUserAuth() {
-        const userInfo = getAuthInfo()
         if (!userInfo || !userInfo.Token) {
             reLogin()
             return
@@ -53,11 +52,14 @@ const Layout = (props) => {
     }
 
     useEffect(() => {
-        fetchUserAuth()
+        if (!isLogin()) {
+            fetchUserAuth()
+        }
+        fetchUserInfo(userInfo)
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
-    if (loading) {
+    if (loading && !isLogin()) {
         return <Loading />
     }
 
