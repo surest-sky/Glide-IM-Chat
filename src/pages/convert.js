@@ -7,6 +7,8 @@ const Convert = () => {
     const navigate = useNavigate()
 
     useEffect(() => {
+        window.location.href = "/workspace"
+        return
         if (process.env.NODE_ENV === 'production') {
             if (window.location.href.indexOf("chat.surest.cn") >= 0) {
                 return <Mobile />
