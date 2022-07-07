@@ -23,6 +23,10 @@
         right: 14px;
         top: 14px;
     }
+
+    .arco-spin {
+        width: 100%;
+    }
 }
 
 .child-container {
@@ -37,6 +41,14 @@
         padding: 5px !important;
         transition: 0.1s;
         border-radius: 5px !important;
+        max-width: 240px;
+        overflow: hidden;
+
+        .arco-list-item-meta {
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            max-width: 240px;
+        }
     }
 
     .arco-list-item-main:hover {

@@ -22,6 +22,7 @@ export class ChatMessage {
 
     public Status: number;
     public IsMe: boolean;
+    public IsMeToo: boolean;
     public IsGroup: boolean;
 
     public Sending: SendingStatus = SendingStatus.Unknown;
@@ -71,6 +72,8 @@ export class ChatMessage {
             content: this.Content,
             sendAt: this.SendAt,
             status: this.Status,
+            isMe: this.IsMe,
+            isMeToo: this.From === this.To,
         };
     }
 }

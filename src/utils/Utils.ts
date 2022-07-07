@@ -68,3 +68,31 @@ export const dateLine = (at, key, messages) => {
     }
     return false;
 };
+
+export function timeAgo(timestamp) {
+    if (!timestamp) {
+        return '';
+    }
+
+    timestamp = dayjs(timestamp * 1000).format('YYYY-MM-DD HH:mm:ss');
+    const minutes = dayjs().diff(dayjs(timestamp), 'minute');
+    if (minutes <= 2) {
+        return '刚刚';
+    }
+
+    if (minutes <= 60) {
+        return minutes + '分钟前';
+    }
+
+    const hours = dayjs().diff(dayjs(timestamp), 'hours');
+    if (hours <= 24) {
+        return hours + '小时前';
+    }
+
+    const weeks = dayjs().diff(dayjs(timestamp), 'day');
+    if (weeks <= 7) {
+        return weeks + '天前';
+    }
+
+    return dayjs(timestamp).format('YYYY-MM-DD');
+}

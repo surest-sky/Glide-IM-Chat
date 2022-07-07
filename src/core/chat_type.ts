@@ -4,5 +4,5 @@ export interface ContactsType {
     message_count: number;
     uid?: number;
     motto?: string;
-    lastMessage?: string;
+    lastMessage?: object;
 }

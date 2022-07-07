@@ -1,5 +1,6 @@
 import { generateFrontId } from 'src/services/plugins/fingerprint'
 import { guestLogin, getToUid } from '../apis/mobile'
+import { Outlet } from 'react-router-dom';
 import { setLogin, isLogin } from 'src/services/auth';
 import { useEffect, useState, useRef } from 'react'
 import store from 'src/store/index';
@@ -63,7 +64,7 @@ const Layout = (props) => {
         return <Loading text="Loading" />
     }
 
-    return props.children
+    return <Outlet />
 }
 
 export default Layout

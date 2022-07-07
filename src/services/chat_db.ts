@@ -5,23 +5,56 @@ import store from 'src/store/index';
 import { orderBy } from 'lodash';
 import { MessageType } from 'src/core/message';
 import { addContactUserMessage } from 'src/services/store';
+import { userInfoApi } from 'src/api/im/im';
 
 const isRoomMessage = (message): boolean => {
     const currentUser = store.getState().container.userInfo;
     const chatWithUser = store.getState().chat.chatWithUser;
     const currentUserUid = chatWithUser.uid;
-    const cchatWithUserUid = currentUser.Uid;
-    console.log(chatWithUser, currentUser);
+    const chatWithUserUid = currentUser.Uid;
     // 我发给对方
-    if (message.to === cchatWithUserUid && message.from === currentUserUid) {
+    if (message.to === chatWithUserUid && message.from === currentUserUid) {
         return true;
     }
 
     // 对方发给我
-    if (message.to === currentUserUid && message.from === cchatWithUserUid) {
+    if (message.to === currentUserUid && message.from === chatWithUserUid) {
         return true;
     }
     return false;
+};
+
+const isSendSelf = message => {
+    const chatWithUser = store.getState().chat.chatWithUser;
+    const currentUserUid = chatWithUser.uid;
+
+    if (message.to === currentUserUid && message.from === currentUserUid) {
+        return true;
+    }
+    return false;
+};
+
+// 是否为新的联系人
+export const isNewContact = async message => {
+    const item = await db.contacts.where({ uid: parseInt(message.to) }).first();
+    if (item) {
+        return false;
+    }
+    return true;
+};
+
+// 添加联系人
+export const addContactInfo = async message => {
+    const { data } = await userInfoApi({ Uid: [message.uid] });
+    const contacts: ContactsType = {
+        avatar: data.Data.avatar,
+        name: data.Data.Nickname,
+        message_count: 0,
+        uid: message.uid,
+        motto: '',
+        lastMessage: message,
+    };
+    addContacts(contacts);
 };
 
 // 获取一个联系人
@@ -67,20 +100,29 @@ export const incrContactsMessageCount = (uid: number) => {
 };
 
 // 添加一条消息
-export const addMessage = (message: Message) => {
+export const addMessage = async (message: Message) => {
     const _message = Object.assign({}, message, {
         from: parseInt(message.from),
         to: parseInt(message.to),
     });
+
+    // isM
+    if (message.isMeToo) {
+        await addContactInfo(message);
+        incrContactsMessageCount(parseInt(_message.to));
+        addContactUserMessage(message);
+        db.chat.add(_message);
+        return;
+    }
+
     if (isRoomMessage(_message)) {
         addRoomMessages(_message);
+    } else if (isSendSelf(message)) {
     } else {
-        incrContactsMessageCount(parseInt(_message.to));
+        incrContactsMessageCount(parseInt(_message.from));
+        addContactUserMessage(message);
+        db.chat.add(_message);
     }
-    console.log('message', message);
-    addContactUserMessage(message);
-    // 给联系人添加一条消息
-    db.chat.add(_message);
 };
 
 // 添加多条消息
@@ -141,6 +183,10 @@ export const getMessagesByOne = (from: number, to: number) => {
 
 // 获取与某人的最后一条消息
 export const getMessagesByOnelastMessage = async (from: number, to: number) => {
+    if (!from || !to) {
+        return '';
+    }
+    console.log('to', to);
     const f1 = await db.chat.where({ from: from, to: to }).last();
     const f2 = await db.chat.where({ from: to, to: from }).last();
     if (f1 && f2) {

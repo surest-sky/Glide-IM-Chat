@@ -11,6 +11,7 @@ import Robot from '../pages/robot/index';
 import Customer from '../pages/customer/index';
 import Analysis from '../pages/analysis/index';
 import Faq from '../pages/faq/index';
+import LayoutMobile from '../pages/mobile/component/layout'
 
 
 const Routers = () => {
@@ -18,9 +19,12 @@ const Routers = () => {
         <Routes>
             <Route path="/" element={<Convert />} />
             <Route path="/auth" element={<Auth />} />
-            <Route path="/m" element={<Mobile />} />
-            <Route path="/m/s" element={<Search />} />
-            <Route path="/m/chat" element={<Chat />} />
+
+            <Route path="" element={<LayoutMobile />}>
+                <Route path="/m" element={<Mobile />} />
+                <Route path="/m/s" element={<Search />} />
+                <Route path="/m/chat" element={<Chat />} />
+            </Route>
 
             <Route path="" element={<Layout />}>
                 <Route path="/workspace" element={<WorkSpace />} />

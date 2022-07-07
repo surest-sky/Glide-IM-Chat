@@ -151,15 +151,18 @@ export class Session {
         return Api.getMid().pipe(
             map(resp => {
                 const time = Date.parse(new Date().toString()) / 1000;
+                const from = LiveChat.getInstance().getUID().toString();
                 const m: Message = {
                     content: content,
-                    from: LiveChat.getInstance().getUID().toString(),
+                    from: from,
                     mid: resp.Mid,
                     sendAt: time,
                     seq: 0,
                     to: this.To,
                     type: type,
                     status: 0,
+                    isMe: true,
+                    isMeToo: from === this.To,
                 };
                 return m;
             }),

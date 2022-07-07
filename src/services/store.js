@@ -3,25 +3,32 @@
 import { get } from 'lodash';
 import { addBlukContacts, getContacts } from 'src/services/chat_db';
 import { uploadFile } from 'src/services/upload';
-import store from 'src/store/index';
+// import store from 'src/store/index';
+// import { getAuthInfo } from 'src/services/auth';
 
 // 给联系人添加一条消息
 export const addContactUserMessage = async (message) => {
-    const chatWithUser = store.getState().chat.chatWithUser;
+    // const chatWithUser = store.getState().chat.chatWithUser;
     const contacts = await getContacts()
     let _contacts = contacts.map(item => {
+        const iuid = item.uid.toString()
+        if (message.isMeToo) {
+            return item
+        }
         item.weight = 0
-        if (message.from === item.uid.toString()) {
+        if (message.from === iuid) {
             item.lastMessage = message
             item.weight = message.SendAt;
-            if (message.from !== chatWithUser.uid.toString()) {
-                item.message_count += 1
-            }
+            // if (message.from !== chatWithUser.uid.toString()) {
+            //     item.message_count += 1
+            // }
         }
-        if (message.to === item.uid.toString()) {
+        if (message.to === iuid) {
             item.lastMessage = message
             item.weight = message.SendAt;
         }
+
+
         return item;
     });
     addBlukContacts(_contacts)

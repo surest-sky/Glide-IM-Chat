@@ -70,6 +70,8 @@ export interface Message {
     content: string;
     sendAt: number;
     status: number;
+    isMe?: boolean;
+    isMeToo?: boolean;
 }
 
 // 接收者收到确认请求

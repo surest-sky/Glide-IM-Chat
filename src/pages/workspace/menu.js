@@ -1,4 +1,4 @@
-import { Avatar, Input, List, Select } from '@arco-design/web-react';
+import { Avatar, Input, List, Select, Spin } from '@arco-design/web-react';
 import { useRequest } from 'ahooks';
 import { useLiveQuery } from 'dexie-react-hooks';
 import { map, orderBy } from 'lodash';
@@ -10,17 +10,20 @@ import { userInfoApi } from 'src/api/chat/im';
 import { addBlukContacts, getMessagesByOnelastMessage, switchRoom } from 'src/services/chat_db';
 import { db } from 'src/services/db';
 import { updateChatWithUser } from 'src/store/reducer/chat';
+import { timeAgo } from 'src/utils/Utils'
+import store from 'src/store/index';
+import { getAuthInfo } from 'src/services/auth';
 import './styles/menu.scss';
 
 const Menu = () => {
-    const options = ['Beijing', 'Shanghai', 'Guangzhou', 'Shenzhen', 'Chengdu', 'Wuhan'];
+    const options = [];
     const dispatch = useDispatch();
-    const userInfo = useSelector((state: any) => state.container.userInfo);
+    const userInfo = getAuthInfo();
     const chatWithUser = useSelector((state: any) => state.chat.chatWithUser);
     const _contactsList = useLiveQuery(() => db.contacts.toArray())
     const selfUser = {
         avatar: '',
-        name: userInfo.Nickname + "(自己)",
+        name: userInfo.NickName + "(自己)",
         message_count: 0,
         uid: userInfo.Uid,
         motto: '',
@@ -49,6 +52,7 @@ const Menu = () => {
                 motto: '',
             })
         }
+        _list.unshift(selfUser)
         addBlukContacts(_list)
         changechatWithUser(_list.length ? _list[0] : selfUser)
     }
@@ -87,8 +91,20 @@ const Menu = () => {
         }
     }
 
+    const handleChange = () => {
+        const states = store.getState()
+        console.log('states', states)
+    }
+    store.subscribe(handleChange)
     useEffect(() => {
-        run()
+        if (!_contactsList) {
+            run()
+            return
+        }
+
+        if (_contactsList.length < 0) {
+            run()
+        }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
@@ -116,24 +132,27 @@ const Menu = () => {
                 ))}
             </Select>
         </div>
-        <List
-            dataSource={orderBy(_contactsList, 'weight', 'desc')}
-            className="contacts-menu-wrapper"
-            render={(item, index) => (
-                <List.Item key={item.uid} className={chatWithUser.uid === item.uid ? 'active' : null} onClick={() => { changechatWithUser(item) }}>
-                    <List.Item.Meta
-                        data-id={item.uid}
-                        avatar={<Avatar shape='square'>A</Avatar>}
-                        title={item.name}
-                        description={formatLastMessage(item.lastMessage)}
-                    />
-                    {item.message_count ? <span className='item-badge arco-badge-number badge-zoom-appear-done badge-zoom-enter-done'>
-                        <span>{item.message_count}</span>
-                    </span> : null}
-                    <span className="arco-list-item-mini">一分钟前</span>
-                </List.Item>
-            )}
-        />
+        <Spin loading={!_contactsList}>
+            <List
+                dataSource={_contactsList ? orderBy(_contactsList, 'weight', 'desc') : [selfUser]}
+                className="contacts-menu-wrapper scrollbar"
+                render={(item, index) => (
+                    <List.Item key={item.uid} className={chatWithUser.uid === item.uid ? 'active' : null} onClick={() => { changechatWithUser(item) }}>
+                        <List.Item.Meta
+                            data-id={item.uid}
+                            avatar={<Avatar shape='square'>{item.avatar ? <img src={item.avatar} alt={item.name} /> : item.name}</Avatar>}
+                            title={`${item.name}#${item.uid}`}
+                            description={formatLastMessage(item.lastMessage)}
+                        />
+                        {item.message_count ? <span className='item-badge arco-badge-number badge-zoom-appear-done badge-zoom-enter-done'>
+                            <span>{item.message_count}</span>
+                        </span> : null}
+                        <span className="arco-list-item-mini">{timeAgo(item?.lastMessage?.sendAt)}</span>
+                        {/* <span className="arco-list-item-mini">{timeAgo(1657172066)}</span> */}
+                    </List.Item>
+                )}
+            />
+        </Spin>
     </div>
 }
 

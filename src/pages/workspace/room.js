@@ -1,4 +1,4 @@
-import { Typography } from '@arco-design/web-react';
+import { Typography, Spin } from '@arco-design/web-react';
 import RightMenu from '@right-menu/react';
 import { useSelector } from 'react-redux';
 import { removeMessages } from 'src/services/chat_db';
@@ -21,7 +21,7 @@ const Room = () => {
         },
     ];
 
-    return <div className="w-chat-container">
+    return <Spin loading={chatWithUser.uid === 0} className="w-chat-container">
         <div className="w-chat-header-container">
             <Title heading={6}>{chatWithUser.name} (#{chatWithUser.uid})</Title>
         </div>
@@ -35,7 +35,7 @@ const Room = () => {
         <div className="w-eidtor-wrapper">
             <Editor />
         </div>
-    </div>
+    </Spin>
 }
 
 export default Room
