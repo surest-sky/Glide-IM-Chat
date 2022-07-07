@@ -12,7 +12,8 @@ const Convert = () => {
                 return <Mobile />
             }
         }
-        navigate('/workspace')
+        window.location.href = "/workspace"
+        // navigate('/workspace')
     }, [])
 
 
