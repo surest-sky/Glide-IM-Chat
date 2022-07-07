@@ -29,13 +29,9 @@ $mw-space: 10px;
     animation: tilt-in-fwd-br 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
 }
 
-// .room-container {
-//     // min-height: 500px;
-//     .room-body,
-//     .chat-body {
-//         height: 100%;
-//     }
-// }
+svg {
+    display: inline-block;
+}
 
 .room-content {
     overflow-y: auto;
@@ -177,6 +173,13 @@ body {
 .icon-select {
     fill: #1990ff !important;
     color: #1990ff !important;
+}
+
+.card-wrapper {
+    border-radius: 12px;
+    padding: 20px;
+    background-color: white;
+    height: 93vh;
 }
 
 @media screen and (max-width: 1100px) {

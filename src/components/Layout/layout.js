@@ -1,6 +1,6 @@
 
 import { Message } from '@arco-design/web-react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Outlet } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { userAuthApi, userInfoApi } from 'src/api/im/im';
 import { initChatSession } from 'src/core/services';
@@ -66,7 +66,7 @@ const Layout = (props) => {
     return <div className="flex space-container">
         <Menus />
         <div className="child-container">
-            {props.children}
+            <Outlet />
         </div>
     </div>
 }

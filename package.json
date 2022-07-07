@@ -26,6 +26,7 @@
         "react-cropper": "2.1.8",
         "react-daisyui": "2.0.0",
         "react-dom": "18.0.0",
+        "react-draggable": "^4.4.5",
         "react-img-editor": "0.2.1",
         "react-router-dom": "6",
         "react-scripts": "5.0.1",

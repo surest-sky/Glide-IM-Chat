@@ -7,6 +7,9 @@ import { ReactComponent as RobotSvg } from 'src/static/svg/robot.svg';
 import { ReactComponent as SettingSvg } from 'src/static/svg/setting.svg';
 import { ReactComponent as UsersSvg } from 'src/static/svg/users.svg';
 import { ReactComponent as VipSvg } from 'src/static/svg/vip.svg';
+import { ReactComponent as AccountSvg } from 'src/static/svg/account.svg';
+import { ReactComponent as CategorySvg } from 'src/static/svg/category.svg';
+import { find, get } from 'lodash';
 
 
 export const svgs = [
@@ -50,4 +53,17 @@ export const svgs = [
         'icon': 'setting',
         'component': <SettingSvg />,
     },
+    {
+        'icon': 'account',
+        'component': <AccountSvg />,
+    },
+    {
+        'icon': 'category',
+        'component': <CategorySvg />,
+    },
 ]
+
+export const getComponentSvg = (name) => {
+    const svg = find(svgs, ['icon', name])
+    return get(svg, 'component')
+}

@@ -1,4 +1,4 @@
-import { Menu, Modal, Button } from '@arco-design/web-react';
+import { Menu, Modal } from '@arco-design/web-react';
 import { IconEdit, IconPlusCircle } from '@arco-design/web-react/icon';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -9,9 +9,9 @@ import { ReactComponent as ChatSvg } from 'src/static/svg/chat.svg';
 import { ReactComponent as DoubtSvg } from 'src/static/svg/doubt.svg';
 import { ReactComponent as PoteSvg } from 'src/static/svg/pote.svg';
 import { ReactComponent as RobotSvg } from 'src/static/svg/robot.svg';
+import { ReactComponent as SettingSvg } from 'src/static/svg/setting.svg';
 import { ReactComponent as UsersSvg } from 'src/static/svg/users.svg';
 import { ReactComponent as VipSvg } from 'src/static/svg/vip.svg';
-import { ReactComponent as SettingSvg } from 'src/static/svg/setting.svg';
 
 const MenuItemGroup = Menu.ItemGroup;
 const MenuItem = Menu.Item;
@@ -24,15 +24,15 @@ const Menus = () => {
         alert(2)
     }
 
-    return <div>
-        <Menu className="menu-container" theme='dark' levelIndent={0} onClickMenuItem={(key, path) => {
+    return <div className="menu-container">
+        <Menu theme='dark' levelIndent={0} onClickMenuItem={(key, path) => {
             // console.log(key, path)
             navigate(key)
         }}>
             <div className="flex justify-between menu-container-header">
                 <div className="flex">
-                    <img src="https://teacher.tutorpage.net/static/media/new-logo-circular.33be506198f72cf366b7.png" alt="2" />
-                    <span className="font-bold text-white">TutorPage</span>
+                    <img src="https://cdn.surest.cn/chat/dot-v2.png" alt="2" />
+                    <span className="font-bold text-white">Im Chat</span>
                 </div>
                 <div className="operate">
                     <IconEdit className="mr-2 text-white hover:text-gray-300" />
@@ -43,17 +43,17 @@ const Menus = () => {
                 <ChatSvg />
                 工作台
             </MenuItem>
-            <MenuItemGroup key='2_0' onClick={editCategory} title={<div className="flex items-center justify-start cursor-pointer"><span className="mr-2">分类</span> <IconEdit className="text-white hover:text-gray-300" /></div>} className="mb-5">
-                <MenuItem key='2_0_0'><VipSvg /> VIP</MenuItem>
-                <MenuItem key='2_0_2'><PoteSvg /> 待沟通客户</MenuItem>
-                <MenuItem key='2_0_3'><UsersSvg /> 潜在客户</MenuItem>
-                <MenuItem key='2_0_4'><BitSvg /> 其他</MenuItem>
+            <MenuItemGroup key='workspace-group' onClick={editCategory} title={"分类"} className="mb-5">
+                <MenuItem key='/workspace?c=vip'><VipSvg /> VIP</MenuItem>
+                <MenuItem key='/workspace?c=v1'><PoteSvg /> 待沟通客户</MenuItem>
+                <MenuItem key='/workspace?c=v2'><UsersSvg /> 潜在客户</MenuItem>
+                <MenuItem key='/workspace?c=v3'><BitSvg /> 其他</MenuItem>
             </MenuItemGroup>
-            <MenuItemGroup key='3_1' title='工作空间'>
-                <MenuItem key='3_0_0'><UsersSvg /> 客户列表</MenuItem>
-                <MenuItem key='3_0_2'><ChartSvg /> 市场分析</MenuItem>
-                <MenuItem key='3_0_3'><DoubtSvg /> 帮助中心</MenuItem>
-                <MenuItem key='3_0_4'><RobotSvg /> 回复机器人</MenuItem>
+            <MenuItemGroup key='workspace-sapce' title='工作空间'>
+                <MenuItem key='/customer'><UsersSvg /> 客户管理</MenuItem>
+                <MenuItem key='/analysis'><ChartSvg /> 市场分析</MenuItem>
+                <MenuItem key='/faq'><DoubtSvg /> 帮助中心</MenuItem>
+                <MenuItem key='/robot'><RobotSvg /> 回复机器人</MenuItem>
                 <MenuItem key='/setting'><SettingSvg /> 设置中心</MenuItem>
             </MenuItemGroup>
         </Menu>
