@@ -17,3 +17,12 @@ export function getSessionRecent(data = {}) {
     });
 }
 
+// 添加到会话列表中
+export function getSessionGet(data = {}) {
+    return request({
+        url: '/session/recent',
+        method: 'post',
+        data,
+    });
+}
+

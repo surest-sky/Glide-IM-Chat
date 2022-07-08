@@ -1,8 +1,8 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { Button, Card, Input, Message, Spin } from '@arco-design/web-react';
-import { IconDelete, IconDragArrow } from '@arco-design/web-react/icon';
+import { IconDelete, IconDragArrow, IconDoubleUp, IconDoubleDown } from '@arco-design/web-react/icon';
 import { useRequest } from 'ahooks';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { getCategoryList, updateCategoryApi, deleteCategoryApi } from 'src/api/chat/setting';
 import IconsSelect from 'src/components/Icons/select'
 import lodash from 'lodash'
@@ -47,10 +47,10 @@ const Category = () => {
                 throw new Error('请不要设置为空')
             }
 
-            // if (!item.icon) {
-            //     Message.error("请设置 Icon");
-            //     throw new Error('请设置 Icon')
-            // }
+            if (!item.icon) {
+                Message.error("请设置 Icon");
+                throw new Error('请设置 Icon')
+            }
         })
 
         console.log(category)
@@ -69,6 +69,19 @@ const Category = () => {
         })
     }
 
+    const changePosition = (index) => {
+        const _category = lodash.cloneDeep()
+        _category.splice(index, 0, category[index])
+        _category[index] = null
+        setCategory(() => {
+            return _category.filter((item) => {
+                return item
+            })
+        })
+    };
+
+
+
     useEffect(() => {
         loadData()
     }, [])
@@ -81,10 +94,13 @@ const Category = () => {
         {loading ? <Spin /> :
             <>
                 {
-                    category.map((item) => {
+                    category.map((item, index) => {
                         return <div key={item.id} className={`flex justify-between mt-1 category-item`}>
                             <Input value={item.name} onChange={(v) => { updateCategory(item.id, { name: v }) }} addAfter={<IconsSelect icon={item.icon} onChange={(v) => updateCategory(item.id, { icon: v })} />} />
-                            <div className="category-action"><IconDragArrow className="mr-2" /><IconDelete onClick={() => { deleteCategory(item.id) }} /></div>
+                            <div className="category-action">
+                                <IconDoubleDown onClick={() => changePosition(index)} className="mr-2" />
+                                <IconDelete onClick={() => { deleteCategory(item.id) }} />
+                            </div>
                         </div>
                     })
                 }

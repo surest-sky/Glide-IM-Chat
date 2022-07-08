@@ -6,6 +6,7 @@ import { orderBy, get } from 'lodash';
 import { MessageType } from 'src/core/message';
 import { addContactUserMessage } from 'src/services/store';
 import { userInfoApi } from 'src/api/im/im';
+import { getSessionGet } from 'src/api/chat/chat';
 
 const isRoomMessage = (message): boolean => {
     const currentUser = store.getState().container.userInfo;
@@ -47,6 +48,7 @@ export const addContactInfo = async (message, from) => {
         lastMessage: message,
     };
     addContacts(contacts);
+    getSessionGet({ to: from });
 };
 
 // 获取一个联系人
