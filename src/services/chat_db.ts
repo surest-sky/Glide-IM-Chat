@@ -2,7 +2,7 @@ import { db } from './db';
 import { Message } from 'src/core/message';
 import { ContactsType } from 'src/core/chat_type';
 import store from 'src/store/index';
-import { orderBy } from 'lodash';
+import { orderBy, get } from 'lodash';
 import { MessageType } from 'src/core/message';
 import { addContactUserMessage } from 'src/services/store';
 import { userInfoApi } from 'src/api/im/im';
@@ -24,19 +24,10 @@ const isRoomMessage = (message): boolean => {
     return false;
 };
 
-const isSendSelf = message => {
-    const chatWithUser = store.getState().chat.chatWithUser;
-    const currentUserUid = chatWithUser.uid;
-
-    if (message.to === currentUserUid && message.from === currentUserUid) {
-        return true;
-    }
-    return false;
-};
-
 // 是否为新的联系人
-export const isNewContact = async message => {
-    const item = await db.contacts.where({ uid: parseInt(message.to) }).first();
+export const isNewContact = async from => {
+    const item = await db.contacts.where({ uid: parseInt(from) }).first();
+    console.log('item', item, parseInt(from));
     if (item) {
         return false;
     }
@@ -44,13 +35,14 @@ export const isNewContact = async message => {
 };
 
 // 添加联系人
-export const addContactInfo = async message => {
-    const { data } = await userInfoApi({ Uid: [message.uid] });
+export const addContactInfo = async (message, from) => {
+    const { data } = await userInfoApi({ Uid: [from] });
+    const Data = get(data, 'Data.0');
     const contacts: ContactsType = {
-        avatar: data.Data.avatar,
-        name: data.Data.Nickname,
+        avatar: Data.avatar,
+        name: Data.Nickname,
         message_count: 0,
-        uid: message.uid,
+        uid: from,
         motto: '',
         lastMessage: message,
     };
@@ -101,15 +93,17 @@ export const incrContactsMessageCount = (uid: number) => {
 
 // 添加一条消息
 export const addMessage = async (message: Message) => {
+    const to = parseInt(message.to);
+    const from = parseInt(message.from);
     const _message = Object.assign({}, message, {
-        from: parseInt(message.from),
-        to: parseInt(message.to),
+        from: from,
+        to: to,
     });
-
+    const isNew = await isNewContact(from);
     // isM
-    if (message.isMeToo) {
-        await addContactInfo(message);
-        incrContactsMessageCount(parseInt(_message.to));
+    if (isNew) {
+        await addContactInfo(message, from);
+        incrContactsMessageCount(from);
         addContactUserMessage(message);
         db.chat.add(_message);
         return;
@@ -117,9 +111,9 @@ export const addMessage = async (message: Message) => {
 
     if (isRoomMessage(_message)) {
         addRoomMessages(_message);
-    } else if (isSendSelf(message)) {
+        addContactUserMessage(message);
     } else {
-        incrContactsMessageCount(parseInt(_message.from));
+        incrContactsMessageCount(from);
         addContactUserMessage(message);
         db.chat.add(_message);
     }

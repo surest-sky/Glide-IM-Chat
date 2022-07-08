@@ -61,6 +61,9 @@ const Menu = () => {
      * 修改聊天对象
      */
     const changechatWithUser = withUser => {
+        if (chatWithUser.uid === withUser.uid) {
+            return
+        }
         dispatch(updateChatWithUser({ chatWithUser: withUser }));
         switchRoom(userInfo.Uid, withUser.uid);
         window.ChatSession && window.ChatSession.setToId(withUser.uid)

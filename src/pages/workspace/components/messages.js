@@ -26,13 +26,13 @@ const Messages = () => {
     // 延迟触发
     useEffect(() => {
         setMessages(_messages ? _messages : []);
-        console.log(_messages)
-        return () => {
-            setTimeout(() => {
-                scrollToBottom('.w-chat-wrapper');
-            }, 0);
-        }
     }, [_messages]);
+
+    useEffect(() => {
+        return () => {
+            scrollToBottom('.w-chat-wrapper');
+        }
+    })
 
     if (!chatWithUser) {
         return <></>;
