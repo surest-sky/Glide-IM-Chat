@@ -6,7 +6,8 @@ import {
     useState
 } from 'react';
 import { useSelector } from 'react-redux';
-import { setCategoryForUser } from 'src/api/chat/chat';
+import { setCategoryForUser } from 'src/api/chat/chat'
+
 
 const Category = (props, ref) => {
     const categoryList = useSelector((state: any) => state.container.categoryList);
@@ -21,7 +22,7 @@ const Category = (props, ref) => {
         setValue(_item.category_ids)
     }
 
-    const updateCategory = () => {
+    const updateCategoryAction = () => {
         console.log(item.current)
         console.log(value)
         setConfirmLoading(true)
@@ -42,7 +43,7 @@ const Category = (props, ref) => {
         unmountOnExit={true}
         title='设置用户分类'
         visible={visible}
-        onOk={() => updateCategory()}
+        onOk={() => updateCategoryAction()}
         onCancel={() => setVisible(false)}
         autoFocus={false}
         focusLock={true}

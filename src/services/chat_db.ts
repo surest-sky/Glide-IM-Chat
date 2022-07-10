@@ -88,7 +88,7 @@ export const clearContactsMessageCount = (uid: number) => {
     db.contacts.where({ uid }).modify(f => (f.message_count = 0));
 };
 
-// 给联系人添加一条消息提醒
+// 给联系人添加一条未读消息提醒
 export const incrContactsMessageCount = (uid: number) => {
     db.contacts.where({ uid }).modify(f => ++f.message_count);
 };

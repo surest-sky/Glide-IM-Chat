@@ -5,6 +5,8 @@ import { useRequest } from 'ahooks';
 import lodash from 'lodash';
 import { useEffect, useRef, useState } from 'react';
 import { deleteCategoryApi, getCategoryList, updateCategoryApi } from 'src/api/chat/setting';
+import store from 'src/store/index';
+import { updateCategory } from 'src/store/reducer/container';
 import IconsSelect from 'src/components/Icons/select';
 import '../styles/category.scss';
 
@@ -17,6 +19,8 @@ const Category = () => {
         manual: true,
         onSuccess: (result, params) => {
             Message.success("更新成功 ！");
+            console.log('category', category)
+            store.dispatch(updateCategory(category));
         },
         onError: (error) => {
             Message.error(error.message);
@@ -41,7 +45,8 @@ const Category = () => {
     }
 
     const submit = () => {
-        category.forEach((item, index) => {
+        const _category = [...category]
+        _category.forEach((item, index) => {
             if (!item.name) {
                 Message.error("请输入分类名称");
                 throw new Error('请输入分类名称')
@@ -53,14 +58,14 @@ const Category = () => {
             }
             item.weight = index
         })
-        updateAction.run({ categories: category })
+        updateAction.run({ categories: _category })
     }
 
-    const updateCategory = (id, fields) => {
+    const updateCategoryAction = (id, fields) => {
         setCategory((cates) => {
             return cates.map(item => {
                 if (item.id === id) {
-                    return Object.assign(item, fields)
+                    return Object.assign({}, item, fields)
                 }
                 return item
             })
@@ -135,7 +140,7 @@ const Category = () => {
                             onDragEnter={$event => onDragEnter($event, index)}
                             onDragOver={$event => onDragOver($event, index)}
                             key={item.id} className={`flex justify-between mt-1 category-item`}>
-                            <Input placeholder={item.placeholder} value={item.name} onChange={(v) => { updateCategory(item.id, { name: v }) }} addAfter={<IconsSelect icon={item.icon} onChange={(v) => updateCategory(item.id, { icon: v })} />} />
+                            <Input placeholder={item.placeholder} value={item.name} onChange={(v) => { updateCategoryAction(item.id, { name: v }) }} addAfter={<IconsSelect icon={item.icon} onChange={(v) => updateCategory(item.id, { icon: v })} />} />
                             <div className="category-action">
                                 <IconDragArrow onClick={() => changePosition(index)} className="mr-2" />
                                 <IconDelete onClick={() => { deleteCategory(item.id) }} />

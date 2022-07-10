@@ -10,21 +10,19 @@ export const addContactUserMessage = async (message) => {
     const userInfo = getAuthInfo()
     const contacts = await getContacts()
     let _contacts = contacts.map(item => {
-        console.log('item', item)
         const iuid = item.uid.toString()
         if (userInfo.Uid === item.uid) {
             if (!message.isMeToo) {
                 return item
             }
         }
-        item.weight = 0
-        if (message.from === iuid) {
+
+        if (message.from === iuid || message.to === iuid) {
             item.lastMessage = message
             item.weight = message.SendAt;
-        }
-        if (message.to === iuid) {
-            item.lastMessage = message
-            item.weight = message.SendAt;
+            item.category_ids = []
+            item.weight = 0
+            item.collect = userInfo.Collect
         }
         return item;
     });

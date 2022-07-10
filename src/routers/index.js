@@ -27,6 +27,7 @@ const Routers = () => {
             </Route>
 
             <Route path="" element={<Layout />}>
+                <Route path="/workspace/:id" element={<WorkSpace />} />
                 <Route path="/workspace" element={<WorkSpace />} />
                 <Route path="/setting" element={<Setting />} />
                 <Route path="/robot" element={<Robot />} />

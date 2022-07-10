@@ -2,15 +2,16 @@ import { Avatar, Input, List, Select, Spin } from '@arco-design/web-react';
 import RightMenu from '@right-menu/core';
 import { useRequest } from 'ahooks';
 import { useLiveQuery } from 'dexie-react-hooks';
+import { db } from 'src/services/db';
 import { map, orderBy } from 'lodash';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { useLocation } from 'react-router';
 import { getSessionRecent } from 'src/api/chat/chat';
 import { userInfoApi } from 'src/api/chat/im';
 import { MessageType } from 'src/core/message';
 import { getAuthInfo } from 'src/services/auth';
 import { addBlukContacts, getMessagesByOnelastMessage, switchRoom } from 'src/services/chat_db';
-import { db } from 'src/services/db';
 import { updateChatWithUser } from 'src/store/reducer/chat';
 import { timeAgo } from 'src/utils/Utils';
 import './styles/menu.scss';
@@ -18,6 +19,8 @@ import Category from './wrapper/category';
 
 const Menu = () => {
     const options = [];
+    const location = useLocation()
+    const [cateId, setCateId] = useState(0)
     const dispatch = useDispatch();
     const userInfo = getAuthInfo();
     const childCateModal = useRef();
@@ -30,6 +33,7 @@ const Menu = () => {
         message_count: 0,
         uid: userInfo.Uid,
         motto: '',
+        category_ids: []
     }
 
     // 获取用户信息
@@ -59,7 +63,6 @@ const Menu = () => {
         }
         _list.unshift(selfUser)
         addBlukContacts(_list)
-        console.log('_list', _list)
         changechatWithUser(_list.length ? _list[0] : selfUser)
     }
 
@@ -99,6 +102,24 @@ const Menu = () => {
         }
     }
 
+
+    useEffect(() => {
+        const id = location.pathname.replace('/workspace/', '').replace("/workspace", '')
+        setCateId(id ? parseInt(id) : 0)
+        setCateId((id) => {
+            const _allows = _contactsList.filter(v => {
+                return v.category_ids.includes(id) || id === 0
+            })
+            if (_allows.length) {
+                changechatWithUser(_allows[0])
+            } else {
+                changechatWithUser(selfUser)
+            }
+            return id
+        })
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [location])
+
     useEffect(() => {
         if (!_contactsList) {
             run()
@@ -110,6 +131,8 @@ const Menu = () => {
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
+
+
 
     useEffect(() => {
         const options = (item) => [
@@ -160,7 +183,7 @@ const Menu = () => {
                 dataSource={_contactsList ? orderBy(_contactsList, 'weight', 'desc') : [selfUser]}
                 className="contacts-menu-wrapper scrollbar"
                 render={(item, index) => (
-                    <List.Item key={item.uid} className={`${chatWithUser.uid === item.uid ? 'active' : null} contact-${index}`} onClick={() => { changechatWithUser(item) }}>
+                    <List.Item key={item.uid} className={`${chatWithUser.uid === item.uid ? 'active' : null} contact-${index} ${cateId === 0 || item.category_ids.includes(cateId) ? '' : 'hidden'}`} onClick={() => { changechatWithUser(item) }}>
                         <List.Item.Meta
                             data-id={item.uid}
                             avatar={<Avatar shape='square'>{item.avatar ? <img src={item.avatar} alt={item.name} /> : item.name}</Avatar>}
