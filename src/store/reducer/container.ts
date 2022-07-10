@@ -15,6 +15,7 @@ export interface GlobalState {
         Servers: Array<string>;
         Uid: string;
     };
+    categoryList?: [];
 }
 
 const initialState: GlobalState = {
@@ -25,6 +26,7 @@ const initialState: GlobalState = {
         Servers: [],
         Uid: '',
     },
+    categoryList: [],
 };
 
 const containerReducers = {
@@ -37,8 +39,10 @@ const containerReducers = {
         state.userInfo.Uid = payload.Uid;
     },
     updateUserInfo: (state, { payload }) => {
-        console.log('payload', payload);
         state.userInfo = payload;
+    },
+    updateCategory: (state, { payload }) => {
+        state.categoryList = payload;
     },
 };
 
@@ -48,6 +52,6 @@ const Container = createSlice({
     reducers: containerReducers,
 });
 
-export const { updateSettings, updateAuthInfo, updateUserInfo } = Container.actions;
+export const { updateSettings, updateCategory, updateAuthInfo, updateUserInfo } = Container.actions;
 
 export default Container.reducer;

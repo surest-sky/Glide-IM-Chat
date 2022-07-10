@@ -1480,7 +1480,7 @@
     redux-thunk "^2.4.1"
     reselect "^4.1.5"
 
-"@right-menu/core@^0.0.7":
+"@right-menu/core@0.0.7", "@right-menu/core@^0.0.7":
   version "0.0.7"
   resolved "https://registry.npmmirror.com/@right-menu/core/-/core-0.0.7.tgz#65a731cc48b15b782d527e9a19d803c3281bb89b"
   integrity sha512-DMqdTOfFflBWrBcmsq4oP+vDn47d4YopjOALVxSpt/KJdV0TYwsGiIXMPomd46eHjTHJS7NDDsfajPastgPR7w==

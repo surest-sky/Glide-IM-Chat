@@ -1,5 +1,5 @@
-import RightMenu from '@right-menu/react';
 import { Avatar } from '@arco-design/web-react';
+import RightMenu from '@right-menu/react';
 import dayjs from 'dayjs';
 import { useLiveQuery } from 'dexie-react-hooks';
 import { useEffect, useState } from 'react';
@@ -8,8 +8,8 @@ import HtmlApp from 'src/components/HtmlApp';
 import { removeMessage } from 'src/services/chat_db';
 import { db } from 'src/services/db';
 import { scrollToBottom } from 'src/utils/Utils';
-import '../styles/message.scss'
 import xss from 'xss';
+import '../styles/message.scss';
 
 const Messages = () => {
     const [messages, setMessages] = useState([]);

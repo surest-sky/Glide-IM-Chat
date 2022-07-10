@@ -20,9 +20,17 @@ export function getSessionRecent(data = {}) {
 // 添加到会话列表中
 export function getSessionGet(data = {}) {
     return request({
-        url: '/session/recent',
+        url: '/session/get',
         method: 'post',
         data,
     });
 }
 
+// 添加到会话列表中
+export function setCategoryForUser(id, data) {
+    return request({
+        url: '/category/user/' + id,
+        method: 'post',
+        data,
+    });
+}

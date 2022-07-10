@@ -117,8 +117,8 @@ export const addMessage = async (message: Message) => {
     } else {
         incrContactsMessageCount(from);
         addContactUserMessage(message);
-        db.chat.add(_message);
     }
+    db.chat.add(_message);
 };
 
 // 添加多条消息
@@ -174,6 +174,7 @@ export const clearRoomMessages = () => {
 
 // 获取与某人的消息
 export const getMessagesByOne = (from: number, to: number) => {
+    console.log(from, to);
     return db.chat.where({ from: from, to: to }).toArray();
 };
 
@@ -205,6 +206,7 @@ export const switchRoom = async (from: number, to: number) => {
             });
         });
         console.log('orderBy', orderBy(_messages, 'sendAt'));
+        clearRoomMessages();
         addBlukRoomMessages(orderBy(_messages, 'sendAt'));
         clearContactsMessageCount(to);
     });

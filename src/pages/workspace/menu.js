@@ -1,26 +1,29 @@
 import { Avatar, Input, List, Select, Spin } from '@arco-design/web-react';
+import RightMenu from '@right-menu/core';
 import { useRequest } from 'ahooks';
 import { useLiveQuery } from 'dexie-react-hooks';
 import { map, orderBy } from 'lodash';
-import { useEffect } from 'react';
-import { MessageType } from 'src/core/message'
+import { useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { getSessionRecent } from 'src/api/chat/chat';
 import { userInfoApi } from 'src/api/chat/im';
+import { MessageType } from 'src/core/message';
+import { getAuthInfo } from 'src/services/auth';
 import { addBlukContacts, getMessagesByOnelastMessage, switchRoom } from 'src/services/chat_db';
 import { db } from 'src/services/db';
 import { updateChatWithUser } from 'src/store/reducer/chat';
-import { timeAgo } from 'src/utils/Utils'
-import store from 'src/store/index';
-import { getAuthInfo } from 'src/services/auth';
+import { timeAgo } from 'src/utils/Utils';
 import './styles/menu.scss';
+import Category from './wrapper/category';
 
 const Menu = () => {
     const options = [];
     const dispatch = useDispatch();
     const userInfo = getAuthInfo();
+    const childCateModal = useRef();
     const chatWithUser = useSelector((state: any) => state.chat.chatWithUser);
     const _contactsList = useLiveQuery(() => db.contacts.toArray())
+    const curUser = useRef(null)
     const selfUser = {
         avatar: '',
         name: userInfo.NickName + "(自己)",
@@ -50,10 +53,13 @@ const Menu = () => {
                 message_count: 0,
                 uid: item.Uid,
                 motto: '',
+                category_ids: item.CategoryIds,
+                collect: item.Collect
             })
         }
         _list.unshift(selfUser)
         addBlukContacts(_list)
+        console.log('_list', _list)
         changechatWithUser(_list.length ? _list[0] : selfUser)
     }
 
@@ -72,7 +78,6 @@ const Menu = () => {
     const { run } = useRequest(getSessionRecent, {
         manual: true,
         onSuccess: result => {
-            // const code = result?.data?.Code
             const data = result.data.Data
             const sids = map(data, 'To')
             loadUsers(sids)
@@ -94,11 +99,6 @@ const Menu = () => {
         }
     }
 
-    const handleChange = () => {
-        const states = store.getState()
-        console.log('states', states)
-    }
-    store.subscribe(handleChange)
     useEffect(() => {
         if (!_contactsList) {
             run()
@@ -110,6 +110,26 @@ const Menu = () => {
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
+
+    useEffect(() => {
+        const options = (item) => [
+            {
+                type: 'li',
+                style: { padding: '10px 26px 10px 8px' },
+                text: '分类',
+                callback: () => {
+                    childCateModal.current.setVisible(true)
+                    childCateModal.current.setItem(item)
+                    curUser.current = item
+                },
+            },
+        ]
+        return () => {
+            _contactsList && _contactsList.forEach((item, index) => {
+                new RightMenu(`.contact-${index}`, options(item))
+            })
+        }
+    }, [_contactsList])
 
     return <div className="contacts-container">
         <div className="contacts-menu"><Input placeholder="Search" className="w-full" /></div>
@@ -140,22 +160,26 @@ const Menu = () => {
                 dataSource={_contactsList ? orderBy(_contactsList, 'weight', 'desc') : [selfUser]}
                 className="contacts-menu-wrapper scrollbar"
                 render={(item, index) => (
-                    <List.Item key={item.uid} className={chatWithUser.uid === item.uid ? 'active' : null} onClick={() => { changechatWithUser(item) }}>
+                    <List.Item key={item.uid} className={`${chatWithUser.uid === item.uid ? 'active' : null} contact-${index}`} onClick={() => { changechatWithUser(item) }}>
                         <List.Item.Meta
                             data-id={item.uid}
                             avatar={<Avatar shape='square'>{item.avatar ? <img src={item.avatar} alt={item.name} /> : item.name}</Avatar>}
                             title={`${item.name}#${item.uid}`}
                             description={formatLastMessage(item.lastMessage)}
                         />
-                        {item.message_count ? <span className='item-badge arco-badge-number badge-zoom-appear-done badge-zoom-enter-done'>
-                            <span>{item.message_count}</span>
-                        </span> : null}
-                        <span className="arco-list-item-mini">{timeAgo(item?.lastMessage?.sendAt)}</span>
+                        <div  >
+                            {item.message_count ? <span className='item-badge arco-badge-number badge-zoom-appear-done badge-zoom-enter-done'>
+                                <span>{item.message_count}</span>
+                            </span> : null}
+                            <span className="arco-list-item-mini">{timeAgo(item?.lastMessage?.sendAt)}</span>
+                        </div>
                         {/* <span className="arco-list-item-mini">{timeAgo(1657172066)}</span> */}
                     </List.Item>
                 )}
             />
         </Spin>
+
+        <Category ref={childCateModal} loadUsers={loadUsers} />
     </div>
 }
 

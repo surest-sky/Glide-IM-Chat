@@ -1,30 +1,55 @@
-import { Typography, Descriptions, Card } from '@arco-design/web-react';
+import { Typography, Descriptions, Tag, Card } from '@arco-design/web-react';
+import { useSelector } from 'react-redux';
+import { useEffect, useState } from 'react'
 import './styles/desc.scss'
 const { Title } = Typography;
 
+
 const Desc = () => {
-    const data = [
-        {
-            label: 'Name',
-            value: 'Socrates',
-        },
-        {
-            label: 'Mobile',
-            value: '123-1234-1234',
-        },
-        {
-            label: 'Residence',
-            value: 'Beijing',
-        },
-        {
-            label: 'Hometown',
-            value: 'Beijing',
-        },
-        {
-            label: 'Address',
-            value: 'Yingdu Building, Zhichun Road, Beijing',
-        },
-    ];
+    const chatWithUser = useSelector((state: any) => state.chat.chatWithUser);
+    const categoryList = useSelector((state: any) => state.container.categoryList);
+    const [data, setData] = useState([])
+    const [categories, setCategories] = useState([])
+
+    useEffect(() => {
+        const collect = chatWithUser?.collect
+        if (!collect) {
+            return
+        }
+        const categories = categoryList.filter(category => {
+            return chatWithUser.category_ids && chatWithUser.category_ids.includes(category.id)
+        })
+        setCategories(categories)
+        setData(() => {
+            return [
+                {
+                    label: "用户名称: ",
+                    value: chatWithUser.name
+                },
+                {
+                    label: "用户IP: ",
+                    value: collect.ip
+                },
+                {
+                    label: "用户ID: ",
+                    value: chatWithUser.uid
+                },
+                {
+                    label: "用户设备: ",
+                    value: collect.device
+                },
+                {
+                    label: "用户来源: ",
+                    value: collect.origin
+                },
+                {
+                    label: "用户地域: ",
+                    value: collect.region
+                }
+            ]
+        })
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [chatWithUser])
 
     return <div className="desc-container">
         <div className="desc-header-container">
@@ -35,20 +60,17 @@ const Desc = () => {
             <Card bordered={false} className="card-info">
                 <Descriptions
                     column={1}
-                    title='用户信息'
+                    title=''
                     data={data}
-                    style={{ marginBottom: 20 }}
+                    style={{ marginBottom: 5 }}
                     labelStyle={{ paddingRight: 36 }}
                 />
+                <div>
+                    {categories.map(item => {
+                        return <Tag className="mr-2" color={"#00b42a"}>{item.name}</Tag>
+                    })}
+                </div>
             </Card >
-            <Card bordered={false} className="card-info">
-                <Descriptions
-                    column={1}
-                    title='SEO'
-                    data={data}
-                    labelStyle={{ textAlign: 'right', paddingRight: 36 }}
-                />
-            </Card>
         </div>
     </div>
 }

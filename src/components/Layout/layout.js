@@ -1,14 +1,16 @@
 
 import { Message } from '@arco-design/web-react';
-import { useNavigate, Outlet } from 'react-router-dom';
 import { useEffect, useState } from 'react';
+import { Outlet, useNavigate } from 'react-router-dom';
+import { getCategoryList } from 'src/api/chat/setting';
 import { userAuthApi, userInfoApi } from 'src/api/im/im';
+import Loading from 'src/components/Loading';
 import { initChatSession } from 'src/core/services';
 import { getAuthInfo, isLogin } from 'src/services/auth';
-import Loading from 'src/components/Loading'
 import store from 'src/store/index';
-import { updateAuthInfo, updateUserInfo } from 'src/store/reducer/container';
-import Menus from './components/menus'
+import lodash from 'lodash';
+import { updateAuthInfo, updateUserInfo, updateCategory } from 'src/store/reducer/container';
+import Menus from './components/menus';
 import './styles/layout.scss';
 
 
@@ -22,14 +24,19 @@ const Layout = (props) => {
         navigate('/auth');
     }
 
-    const loadApp = () => {
-        setLoading(false)
+    const loadApp = async () => {
+        Promise.all([getCategoryList()]).then((result) => {
+            const [category] = result
+            const categoryList = lodash.get(category, 'data.Data')
+            store.dispatch(updateCategory(categoryList));
+        })
     }
 
     const fetchUserInfo = async (authInfo) => {
         const { data } = await userInfoApi({ Uid: [authInfo.Uid] });
         store.dispatch(updateUserInfo(data.Data[0]));
         initChatSession(() => { setLoading(false) })
+        loadApp()
     };
 
     function fetchUserAuth() {
