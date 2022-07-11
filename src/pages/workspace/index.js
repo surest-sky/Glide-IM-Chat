@@ -1,12 +1,12 @@
 
-import Menu from './menu'
+import Contacts from './contacts'
 import Room from './room'
 import Desc from './desc'
 import './styles/workspace.scss';
 
 const WorkSpace = () => {
     return <>
-        <Menu />
+        <Contacts />
         <Room />
         <Desc />
     </>

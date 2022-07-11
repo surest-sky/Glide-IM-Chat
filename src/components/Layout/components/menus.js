@@ -1,12 +1,13 @@
-import { Menu, Badge } from '@arco-design/web-react';
-import { useEffect, useState } from 'react'
+import { Badge, Menu } from '@arco-design/web-react';
 import { IconEdit, IconPlusCircle } from '@arco-design/web-react/icon';
-import { orderBy, map, sum } from 'lodash';
-import { useSelector } from 'react-redux';
-import { getComponentSvg } from 'src/services/svgs';
-import { useNavigate } from 'react-router-dom'
 import { useLiveQuery } from 'dexie-react-hooks';
+import { map, orderBy, sum } from 'lodash';
+import { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
+import { useNavigate, useSearchParams, useLocation } from 'react-router-dom';
+
 import { db } from 'src/services/db';
+import { getComponentSvg } from 'src/services/svgs';
 import { ReactComponent as ChartSvg } from 'src/static/svg/chart.svg';
 import { ReactComponent as ChatSvg } from 'src/static/svg/chat.svg';
 import { ReactComponent as DoubtSvg } from 'src/static/svg/doubt.svg';
@@ -18,10 +19,13 @@ const MenuItemGroup = Menu.ItemGroup;
 const MenuItem = Menu.Item;
 
 const Menus = () => {
+    const [searchParams] = useSearchParams()
+    const { pathname } = useLocation();
     const [unreadCount, setUnReadCount] = useState(0)
     const navigate = useNavigate();
     const categoryList = useSelector((state: any) => orderBy(state.container.categoryList, 'weight'));
     const _contactsList = useLiveQuery(() => db.contacts.toArray())
+    const [keys, setKeys] = useState([])
 
     useEffect(() => {
         setUnReadCount(() => {
@@ -29,9 +33,12 @@ const Menus = () => {
         })
     }, [_contactsList])
 
+    useEffect(() => {
+        setKeys(pathname)
+    }, [pathname])
+
     return <div className="menu-container">
-        <Menu theme='dark' levelIndent={0} onClickMenuItem={(key, path) => {
-            // console.log(key, path)
+        <Menu theme='dark' selectedKeys={keys} levelIndent={0} onClickMenuItem={(key, path) => {
             navigate(key)
         }}>
             <div className="flex justify-between menu-container-header">
@@ -51,13 +58,9 @@ const Menus = () => {
             <MenuItemGroup key='workspace-group' title={"分类"} className="mb-5">
                 {
                     categoryList.map(item => {
-                        return <MenuItem key={`/workspace/${item.id}`}>{getComponentSvg(item.icon)} {item.name}</MenuItem>
+                        return <MenuItem key={`/category/${item.id}`}>{getComponentSvg(item.icon)} {item.name}</MenuItem>
                     })
                 }
-                {/* <MenuItem key='/workspace?c=vip'><VipSvg /> VIP</MenuItem>
-                <MenuItem key='/workspace?c=v1'><PoteSvg /> 待沟通客户</MenuItem>
-                <MenuItem key='/workspace?c=v2'><UsersSvg /> 潜在客户</MenuItem> */}
-                {/* <MenuItem key='/workspace'><BitSvg /> 全部</MenuItem> */}
             </MenuItemGroup>
             <MenuItemGroup key='workspace-sapce' title='工作空间'>
                 <MenuItem key='/customer'><UsersSvg /> 客户管理</MenuItem>

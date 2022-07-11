@@ -82,3 +82,39 @@ export const uploadBase64File = async base64 => {
     const url = await uploadFile(base64File, `${rand}.png`);
     return Promise.resolve(url);
 };
+
+
+// 数据转换
+export const convertDescription = (user) => {
+    const collect = user?.collect
+    if (!collect) {
+        return
+    }
+    return [
+        {
+            label: "用户名称: ",
+            value: user.name
+        },
+        {
+            label: "用户IP: ",
+            value: collect.ip
+        },
+        {
+            label: "用户ID: ",
+            value: user.uid
+        },
+        {
+            label: "用户设备: ",
+            value: collect.device
+        },
+        {
+            label: "用户来源: ",
+            value: collect.origin
+        },
+        {
+            label: "用户地域: ",
+            value: collect.region
+        }
+    ]
+
+}

@@ -1,0 +1,29 @@
+.system-container {
+    max-width: 600px;
+
+    .image-upload-wrapper {
+        position: relative;
+        cursor: pointer;
+        width: 50px;
+        height: 50px;
+    }
+
+    .image-upload-mask {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 50px;
+        height: 50px;
+        background-color: rgba(0, 0, 0, 0.5);
+        text-align: center;
+        font-size: 12px;
+        line-height: 50px;
+        color: white;
+        transition: display 0.2s;
+        display: none;
+    }
+
+    .image-upload-wrapper:hover .image-upload-mask {
+        display: block !important;
+    }
+}
