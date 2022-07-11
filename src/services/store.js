@@ -4,6 +4,7 @@ import { get } from 'lodash';
 import { addBlukContacts, getContacts } from 'src/services/chat_db';
 import { uploadFile } from 'src/services/upload';
 import { getAuthInfo } from 'src/services/auth';
+import { ContactOpend, ContactStatus } from 'src/services/enum'
 
 // 给联系人添加一条消息
 export const addContactUserMessage = async (message) => {
@@ -23,6 +24,8 @@ export const addContactUserMessage = async (message) => {
             item.category_ids = []
             item.weight = 0
             item.collect = userInfo.Collect
+            item.status = ContactOpend.opend
+            item.online = ContactStatus.online
         }
         return item;
     });

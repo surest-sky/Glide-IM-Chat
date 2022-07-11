@@ -1,4 +1,4 @@
-import { Avatar, Input, List, Select, Spin } from '@arco-design/web-react';
+import { Avatar, Input, Badge, List, Select, Spin } from '@arco-design/web-react';
 import RightMenu from '@right-menu/core';
 import { useRequest } from 'ahooks';
 import { useLiveQuery } from 'dexie-react-hooks';
@@ -13,6 +13,7 @@ import { MessageType } from 'src/core/message';
 import { getAuthInfo } from 'src/services/auth';
 import { addBlukContacts, getMessagesByOnelastMessage, switchRoom } from 'src/services/chat_db';
 import { updateChatWithUser } from 'src/store/reducer/chat';
+import { ContactOpend, ContactStatus } from 'src/services/enum'
 import { timeAgo } from 'src/utils/Utils';
 import './styles/menu.scss';
 import Category from './wrapper/category';
@@ -33,7 +34,10 @@ const Menu = () => {
         message_count: 0,
         uid: userInfo.Uid,
         motto: '',
-        category_ids: []
+        category_ids: [],
+        status: ContactStatus.online,
+        opend: ContactOpend.opend,
+        isMe: true
     }
 
     // 获取用户信息
@@ -50,6 +54,7 @@ const Menu = () => {
         for (let i = 0; i < data.length; i++) {
             const item = data[i]
             const message = await getMessagesByOnelastMessage(item.Uid, uid);
+            const isMe = parseInt(userInfo.Uid) === parseInt(item.uid)
             _list.push({
                 lastMessage: message,
                 avatar: '',
@@ -58,7 +63,10 @@ const Menu = () => {
                 uid: item.Uid,
                 motto: '',
                 category_ids: item.CategoryIds,
-                collect: item.Collect
+                collect: item.Collect,
+                status: isMe ? selfUser.status : ContactStatus.offline,
+                opend: isMe ? selfUser.opend : ContactOpend.close,
+                isMe: isMe,
             })
         }
         _list.unshift(selfUser)
@@ -73,6 +81,7 @@ const Menu = () => {
         if (chatWithUser.uid === withUser.uid) {
             return
         }
+        console.log(withUser)
         dispatch(updateChatWithUser({ chatWithUser: withUser }));
         switchRoom(userInfo.Uid, withUser.uid);
         window.ChatSession && window.ChatSession.setToId(withUser.uid)
@@ -107,9 +116,9 @@ const Menu = () => {
         const id = location.pathname.replace('/workspace/', '').replace("/workspace", '')
         setCateId(id ? parseInt(id) : 0)
         setCateId((id) => {
-            const _allows = _contactsList.filter(v => {
+            const _allows = _contactsList ? _contactsList.filter(v => {
                 return v.category_ids.includes(id) || id === 0
-            })
+            }) : []
             if (_allows.length) {
                 changechatWithUser(_allows[0])
             } else {
@@ -183,10 +192,14 @@ const Menu = () => {
                 dataSource={_contactsList ? orderBy(_contactsList, 'weight', 'desc') : [selfUser]}
                 className="contacts-menu-wrapper scrollbar"
                 render={(item, index) => (
-                    <List.Item key={item.uid} className={`${chatWithUser.uid === item.uid ? 'active' : null} contact-${index} ${cateId === 0 || item.category_ids.includes(cateId) ? '' : 'hidden'}`} onClick={() => { changechatWithUser(item) }}>
+                    <List.Item key={item.uid} className={`${chatWithUser.uid === item.uid ? 'active' : null} contact-${index} ${(item.isMe || cateId === 0 || item.category_ids.includes(cateId)) ? '' : 'hidden'}`} onClick={() => { changechatWithUser(item) }}>
                         <List.Item.Meta
                             data-id={item.uid}
-                            avatar={<Avatar shape='square'>{item.avatar ? <img src={item.avatar} alt={item.name} /> : item.name}</Avatar>}
+                            avatar={
+                                <Badge count={9} dot color={item.status === ContactStatus.online ? '#00B42A' : '#86909C'}>
+                                    <Avatar shape='square'>{item.avatar ? <img src={item.avatar} alt={item.name} /> : item.name}</Avatar>
+                                </Badge>
+                            }
                             title={`${item.name}#${item.uid}`}
                             description={formatLastMessage(item.lastMessage)}
                         />
@@ -194,9 +207,8 @@ const Menu = () => {
                             {item.message_count ? <span className='item-badge arco-badge-number badge-zoom-appear-done badge-zoom-enter-done'>
                                 <span>{item.message_count}</span>
                             </span> : null}
-                            <span className="arco-list-item-mini">{timeAgo(item?.lastMessage?.sendAt)}</span>
+                            <span className="arco-list-item-mini">{timeAgo(item?.lastMessage?.sendAt)} </span>
                         </div>
-                        {/* <span className="arco-list-item-mini">{timeAgo(1657172066)}</span> */}
                     </List.Item>
                 )}
             />

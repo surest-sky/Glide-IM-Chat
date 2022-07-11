@@ -67,6 +67,7 @@ const Messages = () => {
             {avatar ? <img className="message-avatar" src={avatar} alt="message" /> : <Avatar className="message-avatar">Messager</Avatar>}
             <div className={isMe ? 'mr-1' : 'ml-1'}>
                 <span className="message-at">{isMe ? userInfo.Nickname : chatWithUser.name} · {sendAt}</span>
+                {/* <span className="message-at">客户未在线，发送消息可能无法及时触达 ~</span> */}
                 {
                     isMe ?
                         <RightMenu theme={''} minWidth={200} maxWidth={200} onAfterInit={() => { }} onBeforeInit={() => { }} options={options}>

@@ -56,7 +56,7 @@ const Desc = () => {
             <Title heading={6}>详细信息</Title>
         </div>
 
-        <div className="desc-wrapper">
+        <div className={`desc-wrapper ${data.length ? '' : 'hidden'}`}>
             <Card bordered={false} className="card-info">
                 <Descriptions
                     column={1}
@@ -67,7 +67,7 @@ const Desc = () => {
                 />
                 <div>
                     {categories.map(item => {
-                        return <Tag className="mr-2" color={"#00b42a"}>{item.name}</Tag>
+                        return <Tag key={item.name} className="mr-2" color={"#00b42a"}>{item.name}</Tag>
                     })}
                 </div>
             </Card >
