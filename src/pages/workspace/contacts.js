@@ -2,6 +2,7 @@ import { Avatar, Input, Badge, List, Select, Spin } from '@arco-design/web-react
 import RightMenu from '@right-menu/core';
 import { useRequest } from 'ahooks';
 import { useLiveQuery } from 'dexie-react-hooks';
+import lodash from 'lodash';
 import { db } from 'src/services/db';
 import { map, orderBy } from 'lodash';
 import { useEffect, useRef, useState } from 'react';
@@ -27,6 +28,7 @@ const Menu = () => {
     const childCateModal = useRef();
     const chatWithUser = useSelector((state: any) => state.chat.chatWithUser);
     const _contactsList = useLiveQuery(() => db.contacts.toArray())
+    const [contactsList, setContactList] = useState([])
     const curUser = useRef(null)
     const selfUser = {
         avatar: '',
@@ -87,6 +89,7 @@ const Menu = () => {
         window.ChatSession && window.ChatSession.setToId(withUser.uid)
     };
 
+    // 获取聊天记录用户
     const { run } = useRequest(getSessionRecent, {
         manual: true,
         onSuccess: result => {
@@ -99,6 +102,7 @@ const Menu = () => {
         },
     });
 
+    // 格式化消息
     const formatLastMessage = (message) => {
         if (!message) {
             return ''
@@ -111,21 +115,34 @@ const Menu = () => {
         }
     }
 
+    const contactsIsShow = (item) => {
+        if (item.isMe) {
+            return true
+        }
+
+        if (!item.category_ids) {
+            return false
+        }
+
+        if (item.category_ids.includes(cateId)) {
+            return true
+        }
+
+        return false
+    }
 
     useEffect(() => {
-        const id = location.pathname.replace('/category/', '').replace("/category", '')
+        const pathname = location.pathname
+        let reg = /\/workspace/
+        if (reg.test(pathname)) {
+            setCateId(0)
+            return
+        }
+        reg = /\/category\/(\d){1}/
+        const res = pathname.match(reg)
+        let id = lodash.get(res, 1)
         setCateId(id ? parseInt(id) : 0)
-        setCateId((id) => {
-            const _allows = _contactsList ? _contactsList.filter(v => {
-                return v.category_ids.includes(id) || id === 0
-            }) : []
-            if (_allows.length) {
-                changechatWithUser(_allows[0])
-            } else {
-                changechatWithUser(selfUser)
-            }
-            return id
-        })
+
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [location])
 
@@ -141,8 +158,6 @@ const Menu = () => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
-
-
     useEffect(() => {
         const options = (item) => [
             {
@@ -156,12 +171,36 @@ const Menu = () => {
                 },
             },
         ]
+
+        let tempContactList = []
+        setCateId((id) => {
+            console.log('cateId', cateId)
+
+            return id
+        })
+        if (_contactsList) {
+            if (cateId === 0) {
+                tempContactList = [..._contactsList]
+            } else {
+                tempContactList = _contactsList.filter(item => {
+                    return contactsIsShow(item)
+                })
+            }
+        }
+
+        tempContactList = tempContactList.length ? tempContactList : [selfUser]
+        setContactList(tempContactList)
+        setCateId((id) => {
+            changechatWithUser(tempContactList[0])
+            return id
+        })
         return () => {
-            _contactsList && _contactsList.forEach((item, index) => {
+            tempContactList.forEach((item, index) => {
                 new RightMenu(`.contact-${index}`, options(item))
             })
         }
-    }, [_contactsList])
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [_contactsList, cateId])
 
     return <div className="contacts-container">
         <div className="contacts-menu"><Input placeholder="Search" className="w-full" /></div>
@@ -187,13 +226,12 @@ const Menu = () => {
                 ))}
             </Select>
         </div>
-        <Spin loading={!_contactsList}>
+        <Spin loading={!contactsList}>
             <List
-                dataSource={_contactsList ? orderBy(_contactsList, 'weight', 'desc') : [selfUser]}
+                dataSource={orderBy(contactsList, 'weight', 'desc')}
                 className="contacts-menu-wrapper scrollbar"
-
                 render={(item, index) => (
-                    <List.Item key={item.uid} data-cate-id={cateId} className={`${chatWithUser.uid === item.uid ? 'active' : null} contact-${index} ${(item.isMe || cateId === 0 || item.category_ids.includes(cateId)) ? '' : 'hidden'}`} onClick={() => { changechatWithUser(item) }}>
+                    <List.Item key={item.uid} className={`${chatWithUser.uid === item.uid ? 'active' : null} contact-${index} `} onClick={() => { changechatWithUser(item) }}>
                         <List.Item.Meta
                             data-id={item.uid}
                             avatar={
