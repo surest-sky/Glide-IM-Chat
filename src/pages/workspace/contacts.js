@@ -231,7 +231,7 @@ const Menu = () => {
                 dataSource={orderBy(contactsList, 'weight', 'desc')}
                 className="contacts-menu-wrapper scrollbar"
                 render={(item, index) => (
-                    <List.Item key={item.uid} className={`${chatWithUser.uid === item.uid ? 'active' : null} contact-${index} `} onClick={() => { changechatWithUser(item) }}>
+                    <List.Item key={item.uid} className={`${chatWithUser.uid === item.uid ? 'active' : null} contact-${item.id} `} onClick={() => { changechatWithUser(item) }}>
                         <List.Item.Meta
                             data-id={item.uid}
                             avatar={
