@@ -102,6 +102,23 @@ const Menu = () => {
         },
     });
 
+    const reloadContactList = () => {
+        let tempContactList = []
+        if (_contactsList) {
+            if (cateId === 0) {
+                tempContactList = [..._contactsList]
+            } else {
+                tempContactList = _contactsList.filter(item => {
+                    return contactsIsShow(item)
+                })
+            }
+        }
+
+        tempContactList = tempContactList.length ? tempContactList : [selfUser]
+        setContactList(tempContactList)
+        return tempContactList
+    }
+
     // 格式化消息
     const formatLastMessage = (message) => {
         if (!message) {
@@ -142,6 +159,11 @@ const Menu = () => {
         const res = pathname.match(reg)
         let id = lodash.get(res, 1)
         setCateId(id ? parseInt(id) : 0)
+        setCateId((id) => {
+            const tempContactList = reloadContactList()
+            changechatWithUser(tempContactList[0])
+            return id
+        })
 
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [location])
@@ -171,32 +193,10 @@ const Menu = () => {
                 },
             },
         ]
-
-        let tempContactList = []
-        setCateId((id) => {
-            console.log('cateId', cateId)
-
-            return id
-        })
-        if (_contactsList) {
-            if (cateId === 0) {
-                tempContactList = [..._contactsList]
-            } else {
-                tempContactList = _contactsList.filter(item => {
-                    return contactsIsShow(item)
-                })
-            }
-        }
-
-        tempContactList = tempContactList.length ? tempContactList : [selfUser]
-        setContactList(tempContactList)
-        setCateId((id) => {
-            changechatWithUser(tempContactList[0])
-            return id
-        })
+        const tempContactList = reloadContactList()
         return () => {
             tempContactList.forEach((item, index) => {
-                new RightMenu(`.contact-${index}`, options(item))
+                new RightMenu(`.contact-${item.id}`, options(item))
             })
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
