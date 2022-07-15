@@ -44,6 +44,11 @@
     scroll-into-view-if-needed "2.2.20"
     shallowequal "^1.1.0"
 
+"@arco-themes/react-0001@^0.0.19":
+  version "0.0.19"
+  resolved "https://registry.npmmirror.com/@arco-themes/react-0001/-/react-0001-0.0.19.tgz#a17fc540e5c005570b733d2081b5ea015a402efa"
+  integrity sha512-piBwh5vsxnSV6RxhSFrlxHmKm6UtguPnljWvkD+p7I2cd2IT3BvlxvD0+n3otl8kABaVOHeP4R7hwKsMZkBAEA==
+
 "@babel/code-frame@^7.0.0", "@babel/code-frame@^7.10.4", "@babel/code-frame@^7.12.13", "@babel/code-frame@^7.16.0", "@babel/code-frame@^7.16.7", "@babel/code-frame@^7.8.3":
   version "7.16.7"
   resolved "https://registry.npmmirror.com/@babel/code-frame/-/code-frame-7.16.7.tgz#44416b6bd7624b998f5b1af5d470856c40138789"

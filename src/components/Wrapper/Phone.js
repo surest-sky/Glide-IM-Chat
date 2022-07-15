@@ -10,6 +10,8 @@ const Phone = (props) => {
     const [confirmLoading, setConfirmLoading] = useState(false);
     const value = props.value
 
+    return <Link>待开放中...</Link>
+
     // 验证码提交
     const submit = async () => {
         const data = await form.validate()

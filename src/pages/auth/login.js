@@ -7,7 +7,7 @@ const FormItem = Form.Item;
 
 const LoginForm = () => {
     const loginUser = (formData) => {
-        return loginUserApi({ Account: formData.name, Password: formData.password });
+        return loginUserApi({ email: formData.name, password: formData.password });
     };
 
     const { run, loading } = useRequest(loginUser, {

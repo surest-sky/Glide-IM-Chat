@@ -7,3 +7,11 @@ export function getQiniuToken(data = {}) {
         data,
     });
 }
+
+export function sendCaptcha(data) {
+    return request({
+        url: '/auth/verifyCode',
+        method: 'post',
+        data,
+    });
+}

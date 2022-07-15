@@ -1,10 +1,15 @@
 import { Form, Input, Link, Message, Modal, Tooltip } from '@arco-design/web-react';
 import { useState } from 'react';
 import VerifyCode from './VerifyCode'
+import { updateEmail } from 'src/api/chat/setting'
+import { getAuthInfo } from 'src/services/auth';
+import { updateAuthInfo } from 'src/store/reducer/container';
+import store from 'src/store/index';
 import './styles/input.scss';
 
 const FormItem = Form.Item;
 const Phone = (props) => {
+    let authInfo = getAuthInfo()
     const [form] = Form.useForm();
     const [visible, setVisible] = useState(false);
     const [confirmLoading, setConfirmLoading] = useState(false);
@@ -12,14 +17,22 @@ const Phone = (props) => {
 
     // 验证码提交
     const submit = async () => {
-        const data = await form.validate()
-        console.log(data)
         setConfirmLoading(true)
+        let res = await form.validate()
 
-        setTimeout(() => {
+        const { data: { Code, Msg } } = await updateEmail(res)
+        if (Code !== 100) {
             setConfirmLoading(false)
-            Message.success("修改成功")
-        }, 2000)
+            Message.warning(Msg)
+            return
+        }
+
+        setConfirmLoading(false)
+        Message.success("修改成功")
+        authInfo.email = res.email
+        store.dispatch(updateAuthInfo(authInfo))
+        props.onChange(res.email)
+        setVisible(false)
     }
 
     const validateAllowCode = () => {
@@ -60,7 +73,7 @@ const Phone = (props) => {
                 ]}>
                     <Input className={' border border-dashed border-gray-400'} placeholder="请输入邮箱" />
                 </FormItem>
-                <FormItem field='verifyCode' rules={[
+                <FormItem field='captcha' rules={[
                     {
                         required: true,
                         message: "请输入验证码",
@@ -70,7 +83,7 @@ const Phone = (props) => {
                         message: "验证码错误"
                     }
                 ]}>
-                    <VerifyCode validate={validateAllowCode} />
+                    <VerifyCode validate={validateAllowCode} getValue={() => form.getFieldValue("email")} />
                 </FormItem>
             </Form>
 

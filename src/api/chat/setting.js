@@ -24,3 +24,14 @@ export function deleteCategoryApi(id) {
         method: 'delete',
     });
 }
+
+
+export function updateEmail(data) {
+    return request({
+        url: '/user/profile/email',
+        method: 'post',
+        data,
+    });
+}
+
+

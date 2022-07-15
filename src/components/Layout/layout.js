@@ -21,7 +21,7 @@ const Layout = (props) => {
     const reLogin = () => {
         setLoading(false)
         Message.error("请登录 !")
-        navigate('/auth');
+        navigate('/login');
     }
 
     const loadApp = async () => {
@@ -33,6 +33,7 @@ const Layout = (props) => {
     }
 
     const fetchUserInfo = async (authInfo) => {
+        store.dispatch(updateAuthInfo(authInfo));
         const { data } = await userInfoApi({ Uid: [authInfo.Uid] });
         store.dispatch(updateUserInfo(data.Data[0]));
         initChatSession(() => { setLoading(false) })
@@ -50,7 +51,6 @@ const Layout = (props) => {
             if (!data) {
                 reLogin()
             }
-            store.dispatch(updateAuthInfo(data));
             fetchUserInfo(data)
         }).catch(err => {
             console.error(err)

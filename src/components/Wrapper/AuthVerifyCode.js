@@ -20,14 +20,12 @@ const VerifyCode = (props) => {
             Message.warning(validateMessage)
             return
         }
-        console.log('value', value)
         setLoading({
             loading: true,
             disabled: true,
             text: "发送中..."
         })
-        const email = props.getValue()
-        const { data: { Code, Msg } } = await sendCaptcha({ email: email })
+        const { data: { Code, Msg } } = await sendCaptcha({ email: value, mode: props.mode })
         if (Code !== 100) {
             Message.warning(Msg)
             setLoading(defaultLoading)
@@ -53,8 +51,8 @@ const VerifyCode = (props) => {
         <Input value={code} onChange={(value) => {
             setCode(value)
             props.onChange(value)
-        }} className={'border border-dashed border-gray-400 verify-input'} placeholder="请输入验证码" />
-        <Button type="primary" disabled={loading.disabled} loading={loading.loading} onClick={() => { sendVerifyCode() }}>{loading.text}</Button>
+        }} className={'w-full px-4 py-3 rounded-lg bg-gray-200 mt-2 border focus:border-blue-500 focus:bg-white focus:outline-none'} placeholder="请输入验证码" />
+        <Button className={`verify-submit w-full rounded-lg bg-indigo-500 hover:bg-indigo-400 focus:bg-indigo-400 font-semibold ${loading.disabled ? 'verify-disabled' : null}`} type="primary" disabled={loading.disabled} loading={loading.loading} onClick={() => { sendVerifyCode() }}>{loading.text}</Button>
     </div>
 }
 

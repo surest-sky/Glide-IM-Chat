@@ -16,7 +16,7 @@ const Layout = () => {
     const reLogin = () => {
         setLoading(false)
         Message.error("请登录 !")
-        navigate('/auth');
+        navigate('/login');
     }
 
     const fetchUserInfo = async (authInfo) => {

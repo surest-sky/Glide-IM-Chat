@@ -4,6 +4,7 @@
     "private": true,
     "dependencies": {
         "@arco-design/web-react": "2.32.2",
+        "@arco-themes/react-0001": "^0.0.19",
         "@fingerprintjs/fingerprintjs-pro": "^3.6.3",
         "@headlessui/react": "1.5.0",
         "@right-menu/core": "0.0.7",

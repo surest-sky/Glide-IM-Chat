@@ -1,3 +1,30 @@
 .container {
     width: 600;
 }
+
+.wechat-login {
+    .icon {
+        width: 2em;
+        height: 2em;
+    }
+}
+
+.login-container {
+    .submit-login {
+        height: 50px;
+        background-color: #6366f1 !important;
+    }
+    .submit-login:hover {
+        background-color: #5456ec !important;
+    }
+    .verify-submit {
+        height: 50px;
+        margin-top: 7px;
+        margin-left: 5px;
+        background-color: #00c9a7 !important;
+    }
+
+    .verify-disabled {
+        background-color: #b0a8b9 !important;
+    }
+}

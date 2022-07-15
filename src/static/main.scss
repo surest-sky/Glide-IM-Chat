@@ -4,6 +4,7 @@ $mw-space: 10px;
 #root {
     // height: 100vh;
     width: 100%;
+    min-height: 800px;
 }
 
 .app {
@@ -31,6 +32,14 @@ $mw-space: 10px;
 
 svg {
     display: inline-block;
+}
+
+.icon {
+    width: 1em;
+    height: 1em;
+    vertical-align: -0.15em;
+    fill: currentColor;
+    overflow: hidden;
 }
 
 .room-content {
