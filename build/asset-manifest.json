@@ -1,27 +1,29 @@
 {
   "files": {
-    "main.css": "/static/css/main.2cc00458.css",
-    "main.js": "/static/js/main.49c57ace.js",
+    "main.css": "/static/css/main.fdd73e18.css",
+    "main.js": "/static/js/main.ce3cfbdf.js",
     "static/js/787.99ba04fa.chunk.js": "/static/js/787.99ba04fa.chunk.js",
     "static/media/chat.svg": "/static/media/chat.0094fa608f8efad723bfa5b72ea0ce09.svg",
     "static/media/setting.svg": "/static/media/setting.196d78a560e6519dbe0e1f01dec3089f.svg",
     "static/media/chart.svg": "/static/media/chart.531ad695a75c6618bc3ff8ad5660a3d5.svg",
     "static/media/users.svg": "/static/media/users.ffdff3a2c31597cccb5806a170ee031d.svg",
     "static/media/robot.svg": "/static/media/robot.6c42669720bb683c1d415ec14fe50bf4.svg",
+    "static/media/wechat.svg": "/static/media/wechat.41c35f27e7d2645b746118437b55123d.svg",
     "static/media/account.svg": "/static/media/account.40988b1f6f9ad00dce44979ee84aedff.svg",
     "static/media/pote.svg": "/static/media/pote.e6a1cdfd41a5453eb37f1d193c9fed00.svg",
     "static/media/category.svg": "/static/media/category.13cbd03a7440e4ca31c18f2ff3f89ede.svg",
     "static/media/vip.svg": "/static/media/vip.9b9aa5352b3c83f4352559dd282cc660.svg",
     "index.html": "/index.html",
+    "static/media/logout.svg": "/static/media/logout.fa9a5cdfd9bbcf897462cad4da26c1d9.svg",
     "static/media/audiov2.svg": "/static/media/audiov2.bae0f3e33f23b9cb819b000b5eebf89a.svg",
     "static/media/doubt.svg": "/static/media/doubt.ed58494cbd265bb058c59c309a1d6362.svg",
     "static/media/bit.svg": "/static/media/bit.e8ab996998484fa3ea555cffa6156626.svg",
-    "main.2cc00458.css.map": "/static/css/main.2cc00458.css.map",
-    "main.49c57ace.js.map": "/static/js/main.49c57ace.js.map",
+    "main.fdd73e18.css.map": "/static/css/main.fdd73e18.css.map",
+    "main.ce3cfbdf.js.map": "/static/js/main.ce3cfbdf.js.map",
     "787.99ba04fa.chunk.js.map": "/static/js/787.99ba04fa.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.2cc00458.css",
-    "static/js/main.49c57ace.js"
+    "static/css/main.fdd73e18.css",
+    "static/js/main.ce3cfbdf.js"
   ]
 }
