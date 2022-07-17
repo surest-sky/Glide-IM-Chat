@@ -1,4 +1,4 @@
-import { axiosInstance as request } from './axios';
+import request from './axios';
 
 // 登录
 export function guestLogin(data = {}) {
@@ -12,7 +12,7 @@ export function guestLogin(data = {}) {
 // 分配联系人
 export function getToUid(data = {}) {
     return request({
-        url: '/auth/guest/guest-id',
+        url: '/guest/guest-id',
         method: 'post',
         data,
     });

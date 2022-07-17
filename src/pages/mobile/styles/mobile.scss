@@ -426,6 +426,7 @@
 
         li:hover {
             background-color: rgba(48, 71, 236, 0.12);
+            padding: 8px 2px;
         }
 
         h3 {
@@ -445,11 +446,9 @@
             flex-direction: row;
             -webkit-box-align: center;
             align-items: center;
-            margin: 0px -24px;
             cursor: pointer;
             transition: background 0.1s linear 0s;
-            padding: 8px 24px;
-
+            padding: 8px 0;
             .search-type {
                 position: relative;
                 display: flex;

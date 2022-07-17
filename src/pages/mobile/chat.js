@@ -22,7 +22,7 @@ const Mobile = () => {
         setHeight(window.innerHeight - 185 - 200)
     }
 
-    return <Layout> <div className='chat-container fade-in-top' >
+    return <div className='chat-container fade-in-top' >
         <div className='chat-container-top'>
             <IconLeft className='chat-container-top-left' onClick={() => {
                 navigate('/m')
@@ -39,7 +39,6 @@ const Mobile = () => {
 
         <div className="chat-message-editor"><Editor changeHeight={changeHeight} /></div>
     </div>
-    </Layout>
 }
 
 export default Mobile

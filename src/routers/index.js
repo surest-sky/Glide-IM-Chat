@@ -7,6 +7,8 @@ import Login from '../pages/auth/loginV2';
 import Forget from '../pages/auth/forget';
 import Register from '../pages/auth/registerV2';
 import Chat from '../pages/mobile/chat';
+import MobileArticle from '../pages/mobile/article'
+import MobileFaq from '../pages/mobile/faq'
 import Search from '../pages/mobile/search';
 import Setting from '../pages/setting/index';
 import WorkSpace from '../pages/workspace/index';
@@ -35,6 +37,8 @@ const Routers = () => {
                 <Route path="/m" element={<Mobile />} />
                 <Route path="/m/s" element={<Search />} />
                 <Route path="/m/chat" element={<Chat />} />
+                <Route path="/m/faq" element={<MobileFaq />} />
+                <Route path="/m/faq/show" element={<MobileArticle />} />
             </Route>
 
             <Route path="" element={<Layout />}>

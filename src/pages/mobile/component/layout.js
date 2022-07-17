@@ -1,11 +1,12 @@
 import { generateFrontId } from 'src/services/plugins/fingerprint'
 import { guestLogin, getToUid } from '../apis/mobile'
-import { Outlet } from 'react-router-dom';
+import { Outlet, useNavigate } from 'react-router-dom';
 import { Modal } from '@arco-design/web-react';
 import { setLogin, isLogin } from 'src/services/auth';
 import { useEffect, useState, useRef } from 'react'
 import store from 'src/store/index';
 import Loading from 'src/components/Loading'
+import { useSearchParams } from 'react-router-dom';
 import { updateAuthInfo } from 'src/store/reducer/container';
 import { switchRoom } from 'src/services/chat_db';
 import { updateChatWithUser } from 'src/store/reducer/chat';
@@ -15,6 +16,8 @@ import { getAuthInfo } from 'src/services/auth';
 import '../styles/mobile.scss';
 
 const Layout = (props) => {
+    const navigate = useNavigate();
+    const [searchParams] = useSearchParams()
     const [loading, setLoading] = useState(!isLogin())
     const userInfo = useRef()
     const frontId = useRef()
@@ -23,7 +26,6 @@ const Layout = (props) => {
     const loadChatRoom = (uid) => {
         window.ChatSession.setToId(uid)
         switchRoom(userInfo.current.Uid, uid)
-        console.log(222)
     }
 
     const loadWidthUser = async () => {
@@ -36,7 +38,6 @@ const Layout = (props) => {
         }));
         uid.current = _uid
         initChatSession(() => { loadChatRoom(_uid) })
-        console.log('uid', _uid)
     }
 
     const login = async () => {
@@ -54,10 +55,10 @@ const Layout = (props) => {
         setLogin(data)
         loadWidthUser()
         setLoading(false)
+        navigate("/m")
     }
 
     useEffect(() => {
-        console.log(222)
         if (!isLogin()) {
             generateFrontId().then(v => {
                 frontId.current = v
@@ -65,11 +66,25 @@ const Layout = (props) => {
             })
         } else {
             userInfo.current = getAuthInfo()
+            store.dispatch(updateAuthInfo(userInfo.current));
             loadWidthUser()
             setLoading(false)
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
+
+    useEffect(() => {
+        const loginP = searchParams.get("login")
+        if (parseInt(loginP) === 1) {
+            setLoading(true)
+            generateFrontId().then(v => {
+                frontId.current = v
+                login()
+            })
+        }
+
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [searchParams])
 
     if (loading) {
         return <Loading text="Loading" />

@@ -201,7 +201,7 @@ const List = (props) => {
                                 <Paragraph className="faq-wrapper-publist-at">发布时间: {article.publish_at}</Paragraph>
                                 <Paragraph className="faq-wrapper-detail scrollbar"><HtmlApp html={article.content}></HtmlApp></Paragraph></>
                             :
-                            <Title heading={4} >赞无数据</Title>
+                            <Title heading={4} >暂无数据</Title>
                         }
                     </div>
                 </div>

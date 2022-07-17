@@ -1,12 +1,41 @@
 
-import { Avatar, Button } from '@arco-design/web-react';
+import { Avatar, Button, Spin } from '@arco-design/web-react';
 import { IconClockCircle, IconClose, IconIdcard, IconRight, IconSearch, IconSend } from '@arco-design/web-react/icon';
-import Layout from './component/layout'
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { getArticleList } from './apis/faq';
 import './styles/mobile.scss';
 
 const Mobile = () => {
     const navigate = useNavigate();
+    const [articles, setAritcles] = useState({
+        list: [],
+        loading: true
+    })
+
+    const LoadArticles = () => {
+        getArticleList().then(({ data }) => {
+            data.Data && setAritcles({
+                list: data.Data,
+                loading: false
+            })
+        }).catch(() => {
+            setAritcles({
+                list: [],
+                loading: false
+            })
+        })
+    }
+
+    const showArticlesList = () => {
+        navigate('/m/faq')
+    }
+
+    useEffect(() => {
+        LoadArticles()
+    }, [])
+
+
     return <div className='mobile-container fade-in-top'>
         <div className='mobile-close-container-btn cur'>
             <div className='mobile-container-top-btn cur' style={{ backgroundColor: 'rgba(0, 0, 0, 0)' }}>
@@ -101,51 +130,39 @@ const Mobile = () => {
                     </div>
                     <div className='mobile-container-message-card'>
                         <div className='height264'>
-                            <h2 className='h2'>帮助文档</h2>
-                            <Button className='search-btn'>
+                            <h2 className='mb-2 h2'>帮助文档</h2>
+                            <Button className='search-btn' onClick={() => {
+                                showArticlesList()
+                            }}>
                                 <IconSearch />
                                 搜索
                             </Button>
-                            <div className='search-tit'>
+                            <Spin className='w-full search-tit' loading={articles.loading}>
                                 <h3>参考文章</h3>
                                 <ul>
-                                    <li>
-                                        <div className='search-type'>
-                                            <div className='type-item'>
-                                                <div className='type-content'>Messager 优势是什么？</div>
+                                    {articles.list.map(item => {
+                                        return <li key={item.id} onClick={() => {
+                                            navigate(`/m/faq/show?id=${item.id}`)
+                                        }} className="flex justify-between w-full">
+                                            <div className='search-type'>
+                                                <div className='type-item'>
+                                                    <div className='type-content'>{item.title}</div>
+                                                </div>
                                             </div>
-                                        </div>
-                                        <div className='li-icon'>
-                                            <IconRight className='right-icon' />
-                                        </div>
-                                    </li>
-                                    <li>
-                                        <div className='search-type'>
-                                            <div className='type-item'>
-                                                <div className='type-content'>我们能帮助到您什么？</div>
+                                            <div className='li-icon'>
+                                                <IconRight className='right-icon' />
                                             </div>
-                                        </div>
-                                        <div className='li-icon'>
-                                            <IconRight className='right-icon' />
-                                        </div>
-                                    </li>
-                                    <li>
-                                        <div className='search-type'>
-                                            <div className='type-item'>
-                                                <div className='type-content'>如何私有化部署 ？</div>
-                                            </div>
-                                        </div>
-                                        <div className='li-icon'>
-                                            <IconRight className='right-icon' />
-                                        </div>
-                                    </li>
+                                        </li>
+                                    })}
+
                                 </ul>
-                            </div>
+                            </Spin>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
+
     </div>
 }
 

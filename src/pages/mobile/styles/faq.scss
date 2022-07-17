@@ -1,0 +1,32 @@
+.mobile-faq-list-item {
+    height: 50px;
+    width: 100%;
+    display: block;
+    border-bottom: 1px dashed rgb(190, 189, 189);
+    line-height: 50px;
+}
+
+.mobile-faq-list-item:focus {
+    background-color: #0081cf;
+    color: white;
+    padding-left: 5px;
+}
+
+.faq-article-publish-at {
+    color: rgb(140, 140, 140);
+}
+
+.faq-article-content {
+    max-height: 80%;
+    overflow-y: auto;
+}
+
+.mobile-faq-list-container {
+    width: 95%;
+    margin: 0 auto;
+}
+
+.mobile-faq-article-container {
+    width: 95%;
+    margin: 0 auto;
+}

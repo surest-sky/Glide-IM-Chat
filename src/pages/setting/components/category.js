@@ -45,8 +45,8 @@ const Category = () => {
     }
 
     const submit = () => {
-        const _category = [...category]
-        _category.forEach((item, index) => {
+        let _category = []
+        category.forEach((item, index) => {
             if (!item.name) {
                 Message.error("请输入分类名称");
                 throw new Error('请输入分类名称')
@@ -56,7 +56,9 @@ const Category = () => {
                 Message.error("请设置 分类Icon");
                 throw new Error('请设置 分类Icon')
             }
-            item.weight = index
+            const _item = JSON.parse(JSON.stringify(item))
+            _item.weight = index
+            _category.push(_item)
         })
         updateAction.run({ categories: _category })
     }
