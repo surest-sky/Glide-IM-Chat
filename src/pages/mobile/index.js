@@ -7,7 +7,7 @@ import './styles/mobile.scss';
 
 const Mobile = () => {
     const navigate = useNavigate();
-    return <Layout> <div className='mobile-container fade-in-top'>
+    return <div className='mobile-container fade-in-top'>
         <div className='mobile-close-container-btn cur'>
             <div className='mobile-container-top-btn cur' style={{ backgroundColor: 'rgba(0, 0, 0, 0)' }}>
                 <IconClose className='close-btn' />
@@ -147,7 +147,6 @@ const Mobile = () => {
             </div>
         </div>
     </div>
-    </Layout>
 }
 
 export default Mobile

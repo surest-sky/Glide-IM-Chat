@@ -1,0 +1,38 @@
+.faq-editor-wrapper {
+    .faq-editor-title {
+        margin-bottom: 10px;
+        height: 50px;
+        font-size: 20px;
+    }
+
+    .faq-editor-title:focus {
+        border: 1px solid #0d0d0d;
+    }
+
+    height: calc(100% - 150px);
+    position: relative;
+}
+
+.border-theme {
+    border-radius: 0.2rem;
+    border: 1px solid #464646;
+    color: #0d0d0d;
+}
+
+.publish-submit {
+    width: 50px !important;
+    height: 50px !important;
+    position: absolute;
+    right: 15px;
+    bottom: -100px;
+    z-index: 999;
+}
+
+.article-list {
+    height: calc(100% - 30px);
+    margin-top: 10px;
+}
+
+.faq-wrapper-detail {
+    cursor: pointer;
+}

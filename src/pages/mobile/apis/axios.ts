@@ -72,6 +72,7 @@ axiosInstance.interceptors.request.use(
         if (token) {
             config.headers.Authorization = 'Bearer ' + token;
         }
+        config.headers['Host-A'] = window.location.host;
         return config;
     },
     error => {

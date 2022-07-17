@@ -64,7 +64,7 @@ const Menus = () => {
                             <img src={authInfo.App.logo} alt="logo" /> : null
                     }
 
-                    <span className="font-bold text-white app-name truncate">{authInfo?.App?.name}</span>
+                    <span className="font-bold text-white truncate app-name">{authInfo?.App?.name}</span>
                 </div>
                 <div className="operate">
                     <IconEdit className="mr-2 text-white hover:text-gray-300" onClick={() => {
@@ -86,7 +86,7 @@ const Menus = () => {
             <MenuItemGroup key='workspace-sapce' title='工作空间'>
                 <MenuItem key='/customer'><UsersSvg /> 客户管理</MenuItem>
                 <MenuItem key='/analysis'><ChartSvg /> 市场分析</MenuItem>
-                <MenuItem key='/faq'><DoubtSvg /> 帮助中心</MenuItem>
+                <MenuItem key='/faq/list'><DoubtSvg /> 帮助中心</MenuItem>
                 <MenuItem key='/robot'><RobotSvg /> 回复机器人</MenuItem>
                 <MenuItem key='/setting'><SettingSvg /> 设置中心</MenuItem>
                 <MenuItem key='logout'><LogoutSvg /> 退出登录</MenuItem>

@@ -13,10 +13,10 @@ import WorkSpace from '../pages/workspace/index';
 import Robot from '../pages/robot/index';
 import Customer from '../pages/customer/index';
 import Analysis from '../pages/analysis/index';
-import Faq from '../pages/faq/index';
+import FaqEditor from '../pages/faq/editor';
+import FaqList from '../pages/faq/list';
 import LayoutMobile from '../pages/mobile/component/layout'
 import Email from '../pages/notify/email'
-
 
 
 const Routers = () => {
@@ -30,7 +30,8 @@ const Routers = () => {
                 <Route path="/register" element={<Register />} />
             </Route>
 
-            <Route path="" element={<LayoutMobile />}>
+
+            <Route element={<LayoutMobile />}>
                 <Route path="/m" element={<Mobile />} />
                 <Route path="/m/s" element={<Search />} />
                 <Route path="/m/chat" element={<Chat />} />
@@ -43,7 +44,8 @@ const Routers = () => {
                 <Route path="/robot" element={<Robot />} />
                 <Route path="/customer" element={<Customer />} />
                 <Route path="/analysis" element={<Analysis />} />
-                <Route path="/faq" element={<Faq />} />
+                <Route path="/faq/list" element={<FaqList />} />
+                <Route path="/faq/editor" element={<FaqEditor />} />
             </Route>
 
             <Route path="/email" element={<Email />} />

@@ -140,7 +140,7 @@ class WebSocketClient {
             data: d,
             seq: seq,
             to: null,
-            extra: null
+            extra: null,
         };
 
         return this.send(message).pipe(mergeMap(() => this.getApiRespObservable<T>(seq)));
@@ -216,12 +216,13 @@ class WebSocketClient {
                 observer.error('not initialized');
                 return;
             }
+            console.log('this.websocket', this.websocket);
             if (this.websocket.readyState !== WebSocket.OPEN) {
                 observer.error('not connected');
                 return;
             }
             const json = JSON.stringify(data);
-            console.log("send:", json);
+            console.log('send:', json);
             this.websocket.send(json);
             observer.next(data);
             observer.complete();
@@ -249,7 +250,7 @@ class WebSocketClient {
                 error: e => {
                     WebSocketClient.slog('heartbeat', 'failed', e);
                 },
-                complete: () => { },
+                complete: () => {},
             });
         }, heartbeatInterval);
     }
@@ -300,7 +301,7 @@ class WebSocketClient {
         this.createCommonMessage(from, Actions.AckRequest, ackR)
             .pipe(mergeMap(msg => this.send(msg)))
             .subscribe({
-                next: () => { },
+                next: () => {},
                 error: e => {
                     WebSocketClient.slog('ackRequestMessage', 'failed', e);
                 },

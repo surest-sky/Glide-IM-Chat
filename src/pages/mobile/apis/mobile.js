@@ -3,7 +3,7 @@ import { axiosInstance as request } from './axios';
 // 登录
 export function guestLogin(data = {}) {
     return request({
-        url: '/auth/guestV2',
+        url: '/auth/guest/signin',
         method: 'post',
         data,
     });
@@ -12,7 +12,7 @@ export function guestLogin(data = {}) {
 // 分配联系人
 export function getToUid(data = {}) {
     return request({
-        url: '/app/guest-id',
+        url: '/auth/guest/guest-id',
         method: 'post',
         data,
     });
