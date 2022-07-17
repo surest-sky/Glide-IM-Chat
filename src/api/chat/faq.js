@@ -8,6 +8,14 @@ export function addArticle(data) {
     });
 }
 
+export function updateArticle(id, data) {
+    return request({
+        url: '/articles/' + id,
+        method: 'post',
+        data,
+    });
+}
+
 export function getArticleList(params) {
     return request({
         url: '/articles/list',

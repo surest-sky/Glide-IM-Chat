@@ -7,7 +7,6 @@ const Editor = (props, ref) => {
     const editorRef = useRef(null)
 
     const initHtml = (value) => {
-        console.log(value)
         const html = BraftEditor.createEditorState(value)
         editorRef.current.setValue(html)
     }
