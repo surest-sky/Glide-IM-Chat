@@ -1,4 +1,4 @@
-import { axiosInstance as request } from '../axios';
+import request from '../request';
 import { map } from 'lodash';
 
 export function addContactsApi(data) {
@@ -37,7 +37,6 @@ export function loginUserApi(data) {
 }
 
 export function userInfoApi(data) {
-    console.log('userInfoApi', data)
     return request({
         url: '/user/info',
         method: 'post',

@@ -1,7 +1,12 @@
 import { AxiosInstance, AxiosPromise } from 'axios';
 import { map, Observable, OperatorFunction } from 'rxjs';
-import { axiosInstance } from './axios';
-import { Response } from './response';
+import axiosInstance from './request';
+
+export interface Response<T> {
+    Msg: string;
+    Code: number;
+    Data: T;
+}
 
 interface HttpResponse {
     status: number;

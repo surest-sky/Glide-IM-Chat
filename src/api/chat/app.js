@@ -1,4 +1,4 @@
-import { axiosInstance as request } from '../axios';
+import request from '../request';
 
 export function updateApp(id, data = {}) {
     return request({

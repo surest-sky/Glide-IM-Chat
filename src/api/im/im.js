@@ -1,4 +1,4 @@
-import { axiosInstance as request } from '../axios';
+import request from '../request';
 import { map } from 'lodash';
 
 export function addContactsApi(data) {
