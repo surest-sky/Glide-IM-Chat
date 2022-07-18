@@ -39,7 +39,6 @@ service.interceptors.response.use(
     error => {
         const { status } = error.response
         if (status === 401) {
-            // 重新登录
             setLogout()
             window.location.href = "/login"
         }

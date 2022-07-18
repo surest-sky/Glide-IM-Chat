@@ -22,37 +22,7 @@ const Account = () => {
             <FormItem label="邮箱" field="email">
                 <Email />
             </FormItem>
-            {/* <FormItem label='密码' field={'password'} rules={[
-                {
-                    maxLength: 16,
-                    message: "请输入密码",
-                },
-                {
-                    minLength: 8,
-                    message: "请不要少于8个字符",
-                },
-            ]}>
-                <Input type="password" placeholder="请输入密码" />
-            </FormItem>
-            <FormItem label='' field={'confirmPassword'} rules={[
-                {
-                    validator(value, cb) {
-                        const password = form.getFieldValue('password')
-                        if (password !== value) {
-                            return cb('密码不一致，请检查');
-                        }
-                        return cb();
-                    },
-                }
-            ]}>
-                <Input type="password" placeholder="请输入确认密码" />
-            </FormItem>
 
-            <FormItem>
-                <Button type='primary' htmlType='submit' long onClick={() => { submit() }}>
-                    提交
-                </Button>
-            </FormItem> */}
         </Form>
     </Card >
 

@@ -1,11 +1,12 @@
-import { Button, Card, Form, Input, Tooltip } from '@arco-design/web-react';
+import { Card, Form, Input, Tooltip } from '@arco-design/web-react';
 import { IconExclamationCircle } from '@arco-design/web-react/icon';
-import ImageUpload from 'src/components/Wrapper/Image'
-import { updateApp } from 'src/api/chat/app'
-import { getAuthInfo } from 'src/services/auth';
 import { useRequest } from 'ahooks';
-import { updateAuthInfo } from 'src/store/reducer/container';
+import { updateApp } from 'src/api/chat/app';
+import Host from 'src/components/Wrapper/Host';
+import ImageUpload from 'src/components/Wrapper/Image';
+import { getAuthInfo } from 'src/services/auth';
 import store from 'src/store/index';
+import { updateAuthInfo } from 'src/store/reducer/container';
 
 import '../styles/system.scss';
 const FormItem = Form.Item;
@@ -62,30 +63,15 @@ const System = () => {
                 ]}>
                     <Input placeholder="请输入平台名称" />
                 </FormItem>
-                {/* <FormItem label='邮箱' field={'email'} rules={[
-                    {
-                        required: true,
-                        message: "请设置邮箱",
-                    }
-                ]}>
-                    <Email />
+
+
+                <FormItem label="客户端域名配置" field="host">
+                    <Host />
                 </FormItem>
-                <FormItem label='手机号码' field={'phone'} rules={[
-                    // {
-                    //     required: true,
-                    //     message: "请设置手机号码",
-                    // }
-                ]}>
-                    <Phone />
-                </FormItem> */}
+
                 <FormItem label='平台LOGO' field={'logo'} >
                     <ImageUpload />
                 </FormItem>
-                {/* <FormItem>
-                    <Button type='primary' htmlType='submit' long onClick={() => { submit() }}>
-                        提交
-                    </Button>
-                </FormItem> */}
             </Form>
         </Card>
     </div>;

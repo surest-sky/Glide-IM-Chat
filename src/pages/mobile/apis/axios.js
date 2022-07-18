@@ -1,8 +1,8 @@
 import axios from 'axios';
 import { getAuthInfo } from 'src/services/auth';
+import { setLogout } from 'src/services/auth'
 
 const BASE_URL = process.env.REACT_APP_BASE_URL;
-
 // create an axios instance
 const service = axios.create({
     baseURL: BASE_URL,
@@ -38,6 +38,7 @@ service.interceptors.response.use(
     error => {
         const { status } = error.response
         if (status === 401) {
+            setLogout()
             // 重新登录
             window.location.href = "/m?login=1"
         }

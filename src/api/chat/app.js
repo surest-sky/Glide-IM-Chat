@@ -26,3 +26,13 @@ export function register(data = {}) {
 }
 
 
+export function updateAppHost(data = {}) {
+    return request({
+        url: `/app/host`,
+        method: 'post',
+        data,
+    });
+}
+
+
+
