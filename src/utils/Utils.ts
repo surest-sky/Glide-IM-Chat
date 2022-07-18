@@ -96,3 +96,19 @@ export function timeAgo(timestamp) {
 
     return dayjs(timestamp).format('YYYY-MM-DD');
 }
+
+export const setFavicon = src => {
+    var link = document.createElement('link');
+    var oldLink = document.getElementById('dynamic-favicon');
+    link.id = 'dynamic-favicon';
+    link.rel = 'shortcut icon';
+    link.href = src;
+    if (oldLink) {
+        document.head.removeChild(oldLink);
+    }
+    document.head.appendChild(link);
+};
+
+export const setDomainTitle = title => {
+    document.title = title;
+};

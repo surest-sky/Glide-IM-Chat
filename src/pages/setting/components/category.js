@@ -46,6 +46,7 @@ const Category = () => {
 
     const submit = () => {
         let _category = []
+        console.log('category', category)
         category.forEach((item, index) => {
             if (!item.name) {
                 Message.error("请输入分类名称");
@@ -117,6 +118,7 @@ const Category = () => {
         _category.push({
             id: 0,
             name: '',
+            icon: '',
             placeholder: '请输入'
         })
         setCategory(_category)
@@ -142,7 +144,16 @@ const Category = () => {
                             onDragEnter={$event => onDragEnter($event, index)}
                             onDragOver={$event => onDragOver($event, index)}
                             key={item.id} className={`flex justify-between mt-1 category-item`}>
-                            <Input placeholder={item.placeholder} value={item.name} onChange={(v) => { updateCategoryAction(item.id, { name: v }) }} addAfter={<IconsSelect icon={item.icon} onChange={(v) => updateCategory(item.id, { icon: v })} />} />
+                            <Input
+                                placeholder={item.placeholder}
+                                value={item.name}
+                                onChange={(v) => { updateCategoryAction(item.id, { name: v }) }}
+                                addAfter={
+                                    <IconsSelect
+                                        icon={item.icon}
+                                        onChange={(v) => updateCategoryAction(item.id, { icon: v })}
+                                    />}
+                            />
                             <div className="category-action">
                                 <IconDragArrow onClick={() => changePosition(index)} className="mr-2" />
                                 <IconDelete onClick={() => { deleteCategory(item.id) }} />

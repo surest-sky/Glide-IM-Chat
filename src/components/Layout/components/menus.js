@@ -15,6 +15,7 @@ import { ReactComponent as RobotSvg } from 'src/static/svg/robot.svg';
 import { ReactComponent as SettingSvg } from 'src/static/svg/setting.svg';
 import { ReactComponent as UsersSvg } from 'src/static/svg/users.svg';
 import { ReactComponent as LogoutSvg } from 'src/static/svg/logout.svg';
+import { setFavicon, setDomainTitle } from 'src/utils/Utils'
 
 const MenuItemGroup = Menu.ItemGroup;
 const MenuItem = Menu.Item;
@@ -37,6 +38,11 @@ const Menus = () => {
     useEffect(() => {
         setKeys(pathname)
     }, [pathname])
+
+    useEffect(() => {
+        setDomainTitle(authInfo?.App?.name)
+        setFavicon(authInfo?.App?.logo)
+    }, [authInfo])
 
     const logout = () => {
         Modal.confirm({
