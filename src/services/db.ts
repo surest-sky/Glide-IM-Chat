@@ -12,15 +12,15 @@ export class DbSubDexie extends Dexie {
     constructor() {
         super(dbName);
         this.version(1).stores({
-            chat: '++id, form, to, mid, sendAt',
+            chat: '++id, [form+to], *session_id, *status, &mid, *sendAt',
         });
 
         this.version(1).stores({
-            contacts: '++id, name, uid',
+            contacts: '++id, *name, &uid',
         });
 
         this.version(1).stores({
-            activeChat: '++id, form, to, mid, sendAt',
+            activeChat: '++id, [form+to], &mid, *sendAt',
         });
 
         // 清空联系人的数据

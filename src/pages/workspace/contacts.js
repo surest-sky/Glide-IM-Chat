@@ -57,14 +57,14 @@ const Menu = () => {
         let params = {}
         if (local_mid) {
             params = {
-                pageSize: 80,
+                pageSize: 10,
                 end_mid: local_mid,
                 to: to_id,
                 page: 1,
             }
         } else {
             params = {
-                pageSize: 80,
+                pageSize: 10,
                 to: to_id,
                 page: 1
             }
@@ -111,9 +111,7 @@ const Menu = () => {
         if (chatWithUser.uid === withUser.uid) {
             return
         }
-        console.log(withUser)
         dispatch(updateChatWithUser({ chatWithUser: withUser }));
-        switchRoom(userInfo.Uid, withUser.uid);
         window.ChatSession && window.ChatSession.setToId(withUser.uid)
     };
 

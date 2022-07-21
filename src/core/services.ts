@@ -1,10 +1,9 @@
+import { Message } from '@arco-design/web-react';
 import { delay } from 'rxjs';
 import { LiveChat } from 'src/core/live_chat';
 import { MessageType, Recall } from 'src/core/message';
-import { getAuthInfo } from 'src/services/auth';
 import { addMessage, withdrawMessage } from 'src/services/chat_db';
-import { loadMessageRecord } from 'src/services/message';
-import { Message } from '@arco-design/web-react';
+import { readMessages } from 'src/services/message';
 import { ChatMessage } from './chat_message';
 import { Session } from './session';
 
@@ -28,8 +27,7 @@ const serviceComplete = async (session: Session, callback) => {
     window.ChatSession = session;
     callback && callback();
     registerHanders(session);
-    // store.dispatch(updateContacts());
-    // loadMessageRecord(userInfo.Uid);
+    readMessages();
 };
 
 // 进行注册 message 事件

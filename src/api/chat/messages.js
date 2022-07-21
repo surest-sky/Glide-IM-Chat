@@ -7,3 +7,11 @@ export function getMessagelist(data) {
         data
     });
 }
+
+export function setMessageRead(data) {
+    return request({
+        url: '/message/read',
+        method: 'post',
+        data
+    });
+}

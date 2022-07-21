@@ -1,25 +1,22 @@
-import { Avatar, Spin, Link } from '@arco-design/web-react';
+import { Avatar, Link, Spin } from '@arco-design/web-react';
 import RightMenu from '@right-menu/react';
 import dayjs from 'dayjs';
-import { orderBy } from 'lodash';
-import { useLiveQuery } from 'dexie-react-hooks';
+import { first, get, orderBy } from 'lodash';
 import { useEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { loadMessageByUid } from 'src/services/message'
 import HtmlApp from 'src/components/HtmlApp';
 import { removeMessage } from 'src/services/chat_db';
-import { db } from 'src/services/db';
-import { scrollToBottom, getScrollBottom, scrollToTop } from 'src/utils/Utils';
-import { addRoomMessages } from "src/services/chat_db"
+import { useActiveChat } from 'src/services/hooks/activeChat';
+import { loadMessageByUid } from 'src/services/message';
+import { getScrollBottom, scrollToBottom, scrollToTop } from 'src/utils/Utils';
 import xss from 'xss';
-import { first, get, throttle } from 'lodash';
 import '../styles/message.scss';
 
 const Messages = () => {
     const [messages, setMessages] = useState([]);
     const userInfo = useSelector((state: any) => state.container.authInfo);
     const chatWithUser = useSelector((state: any) => state.chat.chatWithUser);
-    const _messages = useLiveQuery(() => db.activeChat.orderBy('mid').toArray());
+    const _messages = useActiveChat()
     const me_id = userInfo.Uid;
     const lastMsgId = useRef(0)
 
@@ -27,6 +24,8 @@ const Messages = () => {
     const sendRecallMessage = (mid: number, from: number) => {
         window.ChatSession.sendRecallMessage(mid);
     };
+
+    // 加载更多消息
     const loadMoreMessages = async () => {
         let messages = await loadMessageByUid({
             to: chatWithUser.uid,
@@ -61,16 +60,10 @@ const Messages = () => {
         setMessages(_messages => {
             setTimeout(() => {
                 scrollToBottom('.w-chat-wrapper')
-            }, 100)
+            })
             return _messages
         })
     }, [_messages]);
-
-    useEffect(() => {
-        if (!chatWithUser.uid) return;
-
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [chatWithUser])
 
     if (!chatWithUser) {
         return <></>;
@@ -104,7 +97,7 @@ const Messages = () => {
         return <div data-id={message.mid} id={`message_${message.mid}`} className={`flex message-wrapper  ${isMe ? 'message-to flex-row-reverse' : 'message-from flex-row'}`}>
             {avatar ? <img className="message-avatar" src={avatar} alt="message" /> : <Avatar className="message-avatar">Messager</Avatar>}
             <div className={isMe ? 'mr-1' : 'ml-1'}>
-                <span className="message-at" >{isMe ? userInfo.Nickname : chatWithUser.name} · {sendAt}</span>
+                <span className="message-at" >{isMe ? userInfo.NickName : chatWithUser.name} · {sendAt}</span>
                 {/* <span className="message-at">客户未在线，发送消息可能无法及时触达 ~</span> */}
                 {
                     isMe ?

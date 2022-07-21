@@ -7,6 +7,7 @@ import { MessageType } from 'src/core/message';
 import { addContactUserMessage } from 'src/services/store';
 import { userInfoApi } from 'src/api/im/im';
 import { getSessionGet } from 'src/api/chat/chat';
+import { getSessionId } from './message';
 
 const isRoomMessage = (message): boolean => {
     const currentUser = store.getState().container.authInfo;
@@ -96,7 +97,7 @@ export const incrContactsMessageCount = (uid: number) => {
 export const addMessage = async (message: Message) => {
     const to = parseInt(message.to);
     const from = parseInt(message.from);
-    const _message = Object.assign({}, message, {
+    const _message: any = Object.assign({}, message, {
         from: from,
         to: to,
     });
@@ -105,21 +106,12 @@ export const addMessage = async (message: Message) => {
         // isMew
         if (isNew) {
             await addContactInfo(message, from);
-            incrContactsMessageCount(from);
-            addContactUserMessage(message);
-            db.chat.add(_message);
-            return;
         }
     }
-
-    if (isRoomMessage(_message)) {
-        console.log('isRoomMessage', 1);
-        addRoomMessages(_message);
-        addContactUserMessage(message);
-    } else {
-        incrContactsMessageCount(from);
-        addContactUserMessage(message);
-    }
+    addRoomMessages(_message);
+    addContactUserMessage(message);
+    _message.session_id = getSessionId(_message.from, _message.to);
+    console.log('_message', _message.from, _message.to);
     db.chat.add(_message);
 };
 
@@ -151,7 +143,7 @@ export const activeRoomMessages = () => {
 
 // 给当前活动的房间内添加一条消息
 export const addRoomMessages = (message: Message) => {
-    db.activeChat.add(message);
+    // db.activeChat.add(message);
 };
 
 // 移除某一条消息 | 只是针对当前窗口移除 | 不等于撤回双方消息
@@ -185,34 +177,13 @@ export const getMessagesByOnelastMessage = async (from: number, to: number) => {
     if (!from || !to) {
         return '';
     }
-    console.log('to', to);
-    const f1 = await db.chat.where({ from: from, to: to }).last();
-    const f2 = await db.chat.where({ from: to, to: from }).last();
-    if (f1 && f2) {
-        if (f1.sendAt > f2.sendAt) {
-            return f1;
-        }
-        return f2;
-    }
-
-    return f1 || f2;
+    const session_id = getSessionId(from, to);
+    const messages = await db.chat.where({ session_id }).first();
+    return messages;
 };
 
 export const switchRoom = async (from: number, to: number) => {
-    console.log('from, to', from, to);
-    clearRoomMessages();
-    Promise.all([getMessagesByOne(from, to), getMessagesByOne(to, from)]).then(messages => {
-        const _messages = [];
-        messages.forEach(ms => {
-            ms.forEach(message => {
-                _messages.push(message);
-            });
-        });
-        console.log('orderBy', orderBy(_messages, 'sendAt'));
-        clearRoomMessages();
-        addBlukRoomMessages(orderBy(_messages, 'sendAt'));
-        clearContactsMessageCount(to);
-    });
+    clearContactsMessageCount(to);
 };
 
 // 消息移除
