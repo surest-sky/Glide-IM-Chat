@@ -1,5 +1,6 @@
 
 import { Message } from '@arco-design/web-react';
+import lodash from 'lodash';
 import { useEffect, useState } from 'react';
 import { Outlet, useNavigate } from 'react-router-dom';
 import { getCategoryList } from 'src/api/chat/setting';
@@ -8,13 +9,16 @@ import Loading from 'src/components/Loading';
 import { initChatSession } from 'src/core/services';
 import { getAuthInfo, isLogin } from 'src/services/auth';
 import store from 'src/store/index';
-import lodash from 'lodash';
-import { updateAuthInfo, updateUserInfo, updateCategory } from 'src/store/reducer/container';
+import { updateAuthInfo, updateCategory, updateUserInfo } from 'src/store/reducer/container';
 import Menus from './components/menus';
+import { useSelector } from 'react-redux';
+import ChatPlay from 'src/components/ChatPlay';
+import { setFavicon, setDomainTitle } from 'src/utils/Utils'
 import './styles/layout.scss';
 
 
 const Layout = (props) => {
+    const authInfo = useSelector((state: any) => state.container.authInfo);
     const [loading, setLoading] = useState(true)
     const navigate = useNavigate();
     const userInfo = getAuthInfo()
@@ -66,6 +70,12 @@ const Layout = (props) => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
+
+    useEffect(() => {
+        setDomainTitle(authInfo?.App?.name)
+        setFavicon(authInfo?.App?.logo)
+    }, [authInfo])
+
     if (loading && !isLogin()) {
         return <Loading />
     }
@@ -75,6 +85,7 @@ const Layout = (props) => {
         <div className="child-container">
             <Outlet />
         </div>
+        <ChatPlay />
     </div>
 }
 

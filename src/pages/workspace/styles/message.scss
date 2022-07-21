@@ -2,7 +2,7 @@
     padding-left: 20px;
     padding-right: 20px;
     padding-bottom: 20px;
-    height: calc(100vh - 60px - 40px);
+    height: calc(100vh - 60px - 68px);
     overflow-y: auto;
 
     .message-to {
@@ -60,5 +60,13 @@
                 border: 1px solid #ebebeb;
             }
         }
+    }
+
+    .w-chat-load-tip {
+        text-align: center;
+        padding-top: 5px;
+        margin-bottom: 5px;
+        color: #a59a9a;
+        font-size: 12px;
     }
 }

@@ -1,6 +1,6 @@
+import { Message } from '@arco-design/web-react';
 import axios from 'axios';
-import { setLogout } from 'src/services/auth'
-import { getAuthInfo } from 'src/services/auth';
+import { getAuthInfo, setLogout } from 'src/services/auth';
 
 const BASE_URL = process.env.REACT_APP_BASE_URL;
 
@@ -37,10 +37,14 @@ service.interceptors.response.use(
         return responseCodeHandle(response);
     },
     error => {
-        const { status } = error.response
-        if (status === 401) {
-            setLogout()
-            window.location.href = "/login"
+        try {
+            const { status } = error.response
+            if (status === 401) {
+                setLogout()
+                window.location.href = "/login"
+            }
+        } catch (error) {
+            Message.error("网络错误，请重试")
         }
         return Promise.resolve({});
     }

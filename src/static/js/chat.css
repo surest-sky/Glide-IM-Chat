@@ -1,0 +1,93 @@
+.chat-mobile-iframe {
+    position: fixed;
+    right: -50px;
+    bottom: 40px;
+}
+
+@keyframes pulse {
+    0% {
+        opacity: 0.5;
+        transform: scale(1);
+    }
+
+    100% {
+        opacity: 0;
+        transform: scale(2);
+    }
+}
+
+.chat-mobile-iframe .cta {
+    display: flex;
+    align-items: center;
+    margin-right: 4.5rem;
+    padding: 0;
+    background: transparent;
+    border: 0;
+    opacity: 0.85;
+    z-index: 1;
+}
+
+.chat-mobile-iframe button,
+.chat-mobile-iframe select {
+    text-transform: none;
+    cursor: pointer;
+}
+
+.chat-mobile-iframe .showcase-cta__button-inner {
+    position: relative;
+    margin-right: 2rem;
+}
+
+.chat-mobile-iframe .showcase-cta__button-inner::before {
+    animation: pulse 1.3s cubic-bezier(0.25, 0.46, 0.45, 0.94) infinite both;
+}
+
+.chat-mobile-iframe .showcase-cta__button-inner::before,
+.chat-mobile-iframe .showcase-cta__button-inner::after {
+    content: '';
+    position: absolute;
+    z-index: -1;
+    top: 0;
+    left: 0;
+    display: block;
+    width: 4.5rem;
+    height: 4.5rem;
+    background-color: #158fff;
+    border-radius: 4.5rem;
+    opacity: 0.4;
+}
+
+.chat-mobile-iframe .showcase-cta__button-inner::after {
+    animation: pulse 1.3s 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) infinite both;
+}
+
+.chat-mobile-iframe .showcase-cta__button__pulse {
+    position: relative;
+    width: 4.5rem;
+    height: 4.5rem;
+    background-color: #158fff;
+    border-radius: 4.5rem;
+    cursor: pointer;
+    transition: 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    transition-property: transform, background-color;
+}
+
+.chat-mobile-iframe .showcase-cta__button__pulse::after {
+    width: 30%;
+    height: 2px;
+}
+
+.chat-mobile-iframe .play-svg {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    width: 30px;
+    height: 30px;
+    z-index: 10;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.chat-mobile-iframe .play-svg:hover {
+    transform: scale(1.05);
+}

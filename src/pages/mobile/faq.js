@@ -1,4 +1,4 @@
-import { Empty, Input, Breadcrumb, Link, Spin } from '@arco-design/web-react';
+import { Empty, Input, Typography, Breadcrumb, Link, Spin } from '@arco-design/web-react';
 import { IconRight } from '@arco-design/web-react/icon';
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -22,7 +22,7 @@ const Faq = (props, ref) => {
     }, [])
 
     return <div className="mobile-faq-list-container">
-        <Breadcrumb className="mt-3 mb-2">
+        <Breadcrumb className="mt-3 mb-2 block">
             <BreadcrumbItem>
                 <Link onClick={() => {
                     navigate('/m')
@@ -31,9 +31,10 @@ const Faq = (props, ref) => {
             <BreadcrumbItem>文章列表
             </BreadcrumbItem>
         </Breadcrumb>
+
         <InputSearch
+            className="w-full"
             placeholder='Search'
-            style={{ width: 350 }}
             onChange={(value) => {
                 setLists(lists => {
                     if (!value) return originLists.current
@@ -42,6 +43,12 @@ const Faq = (props, ref) => {
             }}
         />
 
+
+        <div>
+            <Typography.Title heading={4}>
+                文章列表
+            </Typography.Title>
+        </div>
         <div className="mt-1 mobile-faq-list">
             {
                 !lists.length ? <Empty /> :

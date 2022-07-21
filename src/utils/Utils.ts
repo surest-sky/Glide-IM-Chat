@@ -112,3 +112,18 @@ export const setFavicon = src => {
 export const setDomainTitle = title => {
     document.title = title;
 };
+
+// 获取目标位置滚动条距离底部的距离
+export const getScrollBottom = (targetWrapper, target) => {
+    const targetWrapperHeight = document.querySelector(targetWrapper).scrollHeight;
+    const targetScrollTop = document.querySelector(target).scrollTop;
+    const scrollBottom = targetWrapperHeight - targetScrollTop;
+    return scrollBottom;
+};
+
+// 移动目标到指定位置
+export const scrollToTop = (targetWrapper, target, height) => {
+    const targetWrapperHeight = document.querySelector(targetWrapper).scrollHeight;
+    const scrollTop = targetWrapperHeight - height;
+    document.querySelector(targetWrapper).scrollTop = scrollTop;
+};

@@ -15,7 +15,7 @@ import xss from 'xss';
 
 const Messages = () => {
     const [messages, setMessages] = useState([]);
-    const userInfo = useSelector((state: any) => state.container.userInfo);
+    const userInfo = useSelector((state: any) => state.container.authInfo);
     const chatWithUser = useSelector((state: any) => state.chat.chatWithUser);
     const _messages = useLiveQuery(() => db.activeChat.orderBy('mid').toArray());
     const me_id = userInfo.Uid;
@@ -68,7 +68,7 @@ const Messages = () => {
         return <div className={`flex message-wrapper  ${isMe ? 'message-to flex-row-reverse' : 'message-from flex-row'}`}>
             {avatar ? <img className="message-avatar" src={avatar} alt="message" /> : <Avatar className="">Messager</Avatar>}
             <div className={isMe ? 'mr-1' : 'ml-1'}>
-                <span className="message-at">{(isMe ? userInfo.Nickname : chatWithUser.name) || "Messager"} · {sendAt}</span>
+                <span className="message-at" data-id={message.mid}>{(isMe ? userInfo.Nickname : chatWithUser.name) || "Messager"} · {sendAt}</span>
                 {
                     isMe ?
                         <RightMenu theme={''} minWidth={200} maxWidth={200} onAfterInit={() => { }} onBeforeInit={() => { }} options={options}>

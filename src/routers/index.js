@@ -19,6 +19,7 @@ import FaqEditor from '../pages/faq/editor';
 import FaqList from '../pages/faq/list';
 import LayoutMobile from '../pages/mobile/component/layout'
 import Email from '../pages/notify/email'
+import Test from '../pages/test'
 
 
 const Routers = () => {
@@ -33,15 +34,15 @@ const Routers = () => {
             </Route>
 
 
-            <Route element={<LayoutMobile />}>
+            {/* <Route path="/m" element={<LayoutMobile />}>
                 <Route path="/m" element={<Mobile />} />
                 <Route path="/m/s" element={<Search />} />
                 <Route path="/m/chat" element={<Chat />} />
                 <Route path="/m/faq" element={<MobileFaq />} />
                 <Route path="/m/faq/show" element={<MobileArticle />} />
-            </Route>
+            </Route> */}
 
-            <Route path="" element={<Layout />}>
+            <Route path="/" element={<Layout />}>
                 <Route path="/category/:id" element={<WorkSpace />} />
                 <Route path="/workspace" element={<WorkSpace />} />
                 <Route path="/setting" element={<Setting />} />
@@ -53,6 +54,7 @@ const Routers = () => {
             </Route>
 
             <Route path="/email" element={<Email />} />
+            <Route path="/test" element={<Test />} />
         </Routes>
     );
 };

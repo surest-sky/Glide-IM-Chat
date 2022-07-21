@@ -1,5 +1,6 @@
 import { generateFrontId } from 'src/services/plugins/fingerprint'
 import { guestLogin, getToUid } from '../apis/mobile'
+import { userInfoApi } from 'src/api/chat/im';
 import { Outlet, useNavigate } from 'react-router-dom';
 import { Modal } from '@arco-design/web-react';
 import { setLogin, isLogin } from 'src/services/auth';
@@ -8,7 +9,8 @@ import store from 'src/store/index';
 import Loading from 'src/components/Loading'
 import { useSearchParams } from 'react-router-dom';
 import { updateAuthInfo } from 'src/store/reducer/container';
-import { switchRoom } from 'src/services/chat_db';
+import { switchRoom, addBlukContacts } from 'src/services/chat_db';
+import { ContactOpend, ContactStatus } from 'src/services/enum'
 import { updateChatWithUser } from 'src/store/reducer/chat';
 import { initChatSession } from 'src/core/services'
 import { get } from 'lodash'
@@ -28,13 +30,35 @@ const Layout = (props) => {
         switchRoom(userInfo.current.Uid, uid)
     }
 
+    // 获取用户信息
+    const getUsersByIds = async (ids) => {
+        const { data } = await userInfoApi({ Uid: ids })
+        return data.Data
+    }
+
     const loadWidthUser = async () => {
         const result = await getToUid()
         const _uid = get(result, 'data.Data.uid')
-        store.dispatch(updateChatWithUser({
-            chatWithUser: {
-                uid: _uid,
+        const users = await getUsersByIds([_uid])
+        const user = users[0]
+        const contacts = [
+            {
+                lastMessage: "",
+                avatar: '',
+                name: user.Nickname,
+                message_count: 0,
+                uid: user.Uid,
+                motto: '',
+                category_ids: user.CategoryIds,
+                collect: user.Collect,
+                status: ContactStatus.offline,
+                opend: ContactOpend.close,
+                isMe: false,
             }
+        ]
+        addBlukContacts(contacts)
+        store.dispatch(updateChatWithUser({
+            chatWithUser: contacts[0]
         }));
         uid.current = _uid
         initChatSession(() => { loadChatRoom(_uid) })

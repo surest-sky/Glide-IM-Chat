@@ -5,14 +5,13 @@ import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import Editor from './component/editor';
 import Messages from './component/message';
-import Layout from './component/layout';
 import './styles/chat.scss';
 
 const Mobile = () => {
     const navigate = useNavigate();
     const chatWithUser = useSelector((state: any) => state.chat.chatWithUser);
     const [uid, setUid] = useState(chatWithUser.uid)
-    const [height, setHeight] = useState(window.innerHeight - 185)
+    const [height, setHeight] = useState(window.innerHeight - 145)
 
     useEffect(() => {
         setUid(chatWithUser.uid)
@@ -28,8 +27,8 @@ const Mobile = () => {
                 navigate('/m')
             }} />
             <div className='chat-container-top-banner'>
-                <h1>Messager (#{uid})</h1>
-                <div>和我们一起来了解更多东西吧</div>
+                <h1>{chatWithUser.name} (#{uid})</h1>
+                {/* <div>和我们一起来了解更多东西吧</div> */}
             </div>
         </div>
 

@@ -19,15 +19,16 @@ const Layout = () => {
         navigate('/login');
     }
 
+    // 获取我的数据
     const fetchUserInfo = async (authInfo) => {
-        const { data } = await userInfoApi({ Uid: [authInfo.Uid] });
-        store.dispatch(updateUserInfo(data.Data[0]));
+        // const { data } = await userInfoApi({ Uid: [authInfo.Uid] });
+        // store.dispatch(updateUserInfo(data.Data[0]));
         initChatSession(() => { setLoading(false) })
     };
 
     function fetchUserAuth() {
         const userInfo = getAuthInfo()
-        if (!userInfo || !userInfo.Token) {
+        if (!userInfo || !userInfo.Token || userInfo.App) {
             reLogin()
             return
         }

@@ -1,7 +1,7 @@
 import { delay } from 'rxjs';
 import { LiveChat } from 'src/core/live_chat';
 import { MessageType, Recall } from 'src/core/message';
-import { setLogout } from 'src/services/auth';
+import { getAuthInfo } from 'src/services/auth';
 import { addMessage, withdrawMessage } from 'src/services/chat_db';
 import { loadMessageRecord } from 'src/services/message';
 import { Message } from '@arco-design/web-react';
@@ -23,12 +23,13 @@ const serviceError = err => {
 
 // 加载服务完成
 const serviceComplete = async (session: Session, callback) => {
+    // const userInfo = getAuthInfo();
     // session.notifyInputMessage();
     window.ChatSession = session;
     callback && callback();
     registerHanders(session);
     // store.dispatch(updateContacts());
-    await loadMessageRecord();
+    // loadMessageRecord(userInfo.Uid);
 };
 
 // 进行注册 message 事件

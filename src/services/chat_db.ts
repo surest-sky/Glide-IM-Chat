@@ -9,7 +9,7 @@ import { userInfoApi } from 'src/api/im/im';
 import { getSessionGet } from 'src/api/chat/chat';
 
 const isRoomMessage = (message): boolean => {
-    const currentUser = store.getState().container.userInfo;
+    const currentUser = store.getState().container.authInfo;
     const chatWithUser = store.getState().chat.chatWithUser;
     const currentUserUid = chatWithUser.uid;
     const chatWithUserUid = currentUser.Uid;
@@ -28,7 +28,6 @@ const isRoomMessage = (message): boolean => {
 // 是否为新的联系人
 export const isNewContact = async from => {
     const item = await db.contacts.where({ uid: parseInt(from) }).first();
-    console.log('item', item, parseInt(from));
     if (item) {
         return false;
     }
@@ -101,17 +100,20 @@ export const addMessage = async (message: Message) => {
         from: from,
         to: to,
     });
-    const isNew = await isNewContact(from);
-    // isM
-    if (isNew) {
-        await addContactInfo(message, from);
-        incrContactsMessageCount(from);
-        addContactUserMessage(message);
-        db.chat.add(_message);
-        return;
+    if (!_message.isMe) {
+        const isNew = await isNewContact(from);
+        // isMew
+        if (isNew) {
+            await addContactInfo(message, from);
+            incrContactsMessageCount(from);
+            addContactUserMessage(message);
+            db.chat.add(_message);
+            return;
+        }
     }
 
     if (isRoomMessage(_message)) {
+        console.log('isRoomMessage', 1);
         addRoomMessages(_message);
         addContactUserMessage(message);
     } else {
@@ -197,6 +199,7 @@ export const getMessagesByOnelastMessage = async (from: number, to: number) => {
 };
 
 export const switchRoom = async (from: number, to: number) => {
+    console.log('from, to', from, to);
     clearRoomMessages();
     Promise.all([getMessagesByOne(from, to), getMessagesByOne(to, from)]).then(messages => {
         const _messages = [];

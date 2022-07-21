@@ -56,7 +56,7 @@ const Mobile = () => {
         <div className='mobile-container-main'>
             <div className='mobile-container-main-content'>
                 <div className='container-card' style={{ paddingTop: '191px' }}>
-                    <div className='mobile-container-message-card'>
+                    {/* <div className='mobile-container-message-card'>
                         <h2 className='h2'>
                             继续我们的对话
                         </h2>
@@ -81,34 +81,11 @@ const Mobile = () => {
                             </div>
                             <IconRight className='right-icon' />
                         </div>
-                    </div>
+                    </div> */}
                     <div className='mobile-container-message-card'>
                         <div className='height186'>
-                            <h2 className='h2'>开始一个新的对话</h2>
+                            <h2 className='h2'>开始我们的对话</h2>
                             <div className='mobile-container-message-send'>
-                                <div className='img-content'>
-                                    <div className='img-one'>
-
-                                        <div className='img-container img-cover'>
-                                            <Avatar>Surest</Avatar>
-                                        </div>
-
-                                    </div>
-                                    <div className='img-two'>
-
-                                        <div className='img-container img-cover'>
-                                            <Avatar>Surest</Avatar>
-                                        </div>
-
-                                    </div>
-                                    <div className='img-three'>
-
-                                        <div className='img-container img-cover'>
-                                            <Avatar>Surest</Avatar>
-                                        </div>
-
-                                    </div>
-                                </div>
                                 <div className='time-container'>
                                     <div className='name-container-tit'>
                                         <IconClockCircle className='time-icon' />

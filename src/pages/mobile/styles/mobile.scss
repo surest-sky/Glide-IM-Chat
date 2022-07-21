@@ -133,7 +133,7 @@
     }
 
     .mobile-container-message-card {
-        padding: 26px 24px 16px;
+        padding: 0 5px 0px;
         max-width: 100%;
         margin-bottom: 17px;
         background-color: rgb(255, 255, 255);
@@ -258,7 +258,7 @@
 
 .height186 {
     height: 186px;
-    padding: 26px 24px 24px;
+    padding: 33px 24px 24px;
     line-height: 1.5;
 }
 
@@ -485,5 +485,12 @@
                 margin-left: 2px;
             }
         }
+    }
+}
+
+@media screen and (max-width: 600px) {
+    #root {
+        width: 100%;
+        min-height: auto !important;
     }
 }
