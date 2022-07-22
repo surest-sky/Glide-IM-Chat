@@ -5,15 +5,15 @@ import { setLogin } from 'src/services/auth';
 export interface GlobalState {
     settings?: typeof defaultSettings;
     userInfo?: {
-        Account?: string;
-        Avatar?: string;
-        Nickname?: string;
-        Uid?: string;
+        account?: string;
+        avatar?: string;
+        nick_name?: string;
+        uid?: string;
     };
     authInfo?: {
-        Token: string;
-        Servers: Array<string>;
-        Uid: string;
+        token: string;
+        servers: Array<string>;
+        uid: string;
     };
     categoryList?: [];
 }
@@ -22,9 +22,9 @@ const initialState: GlobalState = {
     settings: defaultSettings,
     userInfo: {},
     authInfo: {
-        Token: '',
-        Servers: [],
-        Uid: '',
+        token: '',
+        servers: [],
+        uid: '',
     },
     categoryList: [],
 };
@@ -36,7 +36,7 @@ const containerReducers = {
     updateAuthInfo: (state, { payload }) => {
         setLogin(payload);
         state.authInfo = payload;
-        state.userInfo.Uid = payload.Uid;
+        state.userInfo.uid = payload.uid;
     },
     updateUserInfo: (state, { payload }) => {
         state.userInfo = payload;

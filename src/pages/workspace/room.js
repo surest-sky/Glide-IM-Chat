@@ -20,7 +20,7 @@ const Room = () => {
             style: { padding: '10px 26px 10px 8px' },
             text: '清空',
             callback: () => {
-                removeMessages(userInfo.Uid, chatWithUser.uid);
+                removeMessages(userInfo.uid, chatWithUser.uid);
             },
         },
     ];
@@ -52,9 +52,9 @@ const Room = () => {
             </Tooltip> */}
         </div>
 
-        <RightMenu theme={''} minWidth={200} maxWidth={200} onAfterInit={() => { }} onBeforeInit={() => { }} options={roomOptions}>
-            <Messages />
-        </RightMenu>
+        {/* <RightMenu theme={''} minWidth={200} maxWidth={200} onAfterInit={() => { }} onBeforeInit={() => { }} options={roomOptions}> */}
+        <Messages />
+        {/* </RightMenu> */}
 
         <div className="w-eidtor-wrapper">
             <Editor />

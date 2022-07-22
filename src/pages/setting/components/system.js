@@ -14,15 +14,15 @@ const FormItem = Form.Item;
 const System = () => {
     const [form] = Form.useForm();
     let userInfo = getAuthInfo()
-    const id = userInfo.App.id
+    const id = userInfo.app.id
 
     const { run } = useRequest(updateApp, {
         debounceWait: 1000,
         manual: true,
         onSuccess: () => {
             console.log('success')
-            userInfo.App.logo = form.getFieldValue("logo")
-            userInfo.App.name = form.getFieldValue("name")
+            userInfo.app.logo = form.getFieldValue("logo")
+            userInfo.app.name = form.getFieldValue("name")
             store.dispatch(updateAuthInfo(userInfo))
         }
     });
@@ -37,7 +37,7 @@ const System = () => {
 
     return <div>
         <Card title="平台设置" bordered={false} className="system-container">
-            <Form onChange={changeSubmit} initialValues={userInfo?.App} form={form} layout={'vertical'} className="p-2 border border-dashed">
+            <Form onChange={changeSubmit} initialValues={userInfo?.app} form={form} layout={'vertical'} className="p-2 border border-dashed">
                 <FormItem label={
                     <>平台ID
                         <Tooltip content='系统凭证,不可修改'>

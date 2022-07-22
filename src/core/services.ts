@@ -3,7 +3,7 @@ import { delay } from 'rxjs';
 import { LiveChat } from 'src/core/live_chat';
 import { MessageType, Recall } from 'src/core/message';
 import { addMessage, withdrawMessage } from 'src/services/chat_db';
-import { readMessages } from 'src/services/message';
+import { readMessagesToTimeOut } from 'src/services/message';
 import { ChatMessage } from './chat_message';
 import { Session } from './session';
 
@@ -21,18 +21,19 @@ const serviceError = err => {
 };
 
 // 加载服务完成
-const serviceComplete = async (session: Session, callback) => {
+const serviceComplete = async (uid: number, session: Session, callback) => {
     // const userInfo = getAuthInfo();
     // session.notifyInputMessage();
     window.ChatSession = session;
     callback && callback();
     registerHanders(session);
-    readMessages();
+    readMessagesToTimeOut(uid);
 };
 
 // 进行注册 message 事件
 const registerHanders = (session: Session) => {
     session.setMessageListener((message: ChatMessage) => {
+        console.info('收到一条消息', message);
         // 注册事件触发
         const convertMessage = message.revertMessage();
 
@@ -64,7 +65,8 @@ export const initChatSession = callback => {
                 .pipe(delay(1000))
                 .subscribe({
                     next: se => {
-                        serviceComplete(se, callback);
+                        const uid = instance.getUID();
+                        serviceComplete(uid, se, callback);
                     },
                     error: err => {
                         serviceError(err);

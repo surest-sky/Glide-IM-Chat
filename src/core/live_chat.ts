@@ -112,10 +112,10 @@ export class LiveChat {
     }
 
     private initAccount(auth: AuthBean): Observable<string> {
-        // setApiToken(auth.Token);
-        this.uid = auth.Uid.toString();
-        this.servers = auth.Servers;
-        // Glide.storeToken(auth.Token);
+        // setApiToken(auth.token);
+        this.uid = auth.uid.toString();
+        this.servers = auth.servers;
+        // Glide.storeToken(auth.token);
         return of('account init success');
     }
 

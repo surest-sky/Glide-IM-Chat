@@ -21,19 +21,19 @@ const Layout = () => {
 
     // 获取我的数据
     const fetchUserInfo = async (authInfo) => {
-        // const { data } = await userInfoApi({ Uid: [authInfo.Uid] });
+        // const { data } = await userInfoApi({ uid: [authInfo.uid] });
         // store.dispatch(updateUserInfo(data.Data[0]));
         initChatSession(() => { setLoading(false) })
     };
 
     function fetchUserAuth() {
         const userInfo = getAuthInfo()
-        if (!userInfo || !userInfo.Token || userInfo.App) {
+        if (!userInfo || !userInfo.token || userInfo.app) {
             reLogin()
             return
         }
         setLoading(true);
-        userAuthApi({ Token: userInfo.Token }).then(res => {
+        userAuthApi({ Token: userInfo.token }).then(res => {
             const data = res.data.Data
             if (!data) {
                 reLogin()

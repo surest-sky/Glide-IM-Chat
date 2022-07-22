@@ -14,10 +14,10 @@ const useActiveChat = () => {
 
 
     useEffect(() => {
-        if (!chatWithUser.uid || !userInfo?.Uid) {
+        if (!chatWithUser.uid || !userInfo?.uid) {
             return;
         }
-        setSessionId(getSessionId(userInfo.Uid, chatWithUser.uid));
+        setSessionId(getSessionId(userInfo.uid, chatWithUser.uid));
     }, [chatWithUser, userInfo])
 
     useEffect(() => {

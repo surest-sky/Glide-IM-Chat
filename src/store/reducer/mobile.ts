@@ -5,10 +5,10 @@ import { setLogin } from 'src/services/auth';
 export interface GlobalState {
     settings?: typeof defaultSettings;
     userInfo?: {
-        Account?: string;
-        Avatar?: string;
-        Nickname?: string;
-        Uid?: string;
+        account?: string;
+        avatar?: string;
+        nick_name?: string;
+        uid?: string;
     };
     authInfo?: {
         token: string;

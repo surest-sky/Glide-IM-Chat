@@ -9,6 +9,7 @@ import { removeMessage } from 'src/services/chat_db';
 import { useActiveChat } from 'src/services/hooks/activeChat';
 import { loadMessageByUid } from 'src/services/message';
 import { getScrollBottom, scrollToBottom, scrollToTop } from 'src/utils/Utils';
+import { recallMessage } from 'src/api/chat/messages'
 import xss from 'xss';
 import '../styles/message.scss';
 
@@ -17,12 +18,15 @@ const Messages = () => {
     const userInfo = useSelector((state: any) => state.container.authInfo);
     const chatWithUser = useSelector((state: any) => state.chat.chatWithUser);
     const _messages = useActiveChat()
-    const me_id = userInfo.Uid;
+    const me_id = userInfo.uid;
     const lastMsgId = useRef(0)
 
     // 发送撤回消息
-    const sendRecallMessage = (mid: number, from: number) => {
-        window.ChatSession.sendRecallMessage(mid);
+    const sendRecallMessage = (mid: number) => {
+        // window.ChatSession.sendRecallMessage(mid);
+        recallMessage({
+            mid, to: chatWithUser.uid, type: 1
+        })
     };
 
     // 加载更多消息
@@ -97,15 +101,15 @@ const Messages = () => {
         return <div data-id={message.mid} id={`message_${message.mid}`} className={`flex message-wrapper  ${isMe ? 'message-to flex-row-reverse' : 'message-from flex-row'}`}>
             {avatar ? <img className="message-avatar" src={avatar} alt="message" /> : <Avatar className="message-avatar">Messager</Avatar>}
             <div className={isMe ? 'mr-1' : 'ml-1'}>
-                <span className="message-at" >{isMe ? userInfo.NickName : chatWithUser.name} · {sendAt}</span>
+                <span className="message-at" >{isMe ? userInfo.nick_name : chatWithUser.name} · {sendAt}</span>
                 {/* <span className="message-at">客户未在线，发送消息可能无法及时触达 ~</span> */}
                 {
                     isMe ?
-                        <RightMenu theme={''} minWidth={200} maxWidth={200} onAfterInit={() => { }} onBeforeInit={() => { }} options={options}>
-                            <div className="message-content">
-                                <HtmlApp html={xss(message.content)} />
-                            </div>
-                        </RightMenu>
+                        // <RightMenu theme={''} minWidth={200} maxWidth={200} onAfterInit={() => { }} onBeforeInit={() => { }} options={options}>
+                        <div className="message-content">
+                            <HtmlApp html={xss(message.content)} />
+                        </div>
+                        // </RightMenu>
                         :
                         <div className="message-content">
                             <HtmlApp html={xss(message.content)} />

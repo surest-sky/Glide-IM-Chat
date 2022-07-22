@@ -1,10 +1,13 @@
 import { last } from 'lodash';
 import { getMessagelist, setMessageRead } from 'src/api/chat/messages';
-import { addMessages } from './chat_db';
+import { addMessages, incrContactsMessageCount } from './chat_db';
+import { MessageStatus } from 'src/services/enum';
+import store from 'src/store/index';
 import { db } from './db';
 
 // 根据 uid 加载聊天记录
 const loadMessageByUid = async (params: any) => {
+    const currentUser = store.getState().container.authInfo;
     let response = await getMessagelist(params);
     const {
         data: { Data },
@@ -18,27 +21,26 @@ const loadMessageByUid = async (params: any) => {
     // 如果需要更多需要动态加载
     // 暂时没找到好的解决办法
     const lastMessage = last(Data);
-    // const end_at = get(first(Data), 'send_at');
-    // const start_at = get(lastMessage, 'send_at');
-
-    // const chats = await db.chat.where('sendAt').between(start_at, end_at).toArray();
-    // const mids = map(chats, 'mid');
-    // const filterChats = Data.filter(chat => {
-    //     return !mids.includes(chat.mid);
-    // });
     const filterChats = [];
+    const to = parseInt(params.to);
     await Promise.all(
         Data.map(async chat => {
+            let temp;
             const mid = chat.mid;
             const _chat = await db.chat.where({ mid: mid }).first();
-            if (_chat) {
-                return;
+            if (!_chat) {
+                temp = chat;
+                filterChats.push(chat);
+            } else {
+                temp = _chat;
             }
-            filterChats.push(chat);
+
+            if (temp.status === MessageStatus.default) {
+                incrContactsMessageCount(to);
+            }
         })
     );
 
-    console.log('filterChats', filterChats);
     const inserts = filterChats.map(message => {
         return {
             content: message.content,
@@ -63,11 +65,15 @@ const loadMessageByUid = async (params: any) => {
     return Promise.resolve(Data);
 };
 
-const readMessages = () => {
+const readMessages = (from: number, to: number) => {
+    setMessageRead({ session_id: getSessionId(to, from) });
+};
+
+const readMessagesToTimeOut = (uid: number) => {
     setTimeout(async () => {
-        const messages = await db.chat.where({ status: 3 }).toArray();
-        const m_ids = messages.map((message: any) => message.m_id);
-        setMessageRead({ m_ids });
+        const to = parseInt(window.ChatSession.To);
+        const from = uid;
+        readMessages(from, to);
     }, 20000);
 };
 
@@ -75,4 +81,4 @@ const getSessionId = (from: number, to: number) => {
     return from > to ? `${from}_${to}` : `${to}_${from}`;
 };
 
-export { loadMessageByUid, readMessages, getSessionId };
+export { loadMessageByUid, readMessages, readMessagesToTimeOut, getSessionId };

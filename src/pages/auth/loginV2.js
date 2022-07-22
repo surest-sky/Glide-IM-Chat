@@ -17,7 +17,7 @@ const LoginForm = (props) => {
     }
     const [loading, setLoading] = useState(defaultLoading)
     const loginUser = formData => {
-        return loginUserApi({ email: formData.name, password: formData.password });
+        return loginUserApi({ email: formData.name, password: formData.password, device: 1 });
     };
     const { run } = useRequest(loginUser, {
         manual: true,
@@ -26,7 +26,9 @@ const LoginForm = (props) => {
             if (parseInt(code) === 100) {
                 store.dispatch(updateAuthInfo(result?.data?.Data));
                 Message.success('登录成功...');
-                window.location.href = '/workspace';
+                setTimeout(() => {
+                    // window.location.href = '/workspace';
+                }, 1000)
                 return;
             }
             Message.error(result?.data.Msg);

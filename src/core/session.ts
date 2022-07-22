@@ -39,11 +39,11 @@ export class Session {
     private messageRecallListener: MessageRecallListener | null = null;
 
     constructor(userinfo: UserInfoBean) {
-        this.Avatar = userinfo.Avatar;
-        this.Title = userinfo.Nickname;
+        this.Avatar = userinfo.avatar;
+        this.Title = userinfo.nick_name;
         // TODO
         // TOGO:0616 由 redux 接管传入数据
-        // this.To = 543662; // userinfo.Uid;
+        // this.To = 543662; // userinfo.uid;
     }
 
     public static create(): Observable<Session> {
@@ -106,8 +106,8 @@ export class Session {
         return Array.from(this.messageMap.values());
     }
 
-    public setToId(Uid: number): void {
-        this.To = Uid.toString();
+    public setToId(uid: number): void {
+        this.To = uid.toString();
     }
 
     private getMessageBeforeMid(mid: number): ChatMessage[] {
@@ -155,7 +155,7 @@ export class Session {
                 const m: Message = {
                     content: content,
                     from: from,
-                    mid: resp.Mid,
+                    mid: resp.mid,
                     sendAt: time,
                     seq: 0,
                     to: this.To,
@@ -195,7 +195,7 @@ export class Session {
                     return {
                         content: JSON.stringify(recall),
                         from: LiveChat.getInstance().getUID().toString(),
-                        mid: resp.Mid,
+                        mid: resp.mid,
                         sendAt: time,
                         seq: 0,
                         to: this.To,

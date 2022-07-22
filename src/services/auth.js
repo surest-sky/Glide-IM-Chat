@@ -10,7 +10,7 @@ const isLogin = () => {
     const userInfo = localStorage.getItem(adminKey);
     try {
         const _userInfo = JSON.parse(userInfo)
-        return _userInfo.Token
+        return _userInfo.token
     } catch (error) {
         return false
     }
@@ -24,9 +24,9 @@ const setLogout = () => {
 const getAuthInfo = (source) => {
     const key = source === 'mobile' ? mobileKey : adminKey
     const defaultVal = {
-        Token: "",
-        Servers: [],
-        Uid: undefined,
+        token: "",
+        servers: [],
+        uid: undefined,
     }
 
     const userInfo = localStorage.getItem(key)
@@ -48,7 +48,7 @@ const getToken = () => {
         setLogout()
         return ""
     }
-    return authInfo.Token
+    return authInfo.token
 }
 
 export { setLogout, setLogin, isLogin, getAuthInfo, getToken }

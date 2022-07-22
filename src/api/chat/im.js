@@ -53,11 +53,11 @@ export function userAuthApi(data) {
 }
 
 // 联系人数据补齐
-const contactsUsers = async (Uids: Array<string>) => {
+const contactsUsers = async (uids: Array<string>) => {
     try {
         const {
             data: { Data },
-        } = await userInfoApi({ Uid: Uids });
+        } = await userInfoApi({ uid: uids });
         return Data;
     } catch (error) {
         return [];
@@ -75,8 +75,8 @@ export async function getContacts() {
         contactsList = contactsList.map(contacts => {
             return {
                 avatar: undefined,
-                name: contacts.Nickname,
-                uid: contacts.Uid,
+                name: contacts.nick_name,
+                uid: contacts.uid,
                 message_count: 0
             };
         });

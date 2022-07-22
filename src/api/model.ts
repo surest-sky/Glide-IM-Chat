@@ -1,30 +1,30 @@
 export interface AuthBean {
-    Token: string
-    Uid: string
-    Servers: string[]
+    token: string;
+    uid: string;
+    servers: string[];
 }
 
 export interface UserInfoBean {
-    Uid: number
-    Nickname: string
-    Avatar: string
+    uid: number;
+    nick_name: string;
+    avatar: string;
 }
 
 export interface MidBean {
-    Mid: number
+    mid: number;
 }
 
 export interface OnlineUserInfoBean {
-    ID: number
-    AliveAt: number
-    ConnectionAt: number
-    Device: number
+    ID: number;
+    AliveAt: number;
+    ConnectionAt: number;
+    Device: number;
 }
 
 export interface ServerInfoBean {
-    Online: number
-    MaxOnline: number
-    MessageSent: number
-    StartAt: number
-    OnlineCli: OnlineUserInfoBean[]
+    Online: number;
+    MaxOnline: number;
+    MessageSent: number;
+    StartAt: number;
+    OnlineCli: OnlineUserInfoBean[];
 }

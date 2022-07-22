@@ -11,20 +11,17 @@ export class DbSubDexie extends Dexie {
 
     constructor() {
         super(dbName);
-        this.version(1).stores({
+        this.version(13).stores({
             chat: '++id, [form+to], *session_id, *status, &mid, *sendAt',
         });
 
-        this.version(1).stores({
-            contacts: '++id, *name, &uid',
+        this.version(13).stores({
+            contacts: '++id, *name, &uid, *from_id',
         });
 
-        this.version(1).stores({
+        this.version(13).stores({
             activeChat: '++id, [form+to], &mid, *sendAt',
         });
-
-        // 清空联系人的数据
-        this.contacts.clear();
     }
 }
 

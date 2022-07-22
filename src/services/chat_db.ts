@@ -1,29 +1,31 @@
-import { db } from './db';
-import { Message } from 'src/core/message';
-import { ContactsType } from 'src/core/chat_type';
-import store from 'src/store/index';
-import { orderBy, get } from 'lodash';
-import { MessageType } from 'src/core/message';
-import { addContactUserMessage } from 'src/services/store';
-import { userInfoApi } from 'src/api/im/im';
+import { get } from 'lodash';
 import { getSessionGet } from 'src/api/chat/chat';
-import { getSessionId } from './message';
+import { userInfoApi } from 'src/api/im/im';
+import { ContactsType } from 'src/core/chat_type';
+import { Message, MessageType } from 'src/core/message';
+import { addContactUserMessage } from 'src/services/store';
+import store from 'src/store/index';
+import { db } from './db';
+import { getSessionId, readMessages } from './message';
 
 const isRoomMessage = (message): boolean => {
-    const currentUser = store.getState().container.authInfo;
-    const chatWithUser = store.getState().chat.chatWithUser;
-    const currentUserUid = chatWithUser.uid;
-    const chatWithUserUid = currentUser.Uid;
-    // 我发给对方
-    if (message.to === chatWithUserUid && message.from === currentUserUid) {
+    if (message.isMe) {
         return true;
     }
 
-    // 对方发给我
-    if (message.to === currentUserUid && message.from === chatWithUserUid) {
+    const chatWithUser = store.getState().chat.chatWithUser;
+    if (parseInt(message.from) === chatWithUser.uid) {
         return true;
     }
     return false;
+    // const currentUser = store.getState().container.authInfo;
+    // const currentUserUid = chatWithUser.uid;
+    // const chatWithUserUid = parseInt(currentUser.uid);
+    // const session_id = getSessionId(currentUserUid, chatWithUserUid);
+    // if (message.session_id === session_id) {
+    //     return true;
+    // }
+    // return false;
 };
 
 // 是否为新的联系人
@@ -37,11 +39,11 @@ export const isNewContact = async from => {
 
 // 添加联系人
 export const addContactInfo = async (message, from) => {
-    const { data } = await userInfoApi({ Uid: [from] });
+    const { data } = await userInfoApi({ uid: [from] });
     const Data = get(data, 'Data.0');
     const contacts: ContactsType = {
         avatar: Data.avatar,
-        name: Data.Nickname,
+        name: Data.nick_name,
         message_count: 0,
         uid: from,
         motto: '',
@@ -84,7 +86,8 @@ export const decrContactsMessageCount = (uid: number) => {
 
 // 给联系人清空消息提醒
 export const clearContactsMessageCount = (uid: number) => {
-    console.log('uid', 'clearContactsMessageCount', uid);
+    const currentUser = store.getState().container.authInfo;
+    readMessages(parseInt(currentUser.uid), uid);
     db.contacts.where({ uid }).modify(f => (f.message_count = 0));
 };
 
@@ -95,23 +98,22 @@ export const incrContactsMessageCount = (uid: number) => {
 
 // 添加一条消息
 export const addMessage = async (message: Message) => {
+    console.log('收到一条消息', message);
     const to = parseInt(message.to);
     const from = parseInt(message.from);
     const _message: any = Object.assign({}, message, {
         from: from,
         to: to,
     });
-    if (!_message.isMe) {
-        const isNew = await isNewContact(from);
-        // isMew
-        if (isNew) {
-            await addContactInfo(message, from);
-        }
+    const isNew = await isNewContact(from);
+    if (isNew) {
+        await addContactInfo(message, from);
     }
-    addRoomMessages(_message);
+    _message.session_id = getSessionId(from, to);
+    if (!isRoomMessage(_message)) {
+        incrContactsMessageCount(from);
+    }
     addContactUserMessage(message);
-    _message.session_id = getSessionId(_message.from, _message.to);
-    console.log('_message', _message.from, _message.to);
     db.chat.add(_message);
 };
 

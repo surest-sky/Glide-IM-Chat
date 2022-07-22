@@ -26,9 +26,9 @@ const chatReducers = {
 
     // 更新联系人列表
     updateContacts: () => {
-        getContacts().then(constacts => {
-            addBlukContacts(constacts);
-        });
+        // getContacts().then(constacts => {
+        //     addBlukContacts(constacts);
+        // });
     },
 };
 

@@ -4,7 +4,7 @@ import { rxios } from './rxios';
 
 function guestLogin(): Observable<AuthBean> {
     return rxios.post('auth/guest', {
-        Nickname: '',
+        nick_name: '',
         Avatar: '',
     });
 }

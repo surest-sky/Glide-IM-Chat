@@ -63,11 +63,11 @@ const Menus = () => {
             <div className="flex justify-between menu-container-header">
                 <div className="flex pl-3">
                     {
-                        authInfo?.App?.logo ?
-                            <img src={authInfo.App.logo} alt="logo" /> : null
+                        authInfo?.app?.logo ?
+                            <img src={authInfo.app.logo} alt="logo" /> : null
                     }
 
-                    <span className="font-bold text-white truncate app-name">{authInfo?.App?.name}</span>
+                    <span className="font-bold text-white truncate app-name">{authInfo?.app?.name}</span>
                 </div>
                 <div className="operate">
                     <IconEdit className="mr-2 text-white hover:text-gray-300" onClick={() => {

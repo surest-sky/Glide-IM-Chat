@@ -12,7 +12,7 @@ export const addContactUserMessage = async (message) => {
     const contacts = await getContacts()
     let _contacts = contacts.map(item => {
         const iuid = item.uid.toString()
-        if (userInfo.Uid === item.uid) {
+        if (userInfo.uid === item.uid) {
             if (!message.isMeToo) {
                 return item
             }
@@ -29,7 +29,7 @@ export const addContactUserMessage = async (message) => {
         }
         return item;
     });
-    addBlukContacts(_contacts)
+    // addBlukContacts(_contacts)
 }
 
 /**

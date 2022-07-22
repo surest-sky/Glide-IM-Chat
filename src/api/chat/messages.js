@@ -15,3 +15,12 @@ export function setMessageRead(data) {
         data
     });
 }
+
+
+export function recallMessage(data) {
+    return request({
+        url: '/message/recall',
+        method: 'post',
+        data
+    });
+}

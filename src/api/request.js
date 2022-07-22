@@ -18,7 +18,7 @@ const responseCodeHandle = (r) => {
 service.interceptors.request.use(
     async config => {
         const authInfo = getAuthInfo();
-        const token = authInfo?.Token;
+        const token = authInfo?.token;
         if (token) {
             config.headers.Authorization = 'Bearer ' + token;
         }

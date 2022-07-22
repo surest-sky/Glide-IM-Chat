@@ -38,19 +38,19 @@ const Layout = (props) => {
 
     const fetchUserInfo = async (authInfo) => {
         store.dispatch(updateAuthInfo(authInfo));
-        const { data } = await userInfoApi({ Uid: [authInfo.Uid] });
+        const { data } = await userInfoApi({ uid: [authInfo.uid] });
         store.dispatch(updateUserInfo(data.Data[0]));
         initChatSession(() => { setLoading(false) })
         loadApp()
     };
 
     function fetchUserAuth() {
-        if (!userInfo || !userInfo.Token) {
+        if (!userInfo || !userInfo.token) {
             reLogin()
             return
         }
         setLoading(true);
-        userAuthApi({ Token: userInfo.Token }).then(res => {
+        userAuthApi({ Token: userInfo.token }).then(res => {
             const data = res.data.Data
             if (!data) {
                 reLogin()
@@ -72,8 +72,8 @@ const Layout = (props) => {
 
 
     useEffect(() => {
-        setDomainTitle(authInfo?.App?.name)
-        setFavicon(authInfo?.App?.logo)
+        setDomainTitle(authInfo?.app?.name)
+        setFavicon(authInfo?.app?.logo)
     }, [authInfo])
 
     if (loading && !isLogin()) {
