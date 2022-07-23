@@ -19,6 +19,7 @@ const Layout = (props) => {
     const navigate = useNavigate();
     const [searchParams] = useSearchParams()
     const [loading, setLoading] = useState(!isLogin())
+    const [loadingText, setLoadingText] = useState("loading...")
     const userInfo = useRef()
     const frontId = useRef()
     useContacts()
@@ -43,7 +44,7 @@ const Layout = (props) => {
         const data = result?.data?.Data
         const code = result?.data.Code
         if (code !== 100) {
-            alert("未配置域名, 无法加载!")
+            setLoadingText("未配置域名, 无法加载!")
             return
         }
         userInfo.current = data
@@ -86,7 +87,7 @@ const Layout = (props) => {
     }, [searchParams])
 
     if (loading) {
-        return <Loading text="Loading" />
+        return <Loading text={loadingText} />
     }
 
     return <Outlet />

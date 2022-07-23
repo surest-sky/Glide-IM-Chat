@@ -11,9 +11,9 @@
         host = jsDom.getAttribute("data-url")
     } else {
         try {
-            host = jsDom.getAttribute("src").match(/https:\/\/([a-z|A-Z])+\.surest.cn/i)[0]
+            host = jsDom.getAttribute("src").match(/https:\/\/([a-z|A-Z])+\.chat.surest.cn/i)[0]
         } catch (error) {
-            host = jsDom.getAttribute("url").match(/https:\/\/([a-z|A-Z])+\.surest.cn/i)[0]
+            host = jsDom.getAttribute("url").match(/https:\/\/([a-z|A-Z])+\.chat.surest.cn/i)[0]
         }
     }
 
@@ -30,7 +30,7 @@
                 <div class="showcase-cta__button__pulse"></div>
             </div>
         </button>
-        <iframe title="iframe" id="iframe-chat" style="display: none" src=http://${host}/m></iframe>
+        <iframe title="iframe" id="iframe-chat" style="display: none" src=${host}/m></iframe>
     </div>
     `
     const cssDom = document.createElement('link')
