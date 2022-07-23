@@ -27,7 +27,7 @@ const LoginForm = (props) => {
                 store.dispatch(updateAuthInfo(result?.data?.Data));
                 Message.success('登录成功...');
                 setTimeout(() => {
-                    // window.location.href = '/workspace';
+                    window.location.href = '/workspace';
                 }, 1000)
                 return;
             }

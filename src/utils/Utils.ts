@@ -115,10 +115,14 @@ export const setDomainTitle = title => {
 
 // 获取目标位置滚动条距离底部的距离
 export const getScrollBottom = (targetWrapper, target) => {
-    const targetWrapperHeight = document.querySelector(targetWrapper).scrollHeight;
-    const targetScrollTop = document.querySelector(target).scrollTop;
-    const scrollBottom = targetWrapperHeight - targetScrollTop;
-    return scrollBottom;
+    try {
+        const targetWrapperHeight = document.querySelector(targetWrapper).scrollHeight;
+        const targetScrollTop = document.querySelector(target).scrollTop;
+        const scrollBottom = targetWrapperHeight - targetScrollTop;
+        return scrollBottom;
+    } catch (error) {
+        return document.querySelector(targetWrapper).scrollHeight;
+    }
 };
 
 // 移动目标到指定位置

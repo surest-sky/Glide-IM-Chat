@@ -65,15 +65,17 @@ const loadMessageByUid = async (params: any) => {
     return Promise.resolve(Data);
 };
 
-const readMessages = (from: number, to: number) => {
-    setMessageRead({ session_id: getSessionId(to, from) });
+const readMessages = (session_id, uid: number) => {
+    db.chat.where({ session_id, to: uid }).modify(chat => (chat.status = 1));
+    setMessageRead({ session_id: session_id });
 };
 
 const readMessagesToTimeOut = (uid: number) => {
     setTimeout(async () => {
         const to = parseInt(window.ChatSession.To);
         const from = uid;
-        readMessages(from, to);
+        const session_id = getSessionId(to, from);
+        readMessages(session_id, uid);
     }, 20000);
 };
 

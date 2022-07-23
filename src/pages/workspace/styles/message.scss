@@ -70,4 +70,17 @@
         color: #a59a9a;
         font-size: 12px;
     }
+
+    .message-at {
+        position: relative;
+        display: block;
+    }
+    .message-at.noread::before {
+        content: '·';
+        position: absolute;
+        left: -20px;
+        color: #fbbf24;
+        top: -33px;
+        font-size: 50px;
+    }
 }

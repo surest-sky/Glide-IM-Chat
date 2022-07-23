@@ -1,8 +1,9 @@
 import { useRequest } from 'ahooks';
 import { useLiveQuery } from 'dexie-react-hooks';
-import { orderBy } from 'lodash';
+import { orderBy, filter, get } from 'lodash';
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
+import { useLocation } from 'react-router';
 import { getContactsList } from 'src/api/chat/contacts';
 import { addBlukContacts, getMessagesByOnelastMessage } from 'src/services/chat_db';
 import { db } from 'src/services/db';
@@ -10,13 +11,16 @@ import { ContactOpend, ContactStatus } from 'src/services/enum';
 import { loadMessageByUid } from 'src/services/message';
 import store from 'src/store/index';
 import { updateChatWithUser } from 'src/store/reducer/chat';
+import { switchRoom } from 'src/services/chat_db';
 
 const useContacts = () => {
+    const { pathname } = useLocation()
     const [contacts, setContacts] = useState([])
     const userInfo = useSelector((state: any) => state.container.authInfo);
     const [user_id, setUserId] = useState(0)
     const [loading, setLoading] = useState(true)
     const chatWithUser = useSelector((state: any) => state.chat.chatWithUser);
+    const db_contacts = useLiveQuery(() => db.contacts.toArray(), [chatWithUser])
 
     const selfUser = {
         avatar: '',
@@ -32,6 +36,17 @@ const useContacts = () => {
 
     const dispatch = (callback) => {
         store.dispatch(callback)
+    }
+
+    const getCategoryId = () => {
+        let reg = /\/workspace/
+        if (reg.test(pathname)) {
+            return 0
+        }
+        reg = /\/category\/(\d+){1}/
+        const res = pathname.match(reg)
+        let id = get(res, 1)
+        return id
     }
 
     const syncLoadMessage = (localMessage, remoteMessage, to_id) => {
@@ -66,40 +81,6 @@ const useContacts = () => {
         loadMessageByUid(params)
     }
 
-    // const contactsIsShow = (item) => {
-    //     if (item.isMe) {
-    //         return true
-    //     }
-
-    //     if (!item.category_ids) {
-    //         return false
-    //     }
-
-    //     if (item.category_ids.includes(cateId)) {
-    //         return true
-    //     }
-
-    //     return false
-    // }
-
-    // const reloadContactList = () => {
-    //     let tempContactList = []
-    //     if (_contactsList) {
-    //         if (cateId === 0) {
-    //             tempContactList = [..._contactsList]
-    //         } else {
-    //             tempContactList = _contactsList.filter(item => {
-    //                 return contactsIsShow(item)
-    //             })
-    //         }
-    //     }
-
-    //     tempContactList = tempContactList.length ? tempContactList : [selfUser]
-    //     setContactList(tempContactList)
-    //     return tempContactList
-    // }
-
-
     /**
      * 修改聊天对象
      */
@@ -109,6 +90,7 @@ const useContacts = () => {
         }
         dispatch(updateChatWithUser({ chatWithUser: withUser }));
         window.ChatSession && window.ChatSession.setToId(withUser.uid)
+        switchRoom(withUser.uid)
     };
 
     // 加载会话列表
@@ -170,8 +152,20 @@ const useContacts = () => {
             return
         }
 
-        setContacts(orderBy(list, 'weight', 'asc'))
-        changechatWithUser(list[0])
+        const cateId = getCategoryId()
+        if (cateId) {
+            const filterCate = (item) => {
+                if (!Array.isArray(item.category_ids)) {
+                    return false
+                }
+                return item.category_ids.includes(parseInt(cateId))
+            }
+            setContacts(filter(orderBy(list, 'weight', 'asc'), filterCate))
+        } else {
+            setContacts(orderBy(list, 'weight', 'asc'))
+        }
+        console.log('chatWithUser', chatWithUser)
+        !chatWithUser?.uid && changechatWithUser(list[0])
         setLoading(false)
     }
 
@@ -185,10 +179,12 @@ const useContacts = () => {
 
     useEffect(() => {
         loadContacts()
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [user_id])
 
-    return { contacts, loading }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [user_id, db_contacts, pathname])
+
+
+    return { contacts, loading, changechatWithUser }
 }
 
 export { useContacts };

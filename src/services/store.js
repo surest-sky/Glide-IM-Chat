@@ -1,16 +1,17 @@
 
 
 import { get } from 'lodash';
-import { addBlukContacts, getContacts } from 'src/services/chat_db';
-import { uploadFile } from 'src/services/upload';
 import { getAuthInfo } from 'src/services/auth';
-import { ContactOpend, ContactStatus } from 'src/services/enum'
+import { getContacts } from 'src/services/chat_db';
+import { ContactOpend, ContactStatus } from 'src/services/enum';
+import { uploadFile } from 'src/services/upload';
+import { db } from './db';
 
 // 给联系人添加一条消息
 export const addContactUserMessage = async (message) => {
     const userInfo = getAuthInfo()
     const contacts = await getContacts()
-    let _contacts = contacts.map(item => {
+    contacts.forEach(item => {
         const iuid = item.uid.toString()
         if (userInfo.uid === item.uid) {
             if (!message.isMeToo) {
@@ -27,9 +28,9 @@ export const addContactUserMessage = async (message) => {
             item.status = ContactOpend.opend
             item.online = ContactStatus.online
         }
-        return item;
+        db.contacts.where({ from: userInfo.uid, uid: iuid }).modify(v => item)
     });
-    // addBlukContacts(_contacts)
+
 }
 
 /**

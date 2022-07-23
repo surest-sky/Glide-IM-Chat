@@ -5,6 +5,7 @@ import { MessageType } from 'src/core/message';
 import { pasteImage, uploadBase64File } from 'src/services/store'
 import { ReactComponent as AudioRecordSvg } from 'src/static/svg/audiov2.svg';
 import { useSelector } from 'react-redux';
+import { isNewContact, addContactInfo } from 'src/services/chat_db'
 import xss from 'xss';
 import '../styles/editor.scss';
 import { Message } from '@arco-design/web-react';
@@ -16,7 +17,11 @@ const Editors = (props) => {
      * 消息发送
      * @param message
      */
-    const sendChatMessage = (message: string, type: MessageType, callback: any) => {
+    const sendChatMessage = async (message: string, type: MessageType, callback: any) => {
+        const isNew = await isNewContact(message.to);
+        if (isNew) {
+            addContactInfo(message, message.to);
+        }
         window.ChatSession.send(message, type).subscribe({
             next: m => {
                 console.log('send message: message status changed=>', m);

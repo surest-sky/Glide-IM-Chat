@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react'
 import { db } from 'src/services/db';
 import { useLiveQuery } from 'dexie-react-hooks';
 import { getSessionId } from 'src/services/message'
-import { orderBy } from 'lodash'
+import { orderBy, filter } from 'lodash'
 
 const useActiveChat = () => {
     const [messages, setMessages] = useState([])
@@ -25,7 +25,7 @@ const useActiveChat = () => {
             setMessages([])
             return
         }
-        setMessages(orderBy(chat_messages, 'mid', 'asc'))
+        setMessages(filter(orderBy(chat_messages, 'mid', 'asc'), (item) => [0, 1].includes(parseInt(item.status))))
     }, [chat_messages])
 
     return messages

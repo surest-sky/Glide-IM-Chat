@@ -1,5 +1,6 @@
 import { get } from 'lodash';
 import { getSessionGet } from 'src/api/chat/chat';
+import { addContact } from 'src/api/chat/contacts';
 import { userInfoApi } from 'src/api/im/im';
 import { ContactsType } from 'src/core/chat_type';
 import { Message, MessageType } from 'src/core/message';
@@ -51,6 +52,7 @@ export const addContactInfo = async (message, from) => {
     };
     addContacts(contacts);
     getSessionGet({ to: from });
+    addContact({ uid: from });
 };
 
 // 获取一个联系人
@@ -87,7 +89,8 @@ export const decrContactsMessageCount = (uid: number) => {
 // 给联系人清空消息提醒
 export const clearContactsMessageCount = (uid: number) => {
     const currentUser = store.getState().container.authInfo;
-    readMessages(parseInt(currentUser.uid), uid);
+    const session_id = getSessionId(parseInt(currentUser.uid), uid);
+    readMessages(session_id, uid);
     db.contacts.where({ uid }).modify(f => (f.message_count = 0));
 };
 
@@ -98,7 +101,6 @@ export const incrContactsMessageCount = (uid: number) => {
 
 // 添加一条消息
 export const addMessage = async (message: Message) => {
-    console.log('收到一条消息', message);
     const to = parseInt(message.to);
     const from = parseInt(message.from);
     const _message: any = Object.assign({}, message, {
@@ -184,17 +186,21 @@ export const getMessagesByOnelastMessage = async (from: number, to: number) => {
     return messages;
 };
 
-export const switchRoom = async (from: number, to: number) => {
+export const switchRoom = async (to: number) => {
     clearContactsMessageCount(to);
 };
 
 // 消息移除
-export const removeMessages = (from: number, to: number) => {
-    db.chat.where({ from: from, to: to }).delete();
-    db.activeChat.where({ from: from, to: to }).delete();
+export const removeMessages = (where: object) => {
+    // status 为被本地清空
+    console.log('removeMessages', where);
+    db.chat.where(where).modify(v => (v.status = 4));
+};
 
-    db.chat.where({ from: to, to: from }).delete();
-    db.activeChat.where({ from: to, to: from }).delete();
+export const updateContact = async (where: object, data: object) => {
+    let item: any = await db.contacts.where(where).first();
+    item = Object.assign({}, item, data);
+    db.contacts.update(item.id, item);
 };
 
 // 消息已读

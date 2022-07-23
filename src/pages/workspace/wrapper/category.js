@@ -7,10 +7,12 @@ import {
 } from 'react';
 import { useSelector } from 'react-redux';
 import { setCategoryForUser } from 'src/api/chat/chat'
+import { updateContact } from 'src/services/chat_db'
 
 
 const Category = (props, ref) => {
     const categoryList = useSelector((state: any) => state.container.categoryList);
+    const userInfo = useSelector((state: any) => state.container.authInfo);
     const [visible, setVisible] = useState(false)
     const [confirmLoading, setConfirmLoading] = useState(false)
     const [value, setValue] = useState([])
@@ -31,6 +33,7 @@ const Category = (props, ref) => {
             setConfirmLoading(false)
             setVisible(false)
             setValue([])
+            updateContact({ id: item.current.id }, { category_ids: value })
         }).finally(() => setConfirmLoading(false));
     }
 

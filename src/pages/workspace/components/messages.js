@@ -91,7 +91,7 @@ const Messages = () => {
                 style: { padding: '10px 26px 10px 8px' },
                 text: '删除',
                 callback: () => {
-                    removeMessage(message);
+                    removeMessage({ mid: message.mid });
                 },
             },
         ];
@@ -101,15 +101,15 @@ const Messages = () => {
         return <div data-id={message.mid} id={`message_${message.mid}`} className={`flex message-wrapper  ${isMe ? 'message-to flex-row-reverse' : 'message-from flex-row'}`}>
             {avatar ? <img className="message-avatar" src={avatar} alt="message" /> : <Avatar className="message-avatar">Messager</Avatar>}
             <div className={isMe ? 'mr-1' : 'ml-1'}>
-                <span className="message-at" >{isMe ? userInfo.nick_name : chatWithUser.name} · {sendAt}</span>
+                <span className={`message-at ${message.status === 0 && message.from !== userInfo.uid ? 'noread' : ''}`} >{isMe ? userInfo.nick_name : chatWithUser.name} · {sendAt}</span>
                 {/* <span className="message-at">客户未在线，发送消息可能无法及时触达 ~</span> */}
                 {
                     isMe ?
-                        // <RightMenu theme={''} minWidth={200} maxWidth={200} onAfterInit={() => { }} onBeforeInit={() => { }} options={options}>
-                        <div className="message-content">
-                            <HtmlApp html={xss(message.content)} />
-                        </div>
-                        // </RightMenu>
+                        <RightMenu theme={''} minWidth={200} maxWidth={200} onAfterInit={() => { }} onBeforeInit={() => { }} options={options}>
+                            <div className="message-content">
+                                <HtmlApp html={xss(message.content)} />
+                            </div>
+                        </RightMenu>
                         :
                         <div className="message-content">
                             <HtmlApp html={xss(message.content)} />

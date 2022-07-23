@@ -19,19 +19,8 @@ const Menu = () => {
     const dispatch = useDispatch();
     const childCateModal = useRef();
     const chatWithUser = useSelector((state: any) => state.chat.chatWithUser);
-    const { contacts, loading } = useContacts()
+    const { contacts, loading, changechatWithUser } = useContacts()
     const curUser = useRef(null)
-
-    /**
-     * 修改聊天对象
-     */
-    const changechatWithUser = withUser => {
-        if (chatWithUser.uid === withUser.uid) {
-            return
-        }
-        dispatch(updateChatWithUser({ chatWithUser: withUser }));
-        window.ChatSession && window.ChatSession.setToId(withUser.uid)
-    };
 
 
     // 格式化消息
@@ -71,7 +60,7 @@ const Menu = () => {
         const options = (item) => [
             {
                 type: 'li',
-                style: { padding: '10px 26px 10px 8px' },
+                style: { padding: '5px', cursor: 'pointer' },
                 text: '分类',
                 callback: () => {
                     childCateModal.current.setVisible(true)
@@ -80,18 +69,17 @@ const Menu = () => {
                 },
             },
         ]
-        const tempContactList = []
         return () => {
-            tempContactList.forEach((item, index) => {
+            contacts.forEach((item, index) => {
                 new RightMenu(`.contact-${item.id}`, options(item))
             })
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [cateId])
+    }, [contacts])
 
     return <div className="contacts-container">
         <div className="contacts-menu"><Input placeholder="Search" className="w-full" /></div>
-        <div className="flex justify-between contacts-select">
+        <div className="flex justify-between contacts-select hidden">
             <Select
                 placeholder='Open'
                 bordered={false}

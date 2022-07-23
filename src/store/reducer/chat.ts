@@ -1,7 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { getContacts } from 'src/api/im/im';
 import { ContactsType } from 'src/core/chat_type';
-import { addBlukContacts } from 'src/services/chat_db';
 
 export interface ChatState {
     chatWithUser: ContactsType;
