@@ -80,7 +80,6 @@ const useContacts = () => {
                 page: 1
             }
         }
-
         loadMessageByUid(params)
     }
 
@@ -129,8 +128,9 @@ const useContacts = () => {
     // 加载会话列表
     const loadUsers = async (users) => {
         const me_uid = parseInt(userInfo.uid)
-        const list = loadMessages(users, me_uid)
-        addBlukContacts(list)
+        const list = await loadMessages(users, me_uid)
+        console.log("listlistlistlist", list)
+        addBlukContacts(users)
         let selectUser;
         selectUser = list.length ? list[0] : selfUser
         changechatWithUser(selectUser)
@@ -180,6 +180,7 @@ const useContacts = () => {
         } else {
             temp = orderBy(list, 'weight', 'asc')
         }
+        loadMessages(temp)
         setContacts(temp)
         !chatWithUser?.uid && changechatWithUser(list[0])
         setLoading(false)
