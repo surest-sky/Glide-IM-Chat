@@ -181,9 +181,6 @@ const useContacts = () => {
             temp = orderBy(list, 'weight', 'asc')
         }
         setContacts(temp)
-
-        const me_uid = parseInt(userInfo.uid)
-        loadMessages(contacts, me_uid)
         !chatWithUser?.uid && changechatWithUser(list[0])
         setLoading(false)
     }
