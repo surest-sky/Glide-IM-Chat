@@ -34,13 +34,13 @@ const Routers = () => {
             </Route>
 
 
-            {/* <Route path="/m" element={<LayoutMobile />}>
+            <Route path="/m" element={<LayoutMobile />}>
                 <Route path="/m" element={<Mobile />} />
                 <Route path="/m/s" element={<Search />} />
                 <Route path="/m/chat" element={<Chat />} />
                 <Route path="/m/faq" element={<MobileFaq />} />
                 <Route path="/m/faq/show" element={<MobileArticle />} />
-            </Route> */}
+            </Route>
 
             <Route path="/" element={<Layout />}>
                 <Route path="/category/:id" element={<WorkSpace />} />

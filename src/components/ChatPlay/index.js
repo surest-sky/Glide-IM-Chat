@@ -8,7 +8,7 @@ import lodash from 'lodash'
 const ChatPlay = () => {
     const authInfo = useSelector((state: any) => state.container.authInfo);
     const [visible, setVisible] = useState(false)
-    const host = lodash.get(authInfo, 'App.host')
+    const host = lodash.get(authInfo, 'app.host')
     if (!host) {
         return <></>
     }
@@ -25,7 +25,10 @@ const ChatPlay = () => {
                 <div className="showcase-cta__button__pulse"></div>
             </div>
         </button>
-        <iframe title="iframe" className={visible ? 'show' : 'hidden'} src="http://localhost:3000/m"></iframe>
+        {
+            visible ? <iframe title="iframe" src={`http://${host}/m`}></iframe> : <></>
+        }
+
     </div>
 }
 

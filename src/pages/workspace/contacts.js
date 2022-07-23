@@ -1,22 +1,16 @@
 import { Avatar, Badge, Input, List, Select, Spin } from '@arco-design/web-react';
 import RightMenu from '@right-menu/core';
-import lodash from 'lodash';
-import { useEffect, useRef, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { useLocation } from 'react-router';
+import { useEffect, useRef } from 'react';
+import { useSelector } from 'react-redux';
 import { MessageType } from 'src/core/message';
 import { ContactStatus } from 'src/services/enum';
 import { useContacts } from 'src/services/hooks/useContacts';
-import { updateChatWithUser } from 'src/store/reducer/chat';
 import { timeAgo } from 'src/utils/Utils';
 import './styles/menu.scss';
 import Category from './wrapper/category';
 
 const Menu = () => {
     const options = [];
-    const location = useLocation()
-    const [cateId, setCateId] = useState(0)
-    const dispatch = useDispatch();
     const childCateModal = useRef();
     const chatWithUser = useSelector((state: any) => state.chat.chatWithUser);
     const { contacts, loading, changechatWithUser } = useContacts()
@@ -35,26 +29,6 @@ const Menu = () => {
             return message.content.replace(/<img[^>]*?src\s*=\s*[""']?([^'"" >]+?)[ '""][^>]*?>/g, '[图片]')
         }
     }
-
-    useEffect(() => {
-        const pathname = location.pathname
-        let reg = /\/workspace/
-        if (reg.test(pathname)) {
-            setCateId(0)
-            return
-        }
-        reg = /\/category\/(\d){1}/
-        const res = pathname.match(reg)
-        let id = lodash.get(res, 1)
-        setCateId(id ? parseInt(id) : 0)
-        setCateId((id) => {
-            // const tempContactList = reloadContactList()
-            // changechatWithUser(tempContactList[0])
-            return id
-        })
-
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [location])
 
     useEffect(() => {
         const options = (item) => [

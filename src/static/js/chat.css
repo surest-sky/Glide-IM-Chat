@@ -91,3 +91,13 @@
 .chat-mobile-iframe .play-svg:hover {
     transform: scale(1.05);
 }
+
+.chat-mobile-iframe iframe {
+    box-shadow: #bdbaba 0px 0px 20px;
+    height: 550px;
+    position: fixed;
+    bottom: 130px;
+    width: 360px;
+    border: 1px solid #ccc;
+    right: 80px;
+}

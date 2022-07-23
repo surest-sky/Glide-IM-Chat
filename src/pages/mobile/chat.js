@@ -11,7 +11,7 @@ const Mobile = () => {
     const navigate = useNavigate();
     const chatWithUser = useSelector((state: any) => state.chat.chatWithUser);
     const [uid, setUid] = useState(chatWithUser.uid)
-    const [height, setHeight] = useState(window.innerHeight - 145)
+    const [height, setHeight] = useState(window.innerHeight - 150)
 
     useEffect(() => {
         setUid(chatWithUser.uid)

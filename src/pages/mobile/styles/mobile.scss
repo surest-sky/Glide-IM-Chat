@@ -15,7 +15,7 @@
 
     .mobile-container-top {
         position: relative;
-        height: 255px;
+        height: 150px;
         min-height: 75px;
         color: white;
         transition: height 160ms ease-out 0s;
@@ -97,7 +97,7 @@
         right: 0px;
         background-position: center center;
         margin: 12px 8px 12px 2px;
-        display: block;
+        display: none;
 
         .mobile-container-top-btn {
             width: 51px;
@@ -257,8 +257,8 @@
 }
 
 .height186 {
-    height: 186px;
-    padding: 33px 24px 24px;
+    height: 140px;
+    padding: 20px;
     line-height: 1.5;
 }
 

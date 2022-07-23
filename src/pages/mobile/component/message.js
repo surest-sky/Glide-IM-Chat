@@ -1,25 +1,20 @@
 import RightMenu from '@right-menu/react';
-import { Avatar } from '@arco-design/web-react';
 import dayjs from 'dayjs';
-import { useLiveQuery } from 'dexie-react-hooks';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import HtmlApp from 'src/components/HtmlApp';
 import { removeMessage } from 'src/services/chat_db';
-import { db } from 'src/services/db';
+import { useActiveChat } from 'src/services/hooks/activeChat';
 import { scrollToBottom } from 'src/utils/Utils';
+import xss from 'xss';
 import '../styles/message.scss';
 
-
-import xss from 'xss';
-
 const Messages = () => {
-    const [messages, setMessages] = useState([]);
     const userInfo = useSelector((state: any) => state.container.authInfo);
     const chatWithUser = useSelector((state: any) => state.chat.chatWithUser);
-    const _messages = useLiveQuery(() => db.activeChat.orderBy('mid').toArray());
-    const me_id = userInfo.uid;
+    const messages = useActiveChat()
 
+    const me_id = userInfo.uid;
     // 发送撤回消息
     const sendRecallMessage = (mid: number, from: number) => {
         window.ChatSession.sendRecallMessage(mid);
@@ -27,14 +22,13 @@ const Messages = () => {
 
     // 延迟触发
     useEffect(() => {
-        setMessages(_messages ? _messages : []);
-        console.log(_messages)
         return () => {
             setTimeout(() => {
                 scrollToBottom('.chat-message-wrapper');
             }, 0);
         }
-    }, [_messages]);
+
+    }, [messages]);
 
     if (!chatWithUser) {
         return <></>;
@@ -64,11 +58,12 @@ const Messages = () => {
         ];
         const isMe = me_id === message.from
         const sendAt = dayjs(message.SendAt).format('HH:mm a DD-MM');
-        const avatar = isMe ? userInfo.avatar : chatWithUser.avatar
+        // const avatar = isMe ? userInfo.avatar : chatWithUser.avatar
         return <div className={`flex message-wrapper  ${isMe ? 'message-to flex-row-reverse' : 'message-from flex-row'}`}>
-            {avatar ? <img className="message-avatar" src={avatar} alt="message" /> : <Avatar className="">Messager</Avatar>}
+            {/* {avatar ? <img className="message-avatar" src={avatar} alt="message" /> : <Avatar className="">Messager</Avatar>} */}
             <div className={isMe ? 'mr-1' : 'ml-1'}>
-                <span className="message-at" data-id={message.mid}>{(isMe ? userInfo.nick_name : chatWithUser.name) || "Messager"} · {sendAt}</span>
+                {/* <span className="message-at" data-id={message.mid}>{(isMe ? userInfo.nick_name : chatWithUser.name) || "Messager"} · {sendAt}</span> */}
+                <div className="message-at" data-id={message.mid}>{(isMe ? "我" : "他") || "Messager"} · {sendAt}</div>
                 {
                     isMe ?
                         <RightMenu theme={''} minWidth={200} maxWidth={200} onAfterInit={() => { }} onBeforeInit={() => { }} options={options}>

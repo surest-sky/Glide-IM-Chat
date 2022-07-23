@@ -1,21 +1,19 @@
-import { generateFrontId } from 'src/services/plugins/fingerprint'
-import { guestLogin, getToUid } from '../apis/mobile'
-import { userInfoApi } from 'src/api/chat/im';
-import { Outlet, useNavigate } from 'react-router-dom';
-import { Modal } from '@arco-design/web-react';
-import { setLogin, isLogin } from 'src/services/auth';
-import { useEffect, useState, useRef } from 'react'
+import { get } from 'lodash';
+import { useEffect, useRef, useState } from 'react';
+import { Outlet, useNavigate, useSearchParams } from 'react-router-dom';
+import { addContact } from 'src/api/chat/contacts';
+import Loading from 'src/components/Loading';
+import { initChatSession } from 'src/core/services';
+import { getAuthInfo, isLogin, setLogin } from 'src/services/auth';
+import { addBlukContacts } from 'src/services/chat_db';
+import { isNewContact, switchRoom } from 'src/services/chat_db';
+import { generateFrontId } from 'src/services/plugins/fingerprint';
 import store from 'src/store/index';
-import Loading from 'src/components/Loading'
-import { useSearchParams } from 'react-router-dom';
 import { updateAuthInfo } from 'src/store/reducer/container';
-import { switchRoom, addBlukContacts } from 'src/services/chat_db';
-import { ContactOpend, ContactStatus } from 'src/services/enum'
-import { updateChatWithUser } from 'src/store/reducer/chat';
-import { initChatSession } from 'src/core/services'
-import { get } from 'lodash'
-import { getAuthInfo } from 'src/services/auth';
+import { useContacts } from 'src/services/hooks/useContacts';
+import { getToUid, guestLogin } from '../apis/mobile';
 import '../styles/mobile.scss';
+
 
 const Layout = (props) => {
     const navigate = useNavigate();
@@ -23,44 +21,20 @@ const Layout = (props) => {
     const [loading, setLoading] = useState(!isLogin())
     const userInfo = useRef()
     const frontId = useRef()
-    const uid = useRef()
+    useContacts()
 
     const loadChatRoom = (uid) => {
         window.ChatSession.setToId(uid)
         switchRoom(userInfo.current.uid, uid)
     }
 
-    // 获取用户信息
-    const getUsersByIds = async (ids) => {
-        const { data } = await userInfoApi({ uid: ids })
-        return data.Data
-    }
-
     const loadWidthUser = async () => {
         const result = await getToUid()
         const _uid = get(result, 'data.Data.uid')
-        const users = await getUsersByIds([_uid])
-        const user = users[0]
-        const contacts = [
-            {
-                lastMessage: "",
-                avatar: '',
-                name: user.nick_name,
-                message_count: 0,
-                uid: user.uid,
-                motto: '',
-                category_ids: user.category_ids,
-                collect: user.collect,
-                status: ContactStatus.offline,
-                opend: ContactOpend.close,
-                isMe: false,
-            }
-        ]
-        addBlukContacts(contacts)
-        store.dispatch(updateChatWithUser({
-            chatWithUser: contacts[0]
-        }));
-        uid.current = _uid
+        localStorage.setItem('with_user_id', _uid)
+        if (isNewContact(_uid)) {
+            await addContact(_uid)
+        }
         initChatSession(() => { loadChatRoom(_uid) })
     }
 
@@ -69,9 +43,7 @@ const Layout = (props) => {
         const data = result?.data?.Data
         const code = result?.data.Code
         if (code !== 100) {
-            Modal.error({
-                title: '未正确配置',
-            });
+            alert("未配置域名, 无法加载!")
             return
         }
         userInfo.current = data
@@ -79,10 +51,13 @@ const Layout = (props) => {
         setLogin(data)
         loadWidthUser()
         setLoading(false)
-        navigate("/m")
+        setTimeout(() => {
+            navigate("/m")
+        }, 1000)
     }
 
     useEffect(() => {
+        addBlukContacts([])
         if (!isLogin()) {
             generateFrontId().then(v => {
                 frontId.current = v

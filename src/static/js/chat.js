@@ -1,14 +1,60 @@
 (function () {
-    const url = "http://localhost:3000/m"
-    const svg = "https://cdn.surest.cn/chat/im.svg"
-    let _document = `
-    <div className="chat-mobile-iframe">
-        <img class="play-svg" src="${svg}"/>
+    const jsDom = document.querySelector("#chatjs")
+    if (!jsDom) {
+        console.error("无法加载Chat: 配置错误")
+        return
+    }
+    const env = jsDom.getAttribute("data-env")
+    let host;
+
+    if (env === 'local') {
+        host = jsDom.getAttribute("data-url")
+    } else {
+        try {
+            host = jsDom.getAttribute("src").match(/https:\/\/([a-z|A-Z])+\.surest.cn/i)[0]
+        } catch (error) {
+            host = jsDom.getAttribute("url").match(/https:\/\/([a-z|A-Z])+\.surest.cn/i)[0]
+        }
+    }
+
+    if (!host) {
+        console.error("无法加载Chat: 域名不存在")
+        return
+    }
+
+    let domWrapper = `
+    <div class="chat-mobile-iframe">
+        <img class="play-svg" src="https://cdn.surest.cn/chat/im.svg "/>
         <button class="cta">
             <div class="showcase-cta__button-inner">
                 <div class="showcase-cta__button__pulse"></div>
             </div>
         </button>
+        <iframe title="iframe" id="iframe-chat" style="display: none" src=http://${host}/m></iframe>
     </div>
     `
+    const cssDom = document.createElement('link')
+    cssDom.setAttribute('rel', "stylesheet")
+    cssDom.setAttribute('href', "https://cdn.surest.cn/chat/chat.css")
+    document.querySelector("head").appendChild(cssDom)
+
+    setTimeout(() => {
+        document.querySelector("body").insertAdjacentHTML('beforeEnd', domWrapper)
+        const ctaDom = document.querySelector(".cta")
+        const svgDom = document.querySelector(".play-svg")
+        const iframeDom = document.querySelector("#iframe-chat")
+        const iframeFunc = () => {
+            const display = iframeDom.style.display
+            console.log(display)
+            if (display === 'block') {
+                iframeDom.style.display = "none"
+                svgDom.setAttribute("src", 'https://cdn.surest.cn/chat/im.svg')
+            } else {
+                iframeDom.style.display = "block"
+                svgDom.setAttribute("src", 'https://cdn.surest.cn/chat/close.svg')
+            }
+        }
+        ctaDom.addEventListener("click", iframeFunc)
+        svgDom.addEventListener("click", iframeFunc)
+    }, 1000)
 })()

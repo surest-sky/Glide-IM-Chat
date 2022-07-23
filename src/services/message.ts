@@ -1,4 +1,4 @@
-import { last } from 'lodash';
+import { last, debounce } from 'lodash';
 import { getMessagelist, setMessageRead } from 'src/api/chat/messages';
 import { addMessages, incrContactsMessageCount } from './chat_db';
 import { MessageStatus } from 'src/services/enum';
@@ -67,7 +67,7 @@ const loadMessageByUid = async (params: any) => {
 
 const readMessages = (session_id, uid: number) => {
     db.chat.where({ session_id, to: uid }).modify(chat => (chat.status = 1));
-    setMessageRead({ session_id: session_id });
+    debounce(() => setMessageRead({ session_id: session_id }), 2000);
 };
 
 const readMessagesToTimeOut = (uid: number) => {

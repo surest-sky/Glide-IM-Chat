@@ -25,7 +25,10 @@ const useActiveChat = () => {
             setMessages([])
             return
         }
-        setMessages(filter(orderBy(chat_messages, 'mid', 'asc'), (item) => [0, 1].includes(parseInt(item.status))))
+        // setMessages(filter(orderBy(chat_messages, 'mid', 'asc'), (item) => [0, 1].includes(parseInt(item.status))))
+        setMessages(filter(orderBy(chat_messages, 'mid', 'asc')))
+
+        // console.log('变化了', filter(orderBy(chat_messages, 'mid', 'asc'), (item) => [0, 1].includes(parseInt(item.status))))
     }, [chat_messages])
 
     return messages

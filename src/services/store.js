@@ -28,7 +28,7 @@ export const addContactUserMessage = async (message) => {
             item.status = ContactOpend.opend
             item.online = ContactStatus.online
         }
-        db.contacts.where({ from: userInfo.uid, uid: iuid }).modify(v => item)
+        db.contacts.update(item.id, item)
     });
 
 }

@@ -1,6 +1,6 @@
 import { useRequest } from 'ahooks';
 import { useLiveQuery } from 'dexie-react-hooks';
-import { orderBy, filter, get } from 'lodash';
+import { orderBy, filter, get, map, sum } from 'lodash';
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useLocation } from 'react-router';
@@ -12,6 +12,7 @@ import { loadMessageByUid } from 'src/services/message';
 import store from 'src/store/index';
 import { updateChatWithUser } from 'src/store/reducer/chat';
 import { switchRoom } from 'src/services/chat_db';
+import { useNetwork } from 'ahooks'
 
 const useContacts = () => {
     const { pathname } = useLocation()
@@ -21,6 +22,8 @@ const useContacts = () => {
     const [loading, setLoading] = useState(true)
     const chatWithUser = useSelector((state: any) => state.chat.chatWithUser);
     const db_contacts = useLiveQuery(() => db.contacts.toArray(), [chatWithUser])
+    const [unReadCount, setUnReadCount] = useState(0)
+    const { online } = useNetwork()
 
     const selfUser = {
         avatar: '',
@@ -122,7 +125,9 @@ const useContacts = () => {
             syncLoadMessage(localMessage, item.lastMessage, to_id)
         }
         addBlukContacts(_list)
-        changechatWithUser(_list.length ? _list[0] : selfUser)
+        let selectUser;
+        selectUser = _list.length ? _list[0] : selfUser
+        changechatWithUser(selectUser)
         setContacts(_list)
         setLoading(false)
     }
@@ -140,9 +145,13 @@ const useContacts = () => {
     });
 
     const loadContacts = async () => {
+        localStorage.setItem("online", true)
+        setTimeout(() => {
+            localStorage.removeItem("online")
+        }, 5000)
         let list = []
         if (user_id) {
-            list = await db.contacts.where({ "from_id": user_id }).toArray()
+            list = await db.contacts.toArray()
         } else {
             return
         }
@@ -179,12 +188,31 @@ const useContacts = () => {
 
     useEffect(() => {
         loadContacts()
-
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [user_id, db_contacts, pathname])
 
+    useEffect(() => {
+        if (!contacts) { setUnReadCount(0); return; }
+        setUnReadCount(() => {
+            return sum(map(contacts, 'message_count'))
+        })
+    }, [contacts])
 
-    return { contacts, loading, changechatWithUser }
+    useEffect(() => {
+        if (!online) {
+            alert('网络连接失败 !!')
+        }
+        if (online) {
+            setTimeout(() => {
+                const o = localStorage.getItem("online")
+                console.log('network', online, o)
+                if (!o) { run() }
+            }, 2000)
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [online])
+
+    return { contacts, loading, changechatWithUser, loadUsers, unReadCount }
 }
 
 export { useContacts };

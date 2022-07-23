@@ -1,13 +1,18 @@
 
-import { Avatar, Button, Spin } from '@arco-design/web-react';
+import { Badge, Button, Spin } from '@arco-design/web-react';
 import { IconClockCircle, IconClose, IconIdcard, IconRight, IconSearch, IconSend } from '@arco-design/web-react/icon';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 import { getArticleList } from './apis/faq';
+import { useContacts } from 'src/services/hooks/useContacts';
+import { ReactComponent as ClockSvg } from 'src/static/svg/clock.svg';
 import './styles/mobile.scss';
 
 const Mobile = () => {
     const navigate = useNavigate();
+    const chatWithUser = useSelector((state: any) => state.chat.chatWithUser);
+    const { unReadCount, contacts, changechatWithUser } = useContacts({ uid: chatWithUser.uid })
     const [articles, setAritcles] = useState({
         list: [],
         loading: true
@@ -35,9 +40,15 @@ const Mobile = () => {
         LoadArticles()
     }, [])
 
+    const selectUser = () => {
+        const userId = localStorage.getItem('with_user_id');
+        const withUser = contacts.find(contact => parseInt(contact.uid) === parseInt(userId))
+        changechatWithUser(withUser)
+        navigate('/m/chat')
+    }
 
     return <div className='mobile-container fade-in-top'>
-        <div className='mobile-close-container-btn cur'>
+        <div className='mobile-close-container-btn cur hidden'>
             <div className='mobile-container-top-btn cur' style={{ backgroundColor: 'rgba(0, 0, 0, 0)' }}>
                 <IconClose className='close-btn' />
             </div>
@@ -45,17 +56,17 @@ const Mobile = () => {
         <div className='mobile-container-top'>
             <div className='mobile-container-top-text'>
                 <div className='transcss'>
-                    <div className='mobile-container-top-text-img'>
+                    {/* <div className='mobile-container-top-text-img'>
                         <IconIdcard className='top-img' />
-                    </div>
+                    </div> */}
                     <div className='mobile-container-top-text-title'><span>你好  👋</span></div>
-                    <h1>我们通过将您与客户联系起来，帮助您的业务增长</h1>
+                    {/* <h1>我们通过将您与客户联系起来，帮助您的业务增长</h1> */}
                 </div>
             </div>
         </div>
         <div className='mobile-container-main'>
             <div className='mobile-container-main-content'>
-                <div className='container-card' style={{ paddingTop: '191px' }}>
+                <div className='container-card' style={{ paddingTop: '80px' }}>
                     {/* <div className='mobile-container-message-card'>
                         <h2 className='h2'>
                             继续我们的对话
@@ -84,12 +95,11 @@ const Mobile = () => {
                     </div> */}
                     <div className='mobile-container-message-card'>
                         <div className='height186'>
-                            <h2 className='h2'>开始我们的对话</h2>
+                            <h2 className='h2'>开始我们的对话 <Badge maxCount={99} count={unReadCount} /></h2>
                             <div className='mobile-container-message-send'>
                                 <div className='time-container'>
                                     <div className='name-container-tit'>
-                                        <IconClockCircle className='time-icon' />
-                                        我们会尽快的回复
+                                        {chatWithUser?.lastMessage?.message_count ? <><ClockSvg />: {chatWithUser?.lastMessage?.message_count}</> : null}
                                     </div>
                                 </div>
                             </div>
@@ -98,7 +108,7 @@ const Mobile = () => {
                                     <div className='link-content cur'>
                                         <IconSend className='send-icon' />
                                         <span onClick={() => {
-                                            navigate('/m/chat')
+                                            selectUser()
                                         }}>发送消息</span>
                                     </div>
                                 </Button>

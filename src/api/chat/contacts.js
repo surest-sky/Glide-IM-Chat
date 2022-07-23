@@ -11,6 +11,6 @@ export function addContact(uid) {
     return request({
         url: '/contacts/add',
         method: 'post',
-        params: { uid: uid }
+        data: { uid: uid }
     });
 }

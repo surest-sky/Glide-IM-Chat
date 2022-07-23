@@ -1,4 +1,4 @@
-
+import { addBlukContacts } from 'src/services/chat_db';
 const adminKey = "userInfo"
 const mobileKey = "mobile:userInfo"
 const setLogin = (authInfo, source = null) => {
@@ -18,6 +18,8 @@ const isLogin = () => {
 
 const setLogout = () => {
     localStorage.removeItem(adminKey)
+    addBlukContacts([])
+    window.ChatSession = null
     window.location.reload()
 }
 

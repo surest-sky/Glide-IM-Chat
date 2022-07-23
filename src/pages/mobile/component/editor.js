@@ -18,7 +18,7 @@ const Editors = (props) => {
      * @param message
      */
     const sendChatMessage = async (message: string, type: MessageType, callback: any) => {
-        const isNew = await isNewContact(message.to);
+        const isNew = await isNewContact(chatWithUser.uid);
         if (isNew) {
             addContactInfo(message, message.to);
         }
