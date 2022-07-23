@@ -90,11 +90,11 @@ export class LiveChat {
     }
 
     private clearAuth() {
-        console.log('clearAuth');
+        // console.log('clearAuth');
         this.uid = '';
         Ws.close();
         Glide.storeToken('');
-        setLogout();
+        // setLogout();
     }
 
     // @deprecated
@@ -155,7 +155,6 @@ export class LiveChat {
                 console.log('接收到消息撤回的提醒: ', m);
                 break;
             case Actions.NotifyKickOut:
-                alert('被挤下线了, 重新登录');
                 this.clearAuth();
                 Ws.close();
                 break;

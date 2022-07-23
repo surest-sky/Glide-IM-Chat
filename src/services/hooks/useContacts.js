@@ -96,9 +96,7 @@ const useContacts = () => {
         switchRoom(withUser.uid)
     };
 
-    // 加载会话列表
-    const loadUsers = async (users) => {
-        const me_uid = parseInt(userInfo.uid)
+    const loadMessages = async (users, me_uid) => {
         const _list = []
         for (let i = 0; i < users.length; i++) {
             const item = users[i]
@@ -124,11 +122,19 @@ const useContacts = () => {
             // 否则异步去拉消息
             syncLoadMessage(localMessage, item.lastMessage, to_id)
         }
-        addBlukContacts(_list)
+
+        return _list
+    }
+
+    // 加载会话列表
+    const loadUsers = async (users) => {
+        const me_uid = parseInt(userInfo.uid)
+        const list = loadMessages(users, me_uid)
+        addBlukContacts(list)
         let selectUser;
-        selectUser = _list.length ? _list[0] : selfUser
+        selectUser = list.length ? list[0] : selfUser
         changechatWithUser(selectUser)
-        setContacts(_list)
+        setContacts(list)
         setLoading(false)
     }
 
@@ -162,6 +168,7 @@ const useContacts = () => {
         }
 
         const cateId = getCategoryId()
+        let temp = []
         if (cateId) {
             const filterCate = (item) => {
                 if (!Array.isArray(item.category_ids)) {
@@ -169,11 +176,14 @@ const useContacts = () => {
                 }
                 return item.category_ids.includes(parseInt(cateId))
             }
-            setContacts(filter(orderBy(list, 'weight', 'asc'), filterCate))
+            temp = filter(orderBy(list, 'weight', 'asc'), filterCate)
         } else {
-            setContacts(orderBy(list, 'weight', 'asc'))
+            temp = orderBy(list, 'weight', 'asc')
         }
-        console.log('chatWithUser', chatWithUser)
+        setContacts(temp)
+
+        const me_uid = parseInt(userInfo.uid)
+        loadMessages(contacts, me_uid)
         !chatWithUser?.uid && changechatWithUser(list[0])
         setLoading(false)
     }
