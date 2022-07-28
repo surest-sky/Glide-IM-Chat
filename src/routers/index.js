@@ -2,31 +2,30 @@ import { Route, Routes } from 'react-router-dom';
 import Layout from 'src/components/Layout/layout';
 import Convert from 'src/pages/convert';
 import Mobile from 'src/pages/mobile';
+import Analysis from '../pages/analysis/index';
+import Forget from '../pages/auth/forget';
 import LayoutAuth from '../pages/auth/layout';
 import Login from '../pages/auth/loginV2';
-import Forget from '../pages/auth/forget';
 import Register from '../pages/auth/registerV2';
-import Chat from '../pages/mobile/chat';
-import MobileArticle from '../pages/mobile/article'
-import MobileFaq from '../pages/mobile/faq'
-import Search from '../pages/mobile/search';
-import Setting from '../pages/setting/index';
-import WorkSpace from '../pages/workspace/index';
-import Robot from '../pages/robot/index';
 import Customer from '../pages/customer/index';
-import Analysis from '../pages/analysis/index';
 import FaqEditor from '../pages/faq/editor';
 import FaqList from '../pages/faq/list';
-import LayoutMobile from '../pages/mobile/component/layout'
-import Email from '../pages/notify/email'
-import Test from '../pages/test'
+import MobileArticle from '../pages/mobile/article';
+import Chat from '../pages/mobile/chat';
+import LayoutMobile from '../pages/mobile/component/layout';
+import MobileFaq from '../pages/mobile/faq';
+import Search from '../pages/mobile/search';
+import Email from '../pages/notify/email';
+import Robot from '../pages/robot/index';
+import Setting from '../pages/setting/index';
+import Test from '../pages/test';
+import WorkSpace from '../pages/workspace/index';
 
 
 const Routers = () => {
     return (
         <Routes>
             <Route path="/" element={<Convert />} />
-
             <Route path="" element={<LayoutAuth />}>
                 <Route path="/login" element={<Login />} />
                 <Route path="/forget" element={<Forget />} />

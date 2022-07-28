@@ -45,6 +45,7 @@ const Mobile = () => {
         const userId = localStorage.getItem('with_user_id');
         const withUser = contacts.find(contact => parseInt(contact.uid) === parseInt(userId))
         changechatWithUser(withUser)
+        localStorage.setItem("with_user_info", JSON.stringify(withUser))
         navigate('/m/chat')
     }
 

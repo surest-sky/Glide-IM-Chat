@@ -1,5 +1,5 @@
-import { Form, Input, Link, Message, Modal, Tooltip } from '@arco-design/web-react';
-import { useState } from 'react';
+import { Form, Input, Typography, Link, Message, Modal, Tooltip } from '@arco-design/web-react';
+import { useState, useCallback } from 'react';
 import { updateAppHost } from 'src/api/chat/app';
 import { getAuthInfo } from 'src/services/auth';
 import store from 'src/store/index';
@@ -34,10 +34,27 @@ const Phone = (props) => {
         setVisible(false)
     }
 
+    const getHost = useCallback(() => {
+        if (process.env.NODE_ENV === 'production') {
+            return `<script src="https://${value}/chat.js" id="chatjs"></script>`
+        } else {
+            return `<script src="https://${value}/chat.js" id="chatjs" data-env="local" data-url="http://${value}"></script>`
+        }
+    }, [value])
+
     return <div>
         <Tooltip mini content='点击修改客户端域名'>
             <Link onClick={() => { setVisible(true) }}>{value ? value : '域名设置'}</Link>
         </Tooltip>
+
+        {value ? <Link className="ml-2" onClick={() => {
+            Modal.confirm({
+                title: '使用教程',
+                content: <><p className="mb-2">您可以将此段JS 复制到 你的浏览器任意位置</p>  <Typography.Paragraph copyable>{getHost()}</Typography.Paragraph></>,
+                okText: 'Ok',
+                cancelText: 'Cancel',
+            });
+        }}>立即使用</Link> : null}
 
         <Modal
             title='域名设置'

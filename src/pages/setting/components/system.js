@@ -33,6 +33,8 @@ const System = () => {
             logo: data.logo,
             name: data.name
         })
+
+        console.log(data)
     }
 
     return <div>

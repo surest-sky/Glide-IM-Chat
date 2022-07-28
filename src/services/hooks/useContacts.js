@@ -107,7 +107,7 @@ const useContacts = () => {
     }
 
 
-    const setContactsList = async (callback) => {
+    const setContactsList = async () => {
         let constactsList = await db.contacts.where({ from_id: me_id }).toArray()
         // 条件检查
         // 把本地的和远程的最后一条消息做一次对比。如果本地小于远程，则拉取他们中间的差额

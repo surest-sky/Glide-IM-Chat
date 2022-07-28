@@ -1,12 +1,12 @@
-import { Modal, Message } from '@arco-design/web-react';
+import { Message, Modal } from '@arco-design/web-react';
 import { useEffect, useState } from 'react';
-import { useNavigate, useLocation, Outlet } from 'react-router-dom';
-import { userAuthApi, userInfoApi } from 'src/api/im/im';
+import { Outlet, useLocation, useNavigate } from 'react-router-dom';
+import { userAuthApi } from 'src/api/im/im';
+import Loading from 'src/components/Loading';
+import { initChatSession } from 'src/core/services';
 import { getAuthInfo } from 'src/services/auth';
 import store from 'src/store/index';
-import { updateAuthInfo, updateUserInfo } from 'src/store/reducer/container';
-import Loading from 'src/components/Loading'
-import { initChatSession } from 'src/core/services'
+import { updateAuthInfo } from 'src/store/reducer/container';
 import '../../static/main.scss';
 
 const Layout = () => {

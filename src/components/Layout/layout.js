@@ -2,7 +2,7 @@
 import { Message } from '@arco-design/web-react';
 import lodash from 'lodash';
 import { useEffect, useState } from 'react';
-import { Outlet, useNavigate } from 'react-router-dom';
+import { Outlet, useNavigate, useLocation } from 'react-router-dom';
 import { getCategoryList } from 'src/api/chat/setting';
 import { userAuthApi, userInfoApi } from 'src/api/im/im';
 import Loading from 'src/components/Loading';
@@ -22,11 +22,13 @@ const Layout = (props) => {
     const [loading, setLoading] = useState(true)
     const navigate = useNavigate();
     const userInfo = getAuthInfo()
+    const { pathname } = useLocation();
     const reLogin = () => {
         setLoading(false)
         Message.error("请登录 !")
         navigate('/login');
     }
+
 
     const loadApp = async () => {
         Promise.all([getCategoryList()]).then((result) => {
@@ -63,6 +65,13 @@ const Layout = (props) => {
     }
 
     useEffect(() => {
+        const regexp = /\.chat\.surest\.cn/g
+        if (regexp.test(pathname)) {
+            Message.error('请不要使用桌面端打开')
+            navigate('/m')
+            return
+        }
+
         if (!isLogin()) {
             fetchUserAuth()
         }

@@ -5,9 +5,11 @@ import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import Editor from './component/editor';
 import Messages from './component/message';
+import { useContacts } from 'src/services/hooks/useContacts';
 import './styles/chat.scss';
 
 const Mobile = () => {
+    const { changechatWithUser } = useContacts()
     const navigate = useNavigate();
     const chatWithUser = useSelector((state: any) => state.chat.chatWithUser);
     const [uid, setUid] = useState(chatWithUser.uid)
@@ -16,6 +18,21 @@ const Mobile = () => {
     useEffect(() => {
         setUid(chatWithUser.uid)
     }, [chatWithUser])
+
+    useEffect(() => {
+        let withUserInfo = localStorage.getItem("with_user_info")
+        if (!withUserInfo) {
+            navigate('/m')
+            return
+        }
+
+        withUserInfo = JSON.parse(withUserInfo)
+        if (!withUserInfo.uid) {
+            navigate('/m')
+            return
+        }
+        changechatWithUser(withUserInfo)
+    }, [])
 
     const changeHeight = () => {
         setHeight(window.innerHeight - 185 - 200)

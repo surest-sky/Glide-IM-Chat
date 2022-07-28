@@ -83,6 +83,8 @@ export const decrContactsMessageCount = (uid: number) => {
 export const clearContactsMessageCount = (uid: number) => {
     const currentUser = store.getState().container.authInfo;
     const session_id = getSessionId(parseInt(currentUser.uid), uid);
+    console.log('tototo', uid, session_id);
+
     readMessages(session_id, uid);
     db.contacts.where({ uid }).modify(f => (f.message_count = 0));
 };
