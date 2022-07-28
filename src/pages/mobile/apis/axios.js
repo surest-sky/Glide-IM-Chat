@@ -40,7 +40,11 @@ service.interceptors.response.use(
         if (status === 401) {
             setLogout()
             // 重新登录
-            window.location.href = "/m?login=1"
+            const loginCount = localStorage.getItem("loginCount") || 0;
+            localStorage.setItem("loginCount", loginCount + 1)
+            if (loginCount <= 3) {
+                window.location.href = "/m?login=1"
+            }
         }
         return Promise.resolve({});
     }

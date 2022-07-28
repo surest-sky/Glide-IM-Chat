@@ -33,7 +33,6 @@ const serviceComplete = async (uid: number, session: Session, callback) => {
 // 进行注册 message 事件
 const registerHanders = (session: Session) => {
     session.setMessageListener((message: ChatMessage) => {
-        console.info('收到一条消息', message);
         // 注册事件触发
         const convertMessage = message.revertMessage();
 

@@ -7,6 +7,7 @@ import { Message, MessageType } from 'src/core/message';
 import { addContactUserMessage } from 'src/services/store';
 import store from 'src/store/index';
 import { db } from './db';
+import { getAuthInfo } from 'src/services/auth';
 import { getSessionId, readMessages } from './message';
 
 const isRoomMessage = (message): boolean => {
@@ -19,14 +20,6 @@ const isRoomMessage = (message): boolean => {
         return true;
     }
     return false;
-    // const currentUser = store.getState().container.authInfo;
-    // const currentUserUid = chatWithUser.uid;
-    // const chatWithUserUid = parseInt(currentUser.uid);
-    // const session_id = getSessionId(currentUserUid, chatWithUserUid);
-    // if (message.session_id === session_id) {
-    //     return true;
-    // }
-    // return false;
 };
 
 // 是否为新的联系人
@@ -71,9 +64,9 @@ export const removeContacts = (contacts: ContactsType) => {
 };
 
 // 添加多个联系人
-export const addBlukContacts = (contactsList: ContactsType[]) => {
-    db.contacts.clear();
-    db.contacts.bulkAdd(contactsList);
+export const addBlukContacts = async (contactsList: ContactsType[]) => {
+    await db.contacts.clear();
+    await db.contacts.bulkAdd(contactsList);
 };
 
 // 移除联系人
@@ -101,6 +94,7 @@ export const incrContactsMessageCount = (uid: number) => {
 
 // 添加一条消息
 export const addMessage = async (message: Message) => {
+    const userInfo = getAuthInfo();
     const to = parseInt(message.to);
     const from = parseInt(message.from);
     const _message: any = Object.assign({}, message, {
@@ -116,6 +110,7 @@ export const addMessage = async (message: Message) => {
         incrContactsMessageCount(from);
     }
     addContactUserMessage(message);
+    _message.uid = userInfo.uid;
     db.chat.add(_message);
 };
 
@@ -184,6 +179,12 @@ export const getMessagesByOnelastMessage = async (from: number, to: number) => {
     const session_id = getSessionId(from, to);
     const messages = await db.chat.where({ session_id }).first();
     return messages;
+};
+
+// 获取与我的的最后一条消息
+export const getMyLastMessageMid = async (uid: number) => {
+    let messages = await (await db.chat.where({ uid: uid }).sortBy('sendAt')).reverse();
+    return get(messages, '0.mid');
 };
 
 export const switchRoom = async (to: number) => {

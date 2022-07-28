@@ -6,14 +6,16 @@ import { MessageType } from 'src/core/message';
 import { ContactStatus } from 'src/services/enum';
 import { useContacts } from 'src/services/hooks/useContacts';
 import { timeAgo } from 'src/utils/Utils';
+import { useLocation } from 'react-router';
 import './styles/menu.scss';
 import Category from './wrapper/category';
 
 const Menu = () => {
+    const { pathname } = useLocation()
     const options = [];
     const childCateModal = useRef();
     const chatWithUser = useSelector((state: any) => state.chat.chatWithUser);
-    const { contacts, loading, changechatWithUser } = useContacts()
+    const { contacts, loading, changechatWithUser, setContactsList } = useContacts()
     const curUser = useRef(null)
 
 
@@ -51,9 +53,19 @@ const Menu = () => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [contacts])
 
+    useEffect(() => {
+        setContactsList().then(list => {
+            setTimeout(() => {
+                changechatWithUser(list[0])
+            }, 500)
+        })
+
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [pathname])
+
     return <div className="contacts-container">
         <div className="contacts-menu"><Input placeholder="Search" className="w-full" /></div>
-        <div className="flex justify-between contacts-select hidden">
+        <div className="flex justify-between hidden contacts-select">
             <Select
                 placeholder='Open'
                 bordered={false}

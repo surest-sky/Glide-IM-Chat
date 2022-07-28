@@ -1,18 +1,18 @@
 
 import { Badge, Button, Spin } from '@arco-design/web-react';
-import { IconClockCircle, IconClose, IconIdcard, IconRight, IconSearch, IconSend } from '@arco-design/web-react/icon';
+import { IconClose, IconRight, IconSearch, IconSend } from '@arco-design/web-react/icon';
 import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-import { getArticleList } from './apis/faq';
+import { useNavigate } from 'react-router-dom';
 import { useContacts } from 'src/services/hooks/useContacts';
 import { ReactComponent as ClockSvg } from 'src/static/svg/clock.svg';
+import { getArticleList } from './apis/faq';
 import './styles/mobile.scss';
 
 const Mobile = () => {
     const navigate = useNavigate();
     const chatWithUser = useSelector((state: any) => state.chat.chatWithUser);
-    const { unReadCount, contacts, changechatWithUser } = useContacts({ uid: chatWithUser.uid })
+    const { unReadCount, contacts, setContactsList, changechatWithUser } = useContacts({ uid: chatWithUser.uid })
     const [articles, setAritcles] = useState({
         list: [],
         loading: true
@@ -37,6 +37,7 @@ const Mobile = () => {
     }
 
     useEffect(() => {
+        setContactsList()
         LoadArticles()
     }, [])
 
@@ -48,7 +49,7 @@ const Mobile = () => {
     }
 
     return <div className='mobile-container fade-in-top'>
-        <div className='mobile-close-container-btn cur hidden'>
+        <div className='hidden mobile-close-container-btn cur'>
             <div className='mobile-container-top-btn cur' style={{ backgroundColor: 'rgba(0, 0, 0, 0)' }}>
                 <IconClose className='close-btn' />
             </div>

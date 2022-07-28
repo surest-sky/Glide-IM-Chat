@@ -1,17 +1,16 @@
 import { get } from 'lodash';
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { Outlet, useNavigate, useSearchParams } from 'react-router-dom';
 import { addContact } from 'src/api/chat/contacts';
 import Loading from 'src/components/Loading';
 import { initChatSession } from 'src/core/services';
-import { getAuthInfo, isLogin, setLogin } from 'src/services/auth';
-import { addBlukContacts } from 'src/services/chat_db';
+import { getAuthInfo, isLogin } from 'src/services/auth';
 import { isNewContact, switchRoom } from 'src/services/chat_db';
 import { generateFrontId } from 'src/services/plugins/fingerprint';
 import store from 'src/store/index';
 import { updateAuthInfo } from 'src/store/reducer/container';
-import { useContacts } from 'src/services/hooks/useContacts';
 import { getToUid, guestLogin } from '../apis/mobile';
+
 import '../styles/mobile.scss';
 
 
@@ -22,7 +21,6 @@ const Layout = (props) => {
     const [loadingText, setLoadingText] = useState("loading...")
     const userInfo = useRef()
     const frontId = useRef()
-    useContacts()
 
     const loadChatRoom = (uid) => {
         window.ChatSession.setToId(uid)
@@ -47,29 +45,33 @@ const Layout = (props) => {
             setLoadingText("未配置域名, 无法加载!")
             return
         }
-        userInfo.current = data
         store.dispatch(updateAuthInfo(data));
-        setLogin(data)
-        loadWidthUser()
-        setLoading(false)
-        setTimeout(() => {
-            navigate("/m")
-        }, 1000)
+        userInfo.current = data
     }
 
-    useEffect(() => {
-        addBlukContacts([])
+    const initChat = useCallback(async () => {
         if (!isLogin()) {
-            generateFrontId().then(v => {
-                frontId.current = v
-                login()
-            })
+            const id = await generateFrontId()
+            frontId.current = id
+            await login()
+
+            setTimeout(() => {
+                navigate('/m')
+            }, 1000)
         } else {
             userInfo.current = getAuthInfo()
             store.dispatch(updateAuthInfo(userInfo.current));
+        }
+
+        setTimeout(() => {
             loadWidthUser()
             setLoading(false)
-        }
+        }, 200)
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [])
+
+    useEffect(() => {
+        initChat()
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 

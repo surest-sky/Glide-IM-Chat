@@ -30,7 +30,7 @@
                 <div class="showcase-cta__button__pulse"></div>
             </div>
         </button>
-        <iframe title="iframe" id="iframe-chat" style="display: none" src=${host}/m></iframe>
+        
     </div>
     `
     const cssDom = document.createElement('link')
@@ -42,10 +42,13 @@
         document.querySelector("body").insertAdjacentHTML('beforeEnd', domWrapper)
         const ctaDom = document.querySelector(".cta")
         const svgDom = document.querySelector(".play-svg")
-        const iframeDom = document.querySelector("#iframe-chat")
+        let iframeDom = document.querySelector("#iframe-chat")
         const iframeFunc = () => {
+            if (!iframeDom) {
+                document.querySelector(".chat-mobile-iframe").insertAdjacentHTML("beforeEnd", `<iframe title="iframe" id="iframe-chat" style="display: none" src=${host}/m></iframe>`)
+            }
+            iframeDom = document.querySelector("#iframe-chat")
             const display = iframeDom.style.display
-            console.log(display)
             if (display === 'block') {
                 iframeDom.style.display = "none"
                 svgDom.setAttribute("src", 'https://cdn.surest.cn/chat/im.svg')
