@@ -1,12 +1,13 @@
 import { get } from 'lodash';
 import { getSessionGet } from 'src/api/chat/chat';
-import { addContact } from 'src/api/chat/contacts';
+import { addContact as addContactApi } from 'src/api/chat/contacts';
 import { userInfoApi } from 'src/api/im/im';
 import { ContactsType } from 'src/core/chat_type';
 import { Message, MessageType } from 'src/core/message';
 import { addContactUserMessage } from 'src/services/store';
 import store from 'src/store/index';
 import { db } from './db';
+import { ContactOpend, ContactStatus } from 'src/services/enum';
 import { getAuthInfo } from 'src/services/auth';
 import { getSessionId, readMessages } from './message';
 
@@ -33,19 +34,26 @@ export const isNewContact = async from => {
 
 // 添加联系人
 export const addContactInfo = async (message, from) => {
+    console.log('messagemessagemessage', message);
+    const userInfo = getAuthInfo();
     const { data } = await userInfoApi({ uid: [from] });
     const Data = get(data, 'Data.0');
-    const contacts: ContactsType = {
+    const contacts = {
+        lastMessage: message,
         avatar: Data.avatar,
         name: Data.nick_name,
-        message_count: 0,
+        message_count: 1,
         uid: from,
         motto: '',
-        lastMessage: message,
+        category_ids: [],
+        collect: Data.collect,
+        status: ContactStatus.online,
+        isMe: false,
+        from_id: userInfo.uid,
     };
     addContacts(contacts);
     getSessionGet({ to: from });
-    addContact({ uid: from });
+    addContactApi({ uid: from });
 };
 
 // 获取一个联系人

@@ -1,9 +1,10 @@
 import { filter, get, orderBy } from 'lodash';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { useLocation } from 'react-router';
 import { getContactsList } from 'src/api/chat/contacts';
 import { getMessagelist } from 'src/api/chat/messages';
+import { useLiveQuery } from 'dexie-react-hooks';
 import { addBlukContacts, getMessagesByOnelastMessage, getMyLastMessageMid, switchRoom } from 'src/services/chat_db';
 import { db } from 'src/services/db';
 import { ContactOpend, ContactStatus } from 'src/services/enum';
@@ -19,6 +20,7 @@ const useContacts = () => {
     const [loading, setLoading] = useState(true)
     const chatWithUser = useSelector((state: any) => state.chat.chatWithUser);
     const [unReadCount, setUnReadCount] = useState(0)
+    const db_contacts = useLiveQuery(() => db.contacts.toArray())
     const me_id = userInfo.uid
 
     const selfUser = {
@@ -54,11 +56,10 @@ const useContacts = () => {
         for (let i = 0; i < users.length; i++) {
             const item = users[i]
             const to_id = parseInt(item.uid)
-            const localMessage = await getMessagesByOnelastMessage(to_id, me_id);
             const isMe = me_id === to_id
             count += item.message_count
             _list.push({
-                lastMessage: localMessage,
+                lastMessage: item.lastMessage ? item.lastMessage : await getMessagesByOnelastMessage(to_id, me_id),
                 avatar: '',
                 name: item.nickname,
                 message_count: item.message_count,
@@ -132,11 +133,18 @@ const useContacts = () => {
         } else {
             constactsList = orderBy(constactsList, 'weight', 'asc')
         }
-
         setContacts(constactsList)
         setLoading(false)
         return constactsList
     }
+
+    useEffect(() => {
+        if (!db_contacts) { return; }
+        if (db_contacts.length > contacts.length) {
+            setContactsList()
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [db_contacts])
 
     return { contacts, loading, changechatWithUser, lodaContacts, setContactsList, unReadCount }
 }

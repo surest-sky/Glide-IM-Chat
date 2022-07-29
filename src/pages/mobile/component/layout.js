@@ -32,7 +32,7 @@ const Layout = (props) => {
         const _uid = get(result, 'data.Data.uid')
         localStorage.setItem('with_user_id', _uid)
         if (isNewContact(_uid)) {
-            await addContact(_uid)
+            await addContact({ uid: _uid })
         }
         initChatSession(() => { loadChatRoom(_uid) })
     }

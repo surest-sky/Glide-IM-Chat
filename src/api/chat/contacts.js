@@ -7,10 +7,10 @@ export function getContactsList() {
     });
 }
 
-export function addContact(uid) {
+export function addContact(params) {
     return request({
         url: '/contacts/add',
         method: 'post',
-        data: { uid: uid }
+        data: params
     });
 }

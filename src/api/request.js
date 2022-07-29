@@ -41,7 +41,6 @@ service.interceptors.response.use(
             const { status } = error.response
             if (status === 401) {
                 setLogout()
-                window.location.href = "/login"
             }
         } catch (error) {
             Message.error("网络错误，请重试")
