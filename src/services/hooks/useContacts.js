@@ -140,7 +140,7 @@ const useContacts = () => {
 
     useEffect(() => {
         if (!db_contacts) { return; }
-        if (db_contacts.length > contacts.length) {
+        if (db_contacts.length >= contacts.length) {
             setContactsList()
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
