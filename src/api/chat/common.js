@@ -15,3 +15,11 @@ export function sendCaptcha(data) {
         data,
     });
 }
+
+export function getLiveRoomToken(data) {
+    return request({
+        url: '/cs/live-room',
+        method: 'post',
+        data,
+    });
+}

@@ -20,7 +20,7 @@ import Robot from '../pages/robot/index';
 import Setting from '../pages/setting/index';
 import Test from '../pages/test';
 import WorkSpace from '../pages/workspace/index';
-
+import LiveRoom from '../pages/liveRoom/index';
 
 const Routers = () => {
     return (
@@ -31,7 +31,6 @@ const Routers = () => {
                 <Route path="/forget" element={<Forget />} />
                 <Route path="/register" element={<Register />} />
             </Route>
-
 
             <Route path="/m" element={<LayoutMobile />}>
                 <Route path="/m" element={<Mobile />} />
@@ -50,6 +49,7 @@ const Routers = () => {
                 <Route path="/analysis" element={<Analysis />} />
                 <Route path="/faq/list" element={<FaqList />} />
                 <Route path="/faq/editor" element={<FaqEditor />} />
+                <Route path="/live" element={<LiveRoom />} />
             </Route>
 
             <Route path="/email" element={<Email />} />
