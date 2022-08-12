@@ -36,14 +36,7 @@ const Rebot = () => {
     };
 
     useEffect(() => {
-        const sign = localStorage.getItem(key);
-        if (!sign) {
-            loadToken();
-            return false;
-        }
-
-        token.current = sign;
-        setLoading(false);
+        loadToken();
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
