@@ -25,6 +25,7 @@ import LiveRoom from '../pages/liveRoom/index';
 const Routers = () => {
     return (
         <Routes>
+            <Route path="/live" element={<LiveRoom />} />
             <Route path="/" element={<Convert />} />
             <Route path="" element={<LayoutAuth />}>
                 <Route path="/login" element={<Login />} />
@@ -49,7 +50,6 @@ const Routers = () => {
                 <Route path="/analysis" element={<Analysis />} />
                 <Route path="/faq/list" element={<FaqList />} />
                 <Route path="/faq/editor" element={<FaqEditor />} />
-                <Route path="/live" element={<LiveRoom />} />
             </Route>
 
             <Route path="/email" element={<Email />} />

@@ -104,9 +104,9 @@ const Menus = () => {
                     <MenuItem key="/setting">
                         <SettingSvg /> 设置中心
                     </MenuItem>
-                    <MenuItem key="/live">
+                    {/* <MenuItem key="/live">
                         <VideoSvg /> 视频通话
-                    </MenuItem>
+                    </MenuItem> */}
                     <MenuItem key="logout">
                         <LogoutSvg /> 退出登录
                     </MenuItem>

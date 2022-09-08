@@ -6,14 +6,13 @@ import { getLiveRoomToken } from 'src/api/chat/common';
 import Breadcrumb from 'src/components/Breadcrumb';
 import Loading from 'src/components/Loading';
 import { IconRefresh } from '@arco-design/web-react/icon';
-import { getAuthInfo } from 'src/services/auth';
 import './index.scss';
 
 const Rebot = () => {
-    const userInfo = getAuthInfo();
+    const userInfo = { name: 'feng' };
     const [loading, setLoading] = useState(true);
     const key = `live-room:${userInfo.name}`;
-    const url = process.env.REACT_APP_RTC_URL;
+    const url = 'wss://livekit.intercom.ink/' || process.env.REACT_APP_RTC_URL;
     const token = useRef(null);
     async function onConnected(room) {
         await room.localParticipant.setCameraEnabled(true);
