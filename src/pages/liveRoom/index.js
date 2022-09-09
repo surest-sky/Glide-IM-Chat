@@ -6,12 +6,13 @@ import { getLiveRoomToken } from 'src/api/chat/common';
 import Breadcrumb from 'src/components/Breadcrumb';
 import Loading from 'src/components/Loading';
 import { IconRefresh } from '@arco-design/web-react/icon';
+import { getAuthInfo, setLogout } from 'src/services/auth';
 import './index.scss';
 
 const Rebot = () => {
-    const userInfo = { name: 'feng' };
+    const authInfo = getAuthInfo();
     const [loading, setLoading] = useState(true);
-    const key = `live-room:${userInfo.name}`;
+    const key = `live-room:${authInfo.email}`;
     const url = 'wss://livekit.intercom.ink/' || process.env.REACT_APP_RTC_URL;
     const token = useRef(null);
     async function onConnected(room) {
@@ -25,7 +26,7 @@ const Rebot = () => {
             data: {
                 Data: { sign },
             },
-        } = await getLiveRoomToken({ name: userInfo.email }).catch(err => {
+        } = await getLiveRoomToken({ name: authInfo.email }).catch(err => {
             Message.error('服务异常, 请刷新重试');
         });
         console.log('key', sign);
