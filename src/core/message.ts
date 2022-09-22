@@ -62,6 +62,7 @@ export interface CommonMessage<T> {
 
 // 聊天消息
 export interface Message {
+    cliId: string;
     mid: number;
     seq: number;
     from: string;
@@ -87,6 +88,7 @@ export interface AckNotify {
 
 // 服务器收到确认
 export interface AckMessage {
+    cliId: string;
     mid: number;
 }
 

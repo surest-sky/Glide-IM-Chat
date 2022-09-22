@@ -31,7 +31,7 @@ export class Session {
     public To: string;
 
     private messageList = new Array<ChatMessage>();
-    private messageMap = new Map<number, ChatMessage>();
+    private messageMap = new Map<string, ChatMessage>();
 
     private messageListener: ((message: ChatMessage) => void) | null = null;
     private sessionUpdateListener: SessionUpdateListener | null = null;
@@ -127,15 +127,16 @@ export class Session {
     }
 
     private addMessageByOrder(message: ChatMessage) {
-        if (this.messageMap.has(message.Mid)) {
-            this.messageMap.get(message.Mid).update(message);
+        if (this.messageMap.has(message.CliId)) {
+            this.messageMap.get(message.CliId).update(message);
         } else {
-            let index = this.messageList.findIndex(msg => msg.Mid > message.Mid);
+            // TODO 2022年9月22日16:31:59 这里排序可能有问题
+            let index = this.messageList.findIndex(msg => msg.SendAt > message.SendAt);
             if (index === -1) {
-                this.messageMap.set(message.Mid, message);
+                this.messageMap.set(message.CliId, message);
                 this.messageList.push(message);
             } else {
-                this.messageMap.set(message.Mid, message);
+                this.messageMap.set(message.CliId, message);
                 this.messageList.splice(index, 0, message);
             }
             this.messageListener && this.messageListener(message);
@@ -148,30 +149,26 @@ export class Session {
     }
 
     public send(content: string, type: number): Observable<ChatMessage> {
-        return Api.getMid().pipe(
-            map(resp => {
-                const time = Date.parse(new Date().toString()) / 1000;
-                const from = LiveChat.getInstance().getUID().toString();
-                const m: Message = {
-                    content: content,
-                    from: from,
-                    mid: resp.mid,
-                    sendAt: time,
-                    seq: 0,
-                    to: this.To,
-                    type: type,
-                    status: 0,
-                    isMe: true,
-                    isMeToo: from === this.To,
-                };
-                return m;
-            }),
-            onNext((msg: Message) => {
-                const r = ChatMessage.create(msg);
-                r.Sending = SendingStatus.Sending;
-                this.addMessageByOrder(r);
-            }),
-            mergeMap(msg => Ws.sendChatMessage(msg)),
+        const time = Date.parse(new Date().toString()) / 1000;
+        const from = LiveChat.getInstance().getUID().toString();
+        const m: Message = {
+            cliId: uuid(32, 16),
+            content: content,
+            from: from,
+            mid: 0,
+            sendAt: time,
+            seq: 0,
+            to: this.To,
+            type: type,
+            status: 0,
+            isMe: true,
+            isMeToo: from === this.To,
+        };
+        const r = ChatMessage.create(m);
+        r.Sending = SendingStatus.Sending;
+        this.addMessageByOrder(r);
+
+        return Ws.sendChatMessage(m).pipe(
             map(resp => {
                 const r = ChatMessage.create(resp);
                 r.Sending = SendingStatus.Sent;
@@ -218,4 +215,33 @@ export class Session {
             )
             .subscribe();
     }
+}
+
+function uuid(len, radix) {
+    var chars = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'.split('');
+    var uuid = [], i;
+    radix = radix || chars.length;
+
+    if (len) {
+        // Compact form
+        for (i = 0; i < len; i++) uuid[i] = chars[0 | Math.random() * radix];
+    } else {
+        // rfc4122, version 4 form
+        var r;
+
+        // rfc4122 requires these characters
+        uuid[8] = uuid[13] = uuid[18] = uuid[23] = '-';
+        uuid[14] = '4';
+
+        // Fill in random data.  At i==19 set the high bits of clock sequence as
+        // per rfc4122, sec. 4.1.5
+        for (i = 0; i < 36; i++) {
+            if (!uuid[i]) {
+                r = 0 | Math.random() * 16;
+                uuid[i] = chars[(i == 19) ? (r & 0x3) | 0x8 : r];
+            }
+        }
+    }
+
+    return uuid.join('');
 }

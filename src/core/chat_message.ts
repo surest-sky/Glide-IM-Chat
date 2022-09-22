@@ -13,6 +13,7 @@ export interface MessageUpdateListener {
 }
 
 export class ChatMessage {
+    public CliId: string;
     public From: string;
     public To: string;
     public Content: string;
@@ -35,6 +36,7 @@ export class ChatMessage {
 
     public static create(m: Message): ChatMessage {
         const ret = new ChatMessage();
+        ret.CliId= m.cliId;
         ret.From = m.from;
         ret.To = m.to;
         ret.Content = m.content;
@@ -47,6 +49,7 @@ export class ChatMessage {
     }
 
     public update(m: ChatMessage): void {
+        this.CliId = m.CliId;
         this.From = m.From;
         this.To = m.To;
         this.Content = m.Content;
@@ -64,6 +67,7 @@ export class ChatMessage {
 
     public revertMessage(): Message {
         return {
+            cliId: this.CliId,
             mid: this.Mid,
             seq: 0,
             from: this.From,

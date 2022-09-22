@@ -45,7 +45,7 @@ class WebSocketClient {
     private messageListener: MessageListener[] = [];
     private groupMessageListner: ((m: CommonMessage<any>) => void)[] = [];
 
-    private ackCallBacks = new Map<number, MessageCallBack>();
+    private ackCallBacks = new Map<string, MessageCallBack>();
     private apiCallbacks = new Map<number, MessageCallBack>();
 
     constructor() {
@@ -257,7 +257,7 @@ class WebSocketClient {
 
     private getAckObservable(msg: Message): Observable<Message> {
         return new Observable<Message>((observer: Observer<Message>) => {
-            this.ackCallBacks.set(msg.mid, () => {
+            this.ackCallBacks.set(msg.cliId, () => {
                 observer.next(msg);
                 observer.complete();
             });
@@ -320,7 +320,7 @@ class WebSocketClient {
                 return;
         }
         const ack = msg.data as AckMessage;
-        const callback = this.ackCallBacks.get(ack.mid);
+        const callback = this.ackCallBacks.get(ack.cliId);
 
         if (callback === undefined) {
             WebSocketClient.slog('onAckMessage', 'no callback', msg);
