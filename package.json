@@ -46,8 +46,9 @@
   },
   "scripts": {
     "start": "cross-env port=8087 REACT_APP_ENV=development react-scripts start",
-    "start:debug": "cross-env PORT=8089 REACT_APP_MOBILE=true REACT_APP_ENV=development react-scripts start",
+    "start:mobile": "cross-env PORT=8089 REACT_APP_MOBILE=true REACT_APP_ENV=development react-scripts start",
     "build": "cross-env REACT_APP_ENV=production react-scripts build",
+    "build:mobile": "cross-env REACT_APP_ENV=production REACT_APP_MOBILE=true react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
