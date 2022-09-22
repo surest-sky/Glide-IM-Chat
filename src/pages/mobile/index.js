@@ -11,7 +11,7 @@ import './styles/mobile.scss';
 
 const Mobile = () => {
     const navigate = useNavigate();
-    const chatWithUser = useSelector((state: any) => state.chat.chatWithUser);
+    const chatWithUser = useSelector((state) => state.chat.chatWithUser);
     const { unReadCount, contacts, setContactsList, changechatWithUser } = useContacts({ uid: chatWithUser.uid })
     const [articles, setAritcles] = useState({
         list: [],

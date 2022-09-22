@@ -37,15 +37,14 @@ const Faq = (props, ref) => {
                 }}>Home</Link>
             </BreadcrumbItem>
             <BreadcrumbItem>
-                <Link onClick={() => {
+                <Link className={'text-base'} onClick={() => {
                     navigate('/m/faq')
-                }}>文章列表</Link>
-            </BreadcrumbItem>
-            <BreadcrumbItem>
-                文章详情
+                }}>
+                    文章列表
+                </Link>
             </BreadcrumbItem>
         </Breadcrumb>
-        <Title heading={5} className="text-center">Design system</Title>
+        <Title heading={5} className="text-center">{article.title}</Title>
         <Paragraph className="text-center faq-article-publish-at">发布时间: {article.publish_at}</Paragraph>
         {
             loading ? <Spin /> : <Paragraph className="faq-article-content scrollbar"><HtmlApp html={article.content} /></Paragraph>

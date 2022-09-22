@@ -20,7 +20,7 @@ export enum MessageType {
     System = maskMessageType | 10,
 }
 
-export const WebSocketUrl = process.env.REACT_APP_WS_URL;
+export const WebSocketUrl = "ws://127.0.0.1:8080/ws" || process.env.REACT_APP_WS_URL;
 
 // IM 指令
 export enum Actions {

@@ -29,6 +29,8 @@ const Phone = (props) => {
         setConfirmLoading(false)
         Message.success("修改成功")
         authInfo.host = host
+        authInfo.app.host = host
+        console.log("authInfo", authInfo)
         store.dispatch(updateAuthInfo(authInfo))
         props.onChange(host)
         setVisible(false)

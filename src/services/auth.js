@@ -20,7 +20,16 @@ const setLogout = () => {
     localStorage.removeItem(adminKey)
     addBlukContacts([])
     window.ChatSession = null
-    window.location.reload()
+}
+
+const loginCount = (action = 'get') => {
+    let loginCount = localStorage.getItem("loginCount") || 0;
+    if(action === 'get') return loginCount;
+    if(action === 'put'){
+        loginCount ++;
+        localStorage.setItem("loginCount", loginCount)
+    }
+    if(action === 'del') localStorage.removeItem("loginCount");
 }
 
 const getAuthInfo = (source) => {
@@ -53,4 +62,4 @@ const getToken = () => {
     return authInfo.token
 }
 
-export { setLogout, setLogin, isLogin, getAuthInfo, getToken }
+export { setLogout, setLogin, isLogin, getAuthInfo, getToken, loginCount }

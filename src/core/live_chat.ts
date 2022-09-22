@@ -143,7 +143,6 @@ export class LiveChat {
                 break;
             case Actions.MessageChat:
                 const msg = m.data as Message;
-                console.log('message: ', msg);
                 this.session?.onMessage(msg);
                 break;
             case Actions.MessageCli:

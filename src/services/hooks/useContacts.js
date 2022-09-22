@@ -18,7 +18,7 @@ const useContacts = () => {
     const [contacts, setContacts] = useState([])
     const userInfo = getAuthInfo()
     const [loading, setLoading] = useState(true)
-    const chatWithUser = useSelector((state: any) => state.chat.chatWithUser);
+    const chatWithUser = useSelector((state) => state.chat.chatWithUser);
     const [unReadCount, setUnReadCount] = useState(0)
     const db_contacts = useLiveQuery(() => db.contacts.toArray())
     const me_id = userInfo.uid
@@ -109,6 +109,9 @@ const useContacts = () => {
 
 
     const setContactsList = async () => {
+        if(!me_id) {
+            return  [];
+        }
         let constactsList = await db.contacts.where({ from_id: me_id }).toArray()
         // 条件检查
         // 把本地的和远程的最后一条消息做一次对比。如果本地小于远程，则拉取他们中间的差额

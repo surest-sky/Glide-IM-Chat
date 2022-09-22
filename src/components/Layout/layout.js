@@ -19,7 +19,7 @@ import './styles/layout.scss';
 
 const Layout = (props) => {
     // @ts-ignore
-    const authInfo = useSelector((state: any) => state.container.authInfo);
+    const authInfo = useSelector((state) => state.container.authInfo);
     const [loading, setLoading] = useState(true)
     const navigate = useNavigate();
     const userInfo = getAuthInfo()

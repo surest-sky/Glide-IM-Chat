@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { getAuthInfo } from 'src/services/auth';
-import { setLogout } from 'src/services/auth'
+import { setLogout, loginCount } from 'src/services/auth'
 
 const BASE_URL = process.env.REACT_APP_BASE_URL;
 // create an axios instance
@@ -40,9 +40,8 @@ service.interceptors.response.use(
         if (status === 401) {
             setLogout()
             // 重新登录
-            const loginCount = localStorage.getItem("loginCount") || 0;
-            localStorage.setItem("loginCount", loginCount + 1)
-            if (loginCount <= 3) {
+            const _loginCount = loginCount('get');
+            if (_loginCount <= 3) {
                 window.location.href = "/m?login=1"
             }
         }

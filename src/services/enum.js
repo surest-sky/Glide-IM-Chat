@@ -13,3 +13,5 @@ export const MessageStatus = {
     recall: 2,
     read: 1
 }
+
+export const LoadFailText = process.env.NODE_ENV === 'production' ? '未配置域名, 无法加载!' : `开发环境请选择账号设置域名为${window.location.href}`;

@@ -119,7 +119,7 @@ export const addMessage = async (message: Message) => {
     if (!isRoomMessage(_message)) {
         incrContactsMessageCount(from);
     }
-    addContactUserMessage(message);
+    await addContactUserMessage(message);
     _message.uid = userInfo.uid;
     db.chat.add(_message);
 };

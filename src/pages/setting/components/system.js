@@ -20,7 +20,6 @@ const System = () => {
         debounceWait: 1000,
         manual: true,
         onSuccess: () => {
-            console.log('success')
             userInfo.app.logo = form.getFieldValue("logo")
             userInfo.app.name = form.getFieldValue("name")
             store.dispatch(updateAuthInfo(userInfo))
@@ -33,8 +32,6 @@ const System = () => {
             logo: data.logo,
             name: data.name
         })
-
-        console.log(data)
     }
 
     return <div>

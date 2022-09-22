@@ -10,13 +10,13 @@ import xss from 'xss';
 import '../styles/message.scss';
 
 const Messages = () => {
-    const userInfo = useSelector((state: any) => state.container.authInfo);
-    const chatWithUser = useSelector((state: any) => state.chat.chatWithUser);
+    const userInfo = useSelector((state) => state.container.authInfo);
+    const chatWithUser = useSelector((state) => state.chat.chatWithUser);
     const messages = useActiveChat()
 
     const me_id = userInfo.uid;
     // 发送撤回消息
-    const sendRecallMessage = (mid: number, from: number) => {
+    const sendRecallMessage = (mid, from) => {
         window.ChatSession.sendRecallMessage(mid);
     };
 
