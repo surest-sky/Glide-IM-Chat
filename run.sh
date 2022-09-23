@@ -24,7 +24,6 @@ fi
 if [ "$1" == "deploy" ]
 then {
   if [ "$2" == "pc" ]; then
-      rm -rf ./pc
       mkdir -p ./build/pc
       tar -xvf pc.tar.xz -C ./build/pc --strip-components 1
       echo "部署成功 PC"
@@ -32,7 +31,6 @@ then {
   fi
 
   if [ "$2" == "mobile" ]; then
-      rm -rf ./mobile
       mkdir -p ./build/mobile
       tar -xvf mobile.tar.xz -C ./build/mobile --strip-components 1
       echo "部署成功 MOBILE"
