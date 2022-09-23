@@ -25,14 +25,16 @@ if [ "$1" == "deploy" ]
 then {
   if [ "$2" == "pc" ]; then
       rm -rf ./pc
-      mkdir -p ./build/pc && tar -xzvf pc.tar.xz -C ./run/pc --strip-components 1
+      mkdir -p ./build/pc
+      tar -xvf pc.tar.xz -C ./build/pc --strip-components 1
       echo "部署成功 PC"
       exit 1
   fi
 
   if [ "$2" == "mobile" ]; then
       rm -rf ./mobile
-      mkdir -p ./build/mobile && tar -xzvf mobile.tar.xz -C ./run/mobile --strip-components 1
+      mkdir -p ./build/mobile
+      tar -xvf mobile.tar.xz -C ./build/mobile --strip-components 1
       echo "部署成功 MOBILE"
       exit 1
   fi
@@ -49,6 +51,7 @@ then {
   git status
   git add -A
   git commit -m "$2"
+  git push codeing
   exit 1
 }
 fi
