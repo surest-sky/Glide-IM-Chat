@@ -49,7 +49,7 @@ then {
   git status
   git add -A
   git commit -m "$2"
-  git push codeing
+  git push codeing master
   exit 1
 }
 fi

@@ -26,3 +26,4 @@ yarn-error.log*
 build
 mobile
 pc
+deploy.sh
