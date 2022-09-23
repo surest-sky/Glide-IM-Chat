@@ -39,4 +39,13 @@ then {
 }
 fi
 
+if [ "$1" == "push" ]
+then {
+  git status
+  git add -A
+  git commit -m "$2"
+  exit 1
+}
+fi
+
 echo ">>> 未能处理成功"
