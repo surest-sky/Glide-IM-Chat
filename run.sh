@@ -43,6 +43,9 @@ fi
 
 if [ "$1" == "push" ]
 then {
+  sh run.sh build pc
+  sh run.sh build mobile
+  rm -rf build
   git status
   git add -A
   git commit -m "$2"
