@@ -4,14 +4,12 @@ if [ "$1" = "build" ]
 then {
   if [ "$2" = "pc" ]; then
       npm run build
-      tar -cJvf pc.tar.xz build
       echo "编译完成 PC"
       exit 1
   fi
 
   if [ "$2" == "mobile" ]; then
       npm run build:mobile
-      tar -cJvf mobile.tar.xz build
       echo "编译完成 Mobile"
       exit 1
   fi
